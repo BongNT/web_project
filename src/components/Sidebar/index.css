@@ -1,0 +1,8 @@
+#side-bar .accordion-button:focus,
+#side-bar .accordion-button:not(.collapsed) {
+	box-shadow: none;
+}
+
+#side-bar .accordion-body {
+	padding: 0;
+}
