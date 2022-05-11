@@ -1,23 +1,32 @@
 import React from "react";
-import List from "../List";
+import { LinkList } from "../List";
 import "./index.css";
 
 export default function Sidebar() {
 	const objs = [
 		{
 			key: 1,
-			name: "Cơ sở sản xuất",
-			items: ["Cấp giấy", "Thanh, kiểm tra"],
+			title: "Cơ sở sản xuất",
+			items: [
+				{ id: 1, name: "Cấp giấy", link: "/home" },
+				{ id: 2, name: "Thanh tra", link: "/certificate" },
+			],
 		},
 		{
 			key: 2,
-			name: "Phân quyền",
-			items: ["Chuyên viên", "???"],
+			title: "Phân quyền",
+			items: [
+				{ id: 1, name: "Cơ cấu", link: "/home" },
+				{ id: 2, name: "Tổ chức cán bộ", link: "/certificate" },
+			],
 		},
 	];
 
 	const list = objs.map((obj) => (
-		<li className="accordion accordion-flush list-group-item accordion-item p-0">
+		<li
+			key={obj.key}
+			className="accordion accordion-flush list-group-item accordion-item p-0"
+		>
 			<h2 className="accordion-header">
 				<button
 					className="accordion-button collapsed"
@@ -28,7 +37,7 @@ export default function Sidebar() {
 					aria-expanded="false"
 					aria-controls={"flush-collapse" + obj.key}
 				>
-					{obj.name}
+					{obj.title}
 				</button>
 			</h2>
 			<div
@@ -37,7 +46,7 @@ export default function Sidebar() {
 				aria-labelledby={"flush-heading" + obj.key}
 			>
 				<div className="accordion-body">
-					<List
+					<LinkList
 						list={obj.items}
 						classUl="list-group"
 						classLi="list-group-item list-group-item-action border-0"
@@ -47,6 +56,5 @@ export default function Sidebar() {
 			</div>
 		</li>
 	));
-
-	return <ul className="list-group">{list}</ul>;
+	return <ul className="list-group list-group-flush">{list}</ul>;
 }
