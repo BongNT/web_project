@@ -6,7 +6,7 @@ export default function SignIn() {
 		<section className="vh-100">
 			<div className="container-fluid h-100">
 				<div className="row justify-content-center align-items-center h-100">
-					<div className="col-md-9 col-lg-6 col-xl-5">
+					<div className="col-md-9 col-lg-6 col-xl-6">
 						<img
 							src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
 							className="img-fluid"
@@ -15,37 +15,7 @@ export default function SignIn() {
 					</div>
 					<div className="col-md-8 col-lg-6 col-xl-4">
 						<form>
-							{/* <div className="mb-4">
-								<label
-									className="col-form-label-lg"
-									htmlFor="email"
-								>
-									Địa chỉ email
-								</label>
-								<input
-									type="email"
-									id="email"
-									className="form-control form-control-lg"
-									placeholder="Nhập địa chỉ email hợp lệ"
-								/>
-							</div>
-
-							<div className="mb-3">
-								<label
-									className="col-form-label-lg"
-									htmlFor="password"
-								>
-									Mật khẩu
-								</label>
-								<input
-									type="password"
-									id="password"
-									className="form-control form-control-lg"
-									placeholder="Nhập mật khẩu"
-								/>
-							</div> */}
-
-							<div className="form-floating mb-3">
+							<div className="form-floating mb-4">
 								<input
 									type="email"
 									className="form-control"

@@ -1,16 +1,36 @@
-.form-floating > .form-control:focus ~ label,
-.form-floating > .form-control:not(:placeholder-shown) ~ label {
-	opacity: 1;
-	transform: scale(0.8) translateY(-1.5rem) translateX(0.2rem);
+.form-floating > .form-control {
+	height: 3rem;
+	padding: 0.33em 0.75em;
+	border: 0;
+	background: transparent;
+	transition: all 0.2s linear;
 }
 
-.form-floating > .form-control:focus ~ label {
-	color: #1266f1;
+.form-floating > .form-control:focus {
+	padding-top: 0;
+	padding-bottom: 0;
+	box-shadow: none;
+}
+
+.form-floating > .form-control:not(:placeholder-shown) {
+	padding-top: 0;
+	padding-bottom: 0;
 }
 
 .form-floating > label {
 	font-size: 1.25rem;
+	line-height: 0.7;
 	transition: transform 0.3s ease-in-out;
+}
+
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label {
+	opacity: 1;
+	transform: scale(0.8) translateY(-1.8rem) translateX(0.2rem);
+}
+
+.form-floating > .form-control:focus ~ label {
+	color: #1266f1;
 }
 
 .form-floating > .form-control ~ .form-notch {
@@ -25,21 +45,12 @@
 	pointer-events: none;
 }
 
-.form-floating > .form-control {
-	min-height: auto;
-	padding: 0.33em 0.75em;
-	border: 0;
+.form-floating > .form-control ~ .form-notch div {
+	pointer-events: none;
+	border: 1px solid #bdbdbd;
+	box-sizing: border-box;
 	background: transparent;
 	transition: all 0.2s linear;
-}
-
-.form-floating > .form-control:focus ~ .form-notch .form-notch-leading {
-	border-color: #1266f1;
-	box-shadow: -1px 0 0 0 #1266f1, 0 1px 0 0 #1266f1, 0 -1px 0 0 #1266f1;
-}
-
-.form-floating > .form-control:focus ~ .form-notch .form-notch-leading {
-	border-right: none;
 }
 
 .form-floating > .form-control ~ .form-notch .form-notch-leading {
@@ -51,25 +62,6 @@
 	border-radius: 0.25rem 0 0 0.25rem;
 }
 
-.form-floating > .form-control ~ .form-notch div {
-	pointer-events: none;
-	border: 1px solid #bdbdbd;
-	box-sizing: border-box;
-	background: transparent;
-	transition: all 0.2s linear;
-}
-
-.form-floating > .form-control:focus ~ .form-notch .form-notch-middle {
-	border-color: #1266f1;
-	box-shadow: 0 1px 0 0 #1266f1;
-	border-top: 1px solid transparent;
-}
-
-.form-floating > .form-control:focus ~ .form-notch .form-notch-middle {
-	border-right: none;
-	border-left: none;
-	border-top: 1px solid transparent;
-}
 .form-floating > .form-control ~ .form-notch .form-notch-middle {
 	flex: 0 0 auto;
 	width: auto;
@@ -78,20 +70,29 @@
 	border-right: none;
 	border-left: none;
 }
+
+.form-floating > .form-control:focus ~ .form-notch .form-notch-leading {
+	border-right: none;
+	border-color: #1266f1;
+	box-shadow: -1px 0 0 0 #1266f1, 0 1px 0 0 #1266f1, 0 -1px 0 0 #1266f1;
+}
+
+.form-floating > .form-control:focus ~ .form-notch .form-notch-middle {
+	border-right: none;
+	border-left: none;
+	border-top: 1px solid transparent;
+	border-color: #1266f1;
+	box-shadow: 0 1px 0 0 #1266f1;
+	border-top: 1px solid transparent;
+}
+
 .form-floating
 	> .form-control:not(:placeholder-shown)
 	~ .form-notch
 	.form-notch-middle {
 	border-top: 1px solid transparent;
 }
-.form-floating > .form-control:focus ~ .form-notch .form-notch-trailing {
-	border-color: #1266f1;
-	box-shadow: 1px 0 0 0 #1266f1, 0 -1px 0 0 #1266f1, 0 1px 0 0 #1266f1;
-}
 
-.form-floating > .form-control:focus ~ .form-notch .form-notch-trailing {
-	border-left: none;
-}
 .form-floating > .form-control ~ .form-notch .form-notch-trailing {
 	flex-grow: 1;
 	height: 100%;
@@ -99,6 +100,8 @@
 	border-radius: 0 0.25rem 0.25rem 0;
 }
 
-.form-control:focus {
-	box-shadow: none;
+.form-floating > .form-control:focus ~ .form-notch .form-notch-trailing {
+	border-left: none;
+	border-color: #1266f1;
+	box-shadow: 1px 0 0 0 #1266f1, 0 -1px 0 0 #1266f1, 0 1px 0 0 #1266f1;
 }
