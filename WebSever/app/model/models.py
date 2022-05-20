@@ -10,4 +10,4 @@ class User(Base):
     name_user = Column(String)
     password = Column(String)
     email = Column(String)
-    type = Column(String)
+    type = Column(Integer)

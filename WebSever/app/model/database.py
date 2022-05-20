@@ -7,7 +7,6 @@ URL = DatabaseConfig().get_URL()
 engine = create_engine(URL, echo=True)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-#
 def get_db():
     """
     Each instance of the SessionLocal class will be a database session. The class itself is not a database session yet.
