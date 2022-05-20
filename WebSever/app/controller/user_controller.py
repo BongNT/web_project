@@ -13,12 +13,16 @@ router = APIRouter(
 
 
 @router.post('/login')
-def login():
+def login(request: request_data.LoginData, status_code=status.HTTP_202_ACCEPTED):
+    # find user in database
+    # check password
+    # return type user, (session) 
     return {}
 
 
 @router.post('/logout')
 def logout():
+    # delete session
     return {}
 
 
@@ -55,8 +59,16 @@ def get_managers(db: Session = Depends(database.get_db)):
     else:
         return users
 
+@router.get('/users/{id}', status_code=status.HTTP_200_OK):
+def get_user(id:int , db: Session = Depends(database.get_db)):
+    user = db.query(models.User).filter(models.User.id_user == id).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="System doesn't have any managers")
+    else:
+        return user
 
-@router.delete('/user/{id}', status_code=status.HTTP_200_OK)
+
+@router.delete('/users/{id}', status_code=status.HTTP_200_OK)
 def delete_user(id: int, db: Session = Depends(database.get_db)):
     """
     Param id: user id.
@@ -76,5 +88,8 @@ def delete_user(id: int, db: Session = Depends(database.get_db)):
             db.commit()
             return {"detail": "delete successfully"}
 
+@router.put()
+def update_user(id: int,  db: Session = Depends(database.get_db)):
+    pass
 
 
