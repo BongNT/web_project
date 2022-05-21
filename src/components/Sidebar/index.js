@@ -1,60 +1,80 @@
 import React from "react";
 import { LinkList } from "../List";
+import { styled } from "@mui/material/styles";
+import MuiAccordion from "@mui/material/Accordion";
+import MuiAccordionSummary from "@mui/material/AccordionSummary";
+import MuiAccordionDetails from "@mui/material/AccordionDetails";
+import Typography from "@mui/material/Typography";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import "./index.css";
+
+const Accordion = styled((props) => (
+	<MuiAccordion disableGutters elevation={0} square {...props} />
+))(({ theme }) => ({
+	borderBottom: `1px solid ${theme.palette.divider}`,
+	"&:before": {
+		display: "none",
+	},
+}));
+
+const AccordionSummary = styled((props) => <MuiAccordionSummary {...props} />)(
+	({ theme }) => ({
+		backgroundColor:
+			theme.palette.mode === "dark"
+				? "rgba(255, 255, 255, .05)"
+				: "rgba(0, 0, 0, .03)",
+	})
+);
+
+const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
+	padding: theme.spacing(2),
+	borderTop: "1px solid rgba(0, 0, 0, .125)",
+}));
 
 export default function Sidebar() {
 	const objs = [
 		{
 			key: 1,
 			title: "Cơ sở sản xuất",
-			items: [
-				{ id: 1, name: "Cấp giấy", link: "/home" },
-				{ id: 2, name: "Thanh tra", link: "/certificate" },
-			],
+			items: [{ id: 1, name: "Giấy chứng nhận", link: "/home" }],
 		},
 		{
 			key: 2,
+			title: "Thanh tra, kiểm tra",
+			items: [
+				{ id: 1, name: "Kế hoạch", link: "/home" },
+				{ id: 2, name: "Mẫu kiểm tra", link: "/certificate" },
+				{ id: 3, name: "Kết quả thanh tra", link: "/certificate" },
+			],
+		},
+		{
+			key: 3,
 			title: "Phân quyền",
 			items: [
-				{ id: 1, name: "Cơ cấu", link: "/home" },
-				{ id: 2, name: "Tổ chức cán bộ", link: "/certificate" },
+				{ id: 1, name: "Cán bộ", link: "/home" },
+				{ id: 2, name: "Địa bàn", link: "/certificate" },
 			],
 		},
 	];
 
+	const [expanded, setExpanded] = React.useState();
+
+	const handleChange = (panel) => (event, newExpanded) => {
+		setExpanded(newExpanded ? panel : false);
+	};
+
 	const list = objs.map((obj) => (
-		<li
-			key={obj.key}
-			className="accordion accordion-flush list-group-item accordion-item p-0"
+		<Accordion
+			expanded={expanded === obj.key}
+			onChange={handleChange(obj.key)}
 		>
-			<h2 className="accordion-header">
-				<button
-					className="accordion-button collapsed"
-					id={"flush-heading" + obj.key}
-					type="button"
-					data-bs-toggle="collapse"
-					data-bs-target={"#flush-collapse" + obj.key}
-					aria-expanded="false"
-					aria-controls={"flush-collapse" + obj.key}
-				>
-					{obj.title}
-				</button>
-			</h2>
-			<div
-				id={"flush-collapse" + obj.key}
-				className="accordion-collapse collapse"
-				aria-labelledby={"flush-heading" + obj.key}
-			>
-				<div className="accordion-body">
-					<LinkList
-						list={obj.items}
-						classUl="list-group"
-						classLi="list-group-item list-group-item-action border-0"
-						classIcon="fa-solid fa-caret-right pe-2"
-					/>
-				</div>
-			</div>
-		</li>
+			<AccordionSummary expandIcon={<ExpandMoreIcon />}>
+				<Typography>{obj.title}</Typography>
+			</AccordionSummary>
+			<AccordionDetails>
+				<LinkList list={obj.items} />
+			</AccordionDetails>
+		</Accordion>
 	));
-	return <ul className="list-group list-group-flush">{list}</ul>;
+	return <div>{list}</div>;
 }

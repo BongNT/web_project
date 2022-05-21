@@ -1,24 +1,11 @@
-#side-bar .accordion-button:focus,
-#side-bar .accordion-button:not(.collapsed) {
-	box-shadow: none;
+#side-bar {
+	width: 20%;
 }
 
-#side-bar .accordion-body {
+#side-bar .css-ta84vm-MuiAccordionDetails-root {
 	padding: 0;
 }
 
-#side-bar .accordion-body a {
-	display: block;
-	padding: 0.75rem 2rem;
-	color: rgba(0, 0, 0, 0.8);
-	text-decoration: none;
-}
-
-#side-bar .list-group-flush > .list-group-item:last-child {
-	border-bottom-width: 1px;
-}
-
-#side-bar .list-group-item {
-	padding: 0;
-	cursor: pointer;
+#side-bar .css-cveggr-MuiListItemIcon-root {
+	min-width: unset;
 }

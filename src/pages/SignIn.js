@@ -17,13 +17,13 @@ export default function SignIn() {
 						<form>
 							<div className="form-floating mb-4">
 								<input
-									type="email"
+									type="text"
 									className="form-control"
 									id="email-input"
 									placeholder="name@example.com"
 								/>
 								<label htmlFor="email-input">
-									Địa chỉ email
+									Tên người dùng
 								</label>
 								<div className="form-notch">
 									<div
@@ -32,7 +32,7 @@ export default function SignIn() {
 									></div>
 									<div
 										className="form-notch-middle"
-										style={{ width: "100px" }}
+										style={{ width: "120px" }}
 									></div>
 									<div className="form-notch-trailing"></div>
 								</div>
