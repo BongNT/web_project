@@ -3,7 +3,10 @@ from typing import Optional
 from app.util.special_value import UserType
 import re
 
-
+"""
+Pydantic uses the term "model" to refer to something different, the data validation, conversion, 
+and documentation classes and instances.
+"""
 
 class User(BaseModel):
     name: str

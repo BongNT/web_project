@@ -28,17 +28,23 @@ def logout():
 
 @router.post('/users/create', status_code=status.HTTP_201_CREATED)
 def create_user(request: request_data.User, db: Session = Depends(database.get_db)):
-    try:
-        new_user = models.User(name=request.name, password=hashing.hash_password(request.password)
-                               , email=request.email, type=request.type)
-        db.add(new_user)
-        db.commit()
-        db.refresh(new_user)
-        return {"detail": "Create user successfully"}
-    except:
-        print(f"ERROR : Duplicate name_user:'{request.name}'.")
+    users = db.query(models.User).filter(models.User.email == request.email).first()
+    if users is None:
+        try:
+            new_user = models.User(name=request.name, password=hashing.hash_password(request.password)
+                                   , email=request.email, type=request.type)
+            db.add(new_user)
+            db.commit()
+            db.refresh(new_user)
+            return {"detail": "Create user successfully"}
+        except:
+            print(f"ERROR : Duplicate name_user:'{request.name}'.")
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT,
+                                detail=f"ERROR : Username:'{request.name} already registered'.")
+    else:
+        print(f"ERROR : Duplicate email:'{request.email}'.")
         raise HTTPException(status_code=status.HTTP_409_CONFLICT,
-                            detail=f"ERROR : Username:'{request.name} already registered'.")
+                            detail=f"ERROR : Email:'{request.email} already registered'.")
 
 
 @router.get('/users', status_code=status.HTTP_200_OK, response_model=List[response_data.User])
@@ -62,7 +68,7 @@ def get_managers(db: Session = Depends(database.get_db)):
         return users
 
 
-@router.get('/users/{id}', status_code=status.HTTP_200_OK)
+@router.get('/users/{id}', status_code=status.HTTP_200_OK, response_model=response_data.User)
 def get_user(id:int , db: Session = Depends(database.get_db)):
     user = db.query(models.User).filter(models.User.id == id).first()
     if not user:
