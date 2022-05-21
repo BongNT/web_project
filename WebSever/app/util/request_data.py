@@ -32,15 +32,16 @@ class User(BaseModel):
         else:
             raise ValueError("Invalid password")
 
-            
-
     @validator('type')
     def valid_type(cls, type):
         """
-        type must be  one of UserType value
+        type value must be one of UserType value and different from DEFAULT_ADMIN value
         """
         if type not in UserType.get_list_value():
-            raise ValueError("Invalid type")
+            if type == UserType.DEFAULT_ADMIN.value:
+                raise ValueError("Invalid type")
+            else:
+                raise ValueError("Invalid type")
         return type
 
     @validator('email')
@@ -55,7 +56,7 @@ class User(BaseModel):
             return email
         regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
         if not re.fullmatch(regex, email):
-            raise ValueError("Invalid type")
+            raise ValueError("Invalid email")
         return email
 
 
@@ -83,3 +84,8 @@ class LoginData(BaseModel):
             return password
         else:
             raise ValueError("Invalid password")
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
