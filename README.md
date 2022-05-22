@@ -6,7 +6,7 @@
 
 To check python version with command:
 
-> python --version
+    python --version
 
 ## - Create python environment with command
 

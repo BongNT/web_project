@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, status, HTTPException
 from app.util import request_data, response_data
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from app.model import database
 from app.model import models,hashing
 from app.util.special_value import UserType
@@ -25,6 +25,14 @@ def logout():
     # delete session
     return {}
 
+
+@router.post('/test', response_model=response_data.UserDistrict)
+def logout(db: Session = Depends(database.get_db)):
+    # users = db.query(models.User).join(models.Manager, models.User.id==models.Manager.user_id).all()
+    # users = db.query(models.User).join(models.User.districts).all()
+    users = db.query(models.User).options(joinedload(models.User.districts)).first()
+
+    return users
 
 @router.post('/users/create', status_code=status.HTTP_201_CREATED)
 def create_user(request: request_data.User, db: Session = Depends(database.get_db)):
