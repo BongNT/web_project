@@ -92,3 +92,17 @@ class LoginData(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
+
+class DistrictRegister(BaseModel):
+    manager_id: int
+    district_id: str
+
+    @validator("manager_id")
+    def unsign_id(cls, id):
+        if id > 0:
+            return id
+        else:
+            raise ValueError("Invalid id. Id must be greater than 0")
+
+class DistrictUpdate(DistrictRegister):
+    old_district_id: str

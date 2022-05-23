@@ -1,3 +1,4 @@
+from unicodedata import name
 from sqlalchemy.orm import declarative_base
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
@@ -40,6 +41,15 @@ class Province(Base):
     __tablename__ = "thanhpho"
     id = Column("id_thanhpho", String, primary_key=True)
     name = Column("tenthanhpho", String)
+
+class Facility(Base):
+    __tablename__ = "coso"
+    id = Column("id_coso", Integer, primary_key=True)
+    name = Column
+    type
+    district_id
+    phone_number
+    certificate_id
 
 
 

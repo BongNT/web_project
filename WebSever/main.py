@@ -1,9 +1,12 @@
 import uvicorn
 from fastapi import FastAPI
+from app.controller import manager_controller
 from app.controller import user_controller
 from app.config import AppConfig
+
 app = FastAPI()
 app.include_router(user_controller.router)
+app.include_router(manager_controller.router)
 
 
 @app.get("/")
