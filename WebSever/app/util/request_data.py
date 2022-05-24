@@ -52,12 +52,12 @@ class User(BaseModel):
         """
         email contains characters from small 'a' to small 'z', numbers from 0 to 9 and may be 1 char '.' before '@'.
         match '@' followed by any alphanumeric character, repeating one or more than one time.
-        match last dot followed by any alphanumeric combination of characters of length 2 or 3.
+        match last dot followed by any alphanumeric combination of characters of length from 2 to 5.
         example: abc.xyz@aaasadsd.com
         """
         if email is None:
             return email
-        regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
+        regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,5}[.]\w{0,5}$'
         if not re.fullmatch(regex, email):
             raise ValueError("Invalid email")
         return email

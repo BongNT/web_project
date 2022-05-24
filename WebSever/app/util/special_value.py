@@ -10,3 +10,22 @@ class UserType(Enum):
     def get_list_value(cls):
         return [e.value for e in UserType]
 
+
+class FacilityType(Enum):
+    FOOD_PRODUCTION = 1
+    FOOD_BUSINESS = 2
+    BOTH = 3
+
+    @classmethod
+    def get_list_value(cls):
+        return [e.value for e in FacilityType]
+
+
+class CertificateStatus(Enum):
+    VALID = 0
+    EXPIRED = 1
+    REVOKED = 2
+
+    @classmethod
+    def get_list_value(cls):
+        return [e.value for e in CertificateStatus]

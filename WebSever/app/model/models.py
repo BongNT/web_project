@@ -1,6 +1,6 @@
 from unicodedata import name
 from sqlalchemy.orm import declarative_base
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey,Date
 from sqlalchemy.orm import relationship
 
 """
@@ -14,13 +14,6 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 Base = declarative_base()
 
 
-class District(Base):
-    __tablename__ = "huyen"
-    id = Column("id_huyen", primary_key=True)
-    name = Column("tenhuyen", String)
-    province_id = Column("id_thanhpho", String)
-    managers = relationship("User", secondary='quanly', back_populates='districts')
-
 
 class User(Base):
     __tablename__ = "user"
@@ -29,6 +22,7 @@ class User(Base):
     password = Column("password", String)
     email = Column("email", String)
     type = Column("type", Integer)
+    # set relationship
     districts = relationship("District", secondary='quanly', back_populates='managers')
 
 class Manager(Base):
@@ -36,20 +30,72 @@ class Manager(Base):
     user_id = Column("id_user", Integer, ForeignKey("user.id_user"), primary_key=True)
     district_id = Column("id_huyen", String, ForeignKey("huyen.id_huyen"), primary_key=True)
 
+class District(Base):
+    __tablename__ = "huyen"
+    id = Column("id_huyen", primary_key=True)
+    name = Column("tenhuyen", String)
+    province_id = Column("id_thanhpho", String, ForeignKey("thanhpho.id_thanhpho") )
+    # set relationship
+    managers = relationship("User", secondary='quanly', back_populates='districts')
+    province = relationship("Province", back_populates="districts")
+    facilities = relationship("Facility", back_populates="in_district")
 
 class Province(Base):
     __tablename__ = "thanhpho"
     id = Column("id_thanhpho", String, primary_key=True)
     name = Column("tenthanhpho", String)
+    # set relationship
+    districts = relationship("District", back_populates="province")
 
 class Facility(Base):
     __tablename__ = "coso"
     id = Column("id_coso", Integer, primary_key=True)
-    name = Column
-    type
-    district_id
-    phone_number
-    certificate_id
+    name = Column("ten", String)
+    type = Column("loaihinh", Integer)
+    district_id = Column("id_huyen", String, ForeignKey("huyen.id_huyen"))
+    phone_number = Column("sdt", Integer)
+    certificate_id = Column("id_giay", Integer, ForeignKey("giaychungnhan.id_giay"))
+    # set relationship
+    in_district = relationship("District", back_populates="facilities")
+    certificate = relationship("Certificate", back_populates="facility_certificate")
+    inspections = relationship("Inspection", back_populates="facility_inspection")
+
+class Inspection(Base):
+    __tablename__ = "thanhtra"
+    id = Column("id_thanhtra", Integer, primary_key=True)
+    facility_id = Column("id_coso", Integer, ForeignKey("coso.id_coso"))
+    result = Column("kq_kiemtra", String)
+    start_date = Column("ngaybatdau", Date)
+    end_date = Column("ngayketthuc", Date)
+    # set relationship
+    samples = relationship("Sample", back_populates="in_inspection")
+    facility_inspection = relationship("Facility", back_populates="inspections")
+
+class Certificate(Base):
+    __tablename__ = "giaychungnhan"
+    id = Column("id_giay", Integer, primary_key=True)
+    issue_date = Column("ngaycap", Date)
+    expiry_date = Column("ngayhethan", Date)
+    status = Column("status", Integer)
+    # set relationship
+    facility_certificate = relationship("Facility", back_populates="certificate", uselist=False)
+
+
+
+class Sample(Base):
+    __tablename__ = "mau"
+    id = Column("id_mau", Integer, primary_key=True)
+    inspection_id = Column("id_thanhtra",Integer, ForeignKey("thanhtra.id_thanhtra"))
+    inspection_agency = Column("donvigiamdinh", Integer)
+    status = Column("status", Integer)
+    result_date = Column("ngaynhanKQ", Date)
+    result = Column("ketqua", String)
+    # set relationship
+    in_inspection = relationship("Inspection", back_populates="samples")
+
+
+
+
 
 
 
