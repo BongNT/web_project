@@ -8,6 +8,7 @@ import Divider from "@mui/material/Divider";
 import Button from "@mui/material/Button";
 import Logout from "@mui/icons-material/Logout";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import { Link } from "react-router-dom";
 
 export default function AccountMenu() {
 	const [anchorEl, setAnchorEl] = React.useState(null);
@@ -82,12 +83,14 @@ export default function AccountMenu() {
 
 				<Divider />
 
-				<MenuItem>
-					<ListItemIcon>
-						<Logout fontSize="small" />
-					</ListItemIcon>
-					Đăng xuất
-				</MenuItem>
+				<Link to="/sign-in">
+					<MenuItem>
+						<ListItemIcon>
+							<Logout fontSize="small" />
+						</ListItemIcon>
+						Đăng xuất
+					</MenuItem>
+				</Link>
 			</Menu>
 		</React.Fragment>
 	);

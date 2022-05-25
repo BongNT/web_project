@@ -32,6 +32,7 @@ function App() {
 						<Route path="/home" element={<Home />} />
 						<Route path="/certificate" element={<Certificate />} />
 					</Routes>
+					<footer className="border-top">Chả biết viết gì</footer>
 				</div>
 			</div>
 		</div>

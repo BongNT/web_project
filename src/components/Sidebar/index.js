@@ -34,12 +34,12 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 export default function Sidebar() {
 	const objs = [
 		{
-			key: 1,
+			id: 1,
 			title: "Cơ sở sản xuất",
 			items: [{ id: 1, name: "Giấy chứng nhận", link: "/home" }],
 		},
 		{
-			key: 2,
+			id: 2,
 			title: "Thanh tra, kiểm tra",
 			items: [
 				{ id: 1, name: "Kế hoạch", link: "/home" },
@@ -48,7 +48,7 @@ export default function Sidebar() {
 			],
 		},
 		{
-			key: 3,
+			id: 3,
 			title: "Phân quyền",
 			items: [
 				{ id: 1, name: "Cán bộ", link: "/home" },
@@ -65,8 +65,8 @@ export default function Sidebar() {
 
 	const list = objs.map((obj) => (
 		<Accordion
-			expanded={expanded === obj.key}
-			onChange={handleChange(obj.key)}
+			expanded={expanded === obj.id}
+			onChange={handleChange(obj.id)}
 		>
 			<AccordionSummary expandIcon={<ExpandMoreIcon />}>
 				<Typography>{obj.title}</Typography>
