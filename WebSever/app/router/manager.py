@@ -8,20 +8,21 @@ from typing import List
 
 router = APIRouter(
     tags=["managers"]
+    prefix="/managers"
 )
 
-@router.get('/managers', status_code=status.HTTP_200_OK, response_model=List[response_data.UserDistrict])
+@router.get('/', status_code=status.HTTP_200_OK, response_model=List[response_data.UserDistrict])
 def get_all_managers(db: Session = Depends(database.get_db)):
     return manager.get_all(db)
 
-@router.post("/managers/{id}/register_district")
+@router.post("/{id}/register_district")
 def register_district(request:request_data.DistrictRegister, db: Session = Depends(database.get_db)):
     # find manager by id
     # find district by id
     # create data in database "quanly"
     return manager.register_district(request, db)
 
-@router.post("/managers/{id}/delete_district")
+@router.post("/{id}/delete_district")
 def delete_district(request:request_data.DistrictRegister, db: Session = Depends(database.get_db)):
     # find manager by id
     # find district by id
@@ -29,7 +30,7 @@ def delete_district(request:request_data.DistrictRegister, db: Session = Depends
     return manager.delete_district(request, db)
 
 
-@router.post("/managers/{id}/update_district")
+@router.post("/{id}/update_district")
 def update_district(request:request_data.DistrictUpdate, db: Session = Depends(database.get_db)):
     # find manager by id
     # find district by id
