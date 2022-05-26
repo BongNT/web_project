@@ -7,7 +7,7 @@ from app.util.special_value import UserType
 def get_all(db: Session):
     pass
 
-def register(request, db: Session):
+def create(request, db: Session):
     pass
 
 def delete_by_id(id: int,db: Session):

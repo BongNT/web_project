@@ -7,7 +7,7 @@ from typing import List
 
 
 router = APIRouter(
-    tags=["managers"]
+    tags=["managers"],
     prefix="/managers"
 )
 
@@ -15,14 +15,14 @@ router = APIRouter(
 def get_all_managers(db: Session = Depends(database.get_db)):
     return manager.get_all(db)
 
-@router.post("/{id}/register_district")
+@router.post("/register_district")
 def register_district(request:request_data.DistrictRegister, db: Session = Depends(database.get_db)):
     # find manager by id
     # find district by id
     # create data in database "quanly"
     return manager.register_district(request, db)
 
-@router.post("/{id}/delete_district")
+@router.post("/delete_district")
 def delete_district(request:request_data.DistrictRegister, db: Session = Depends(database.get_db)):
     # find manager by id
     # find district by id
@@ -30,7 +30,7 @@ def delete_district(request:request_data.DistrictRegister, db: Session = Depends
     return manager.delete_district(request, db)
 
 
-@router.post("/{id}/update_district")
+@router.post("/update_district")
 def update_district(request:request_data.DistrictUpdate, db: Session = Depends(database.get_db)):
     # find manager by id
     # find district by id

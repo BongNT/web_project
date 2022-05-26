@@ -7,7 +7,7 @@ from typing import List
 
 
 router = APIRouter(
-    tags=["inspections"]
+    tags=["inspections"],
     prefix="/inspections"
 )
 

@@ -7,7 +7,7 @@ from typing import List
 
 
 router = APIRouter(
-    tags=["facilities"]
+    tags=["facilities"],
     prefix="/facilities"
 )
 
@@ -16,11 +16,11 @@ def get_all_facilities(db: Session = Depends(database.get_db)):
     return facility.get_all(db)
 
 @router.post("/{id}/register")
-def register_facilities(id: int, request:request_data., db: Session = Depends(database.get_db)):
+def register_facilities( request:request_data., db: Session = Depends(database.get_db)):
     # find manager by id
     # find district by id
     # create data in database "quanly"
-    return facility.register(id, request, db)
+    return facility.create(request, db)
 
 @router.post("/{id}/delete")
 def delete_facility_by_id(id: int, request:request_data., db: Session = Depends(database.get_db)):

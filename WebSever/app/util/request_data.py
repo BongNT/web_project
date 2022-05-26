@@ -8,7 +8,7 @@ Pydantic uses the term "model" to refer to something different, the data validat
 and documentation classes and instances.
 """
 
-class User(BaseModel):
+class UserCreate(BaseModel):
     name: str
     password: str
     email: Optional[str] = None
@@ -57,7 +57,7 @@ class User(BaseModel):
         """
         if email is None:
             return email
-        regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,5}[.]\w{0,5}$'
+        regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]?\w{0,5}[.]\w{2,5}$'
         if not re.fullmatch(regex, email):
             raise ValueError("Invalid email")
         return email
@@ -106,3 +106,64 @@ class DistrictRegister(BaseModel):
 
 class DistrictUpdate(DistrictRegister):
     old_district_id: str
+
+
+class UserUpdate(BaseModel):
+    id: int
+    password: Optional[str] = None
+    email: Optional[str] = None
+    type: Optional[int] = None
+
+    @validator('id')
+    def unsign_id(cls, i):
+        if i < 0:
+            raise ValueError("Invalid id")
+        else:
+            return i
+
+
+    @validator('password')
+    def valid_password(cls, password):
+        """
+        At least 8 characters
+        Must be restricted to, though does not specifically require any of:
+            uppercase letters: A-Z
+            lowercase letters: a-z
+            numbers: 0-9
+            any of the special characters: @#$%^&+=
+        """
+        if password is None:
+            return password
+        if re.fullmatch(r'[A-Za-z0-9@#$%^&.+=]{8,}', password):
+            return password
+        else:
+            raise ValueError("Invalid password")
+
+    @validator('type')
+    def valid_type(cls, type):
+        """
+        type value must be one of UserType value and different from DEFAULT_ADMIN value
+        """
+        if type is None:
+            return type
+        if type not in UserType.get_list_value():
+            if type == UserType.DEFAULT_ADMIN.value:
+                raise ValueError("Invalid type")
+            else:
+                raise ValueError("Invalid type")
+        return type
+
+    @validator('email')
+    def valid_email(cls, email):
+        """
+        email contains characters from small 'a' to small 'z', numbers from 0 to 9 and may be 1 char '.' before '@'.
+        match '@' followed by any alphanumeric character, repeating one or more than one time.
+        match last dot followed by any alphanumeric combination of characters of length from 2 to 5.
+        example: abc.xyz@aaasadsd.com
+        """
+        if email is None:
+            return email
+        regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]?\w{0,5}[.]\w{2,5}$'
+        if not re.fullmatch(regex, email):
+            raise ValueError("Invalid email")
+        return email
