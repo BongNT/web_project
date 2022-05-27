@@ -5,9 +5,6 @@ from app.model import models,hashing
 from app.util.special_value import UserType
 
 
-
-
-
 def test(db: Session):
     """
     Return: list contains all users
@@ -112,7 +109,6 @@ def update_by_id(request: request_data.UserUpdate,  db: Session):
                 raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"This email has been used")
         msg += "successfully."
         return {"detail": msg}
-
 
 
 def email_in_db(email, db: Session) -> bool:

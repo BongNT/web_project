@@ -10,8 +10,8 @@ def get_all(db: Session):
 def register(request, db: Session):
     pass
 
-def delete_by_id(id: int,db Session):
+def delete_by_id(id: int,db: Session):
     pass
 
-def update_by_id(id :int,request: ,db: Session):
+def update_by_id(id :int,request,db: Session):
     pass

@@ -1,20 +1,23 @@
 from fastapi import APIRouter, status, HTTPException
 from app.util import request_data
 from sqlalchemy.orm import Session, joinedload
-from app.model import models,hashing
+from app.model import models, hashing
 from app.util.special_value import UserType
+
 
 def get_all(db: Session):
     """
         Return: list contains all users
         """
-    facilities = db.query(models.Facility).options(joinedload(models.Facility.in_district).joinedload(models.District.province)).all()
+    facilities = db.query(models.Facility).options(
+        joinedload(models.Facility.in_district).joinedload(models.District.province)).all()
     if not facilities:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No facility in data")
     return facilities
 
+
 def create(request: request_data.FacilityCreate, db: Session):
-    # check valid dítrict id
+    # check valid district id
     district = db.query(models.District).filter(models.District.id == request.district_id).first()
     if district:
         # create facility
@@ -31,9 +34,7 @@ def create(request: request_data.FacilityCreate, db: Session):
                             detail=f"ERROR : Invalid district id")
 
 
-
-
-def delete_by_id(id: int,db: Session):
+def delete(id: int, db: Session):
     """
     Param id: Facility id.
     Return: action status
@@ -52,7 +53,8 @@ def delete_by_id(id: int,db: Session):
     else:
         raise HTTPException(detail="Invalid id")
 
-def update(request: request_data.FacilityUpdate ,db: Session):
+
+def update(request: request_data.FacilityUpdate, db: Session):
     # chech facility id is in database
     facility = db.query(models.Facility).filter(models.Facility.id == request.id).first()
     if facility is None:
@@ -98,4 +100,3 @@ def certificate_in_db(id: int, db) -> bool:
         return True
     else:
         return False
-

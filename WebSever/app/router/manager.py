@@ -5,37 +5,27 @@ from app.model import database
 from app.controller import manager
 from typing import List
 
-
 router = APIRouter(
     tags=["managers"],
     prefix="/managers"
 )
 
+
 @router.get('/', status_code=status.HTTP_200_OK, response_model=List[response_data.UserDistrict])
 def get_all_managers(db: Session = Depends(database.get_db)):
     return manager.get_all(db)
 
+
 @router.post("/register_district")
-def register_district(request:request_data.DistrictRegister, db: Session = Depends(database.get_db)):
-    # find manager by id
-    # find district by id
-    # create data in database "quanly"
+def register_district(request: request_data.DistrictRegister, db: Session = Depends(database.get_db)):
     return manager.register_district(request, db)
 
-@router.post("/delete_district")
-def delete_district(request:request_data.DistrictRegister, db: Session = Depends(database.get_db)):
-    # find manager by id
-    # find district by id
-    # delete data in database "quanly"
+
+@router.delete("/delete_district")
+def delete_district(request: request_data.DistrictRegister, db: Session = Depends(database.get_db)):
     return manager.delete_district(request, db)
 
 
-@router.post("/update_district")
-def update_district(request:request_data.DistrictUpdate, db: Session = Depends(database.get_db)):
-    # find manager by id
-    # find district by id
-    # delete old district in "quanly"
-    # create data in database "quanly"
+@router.put("/update_district")
+def update_district(request: request_data.DistrictUpdate, db: Session = Depends(database.get_db)):
     return manager.update_district(request, db)
-
-

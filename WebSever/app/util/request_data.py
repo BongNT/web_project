@@ -100,6 +100,7 @@ class DistrictRegister(BaseModel):
         else:
             raise ValueError("Invalid id. Id must be greater than 0")
 
+
 class DistrictUpdate(DistrictRegister):
     old_district_id: str
 

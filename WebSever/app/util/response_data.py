@@ -35,7 +35,7 @@ class Facility(BaseModel):
     name: str
     type: int
     # district_id: str
-    phone_number: int
+    phone_number: str
     # certificate_id: int
     in_district: District
     class Config():

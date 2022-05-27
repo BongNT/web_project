@@ -9,6 +9,7 @@ app.include_router(user.router)
 app.include_router(manager.router)
 app.include_router(facility.router)
 
+
 @app.get("/")
 async def root():
     return {"docs": f"{AppConfig.host}:{AppConfig.host}/docs"}
