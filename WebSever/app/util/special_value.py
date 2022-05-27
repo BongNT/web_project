@@ -14,7 +14,7 @@ class UserType(Enum):
 class FacilityType(Enum):
     FOOD_PRODUCTION = 1
     FOOD_BUSINESS = 2
-    BOTH = 3
+    FOOD_PRODUCTION_AND_BUSINESS = 3
 
     @classmethod
     def get_list_value(cls):

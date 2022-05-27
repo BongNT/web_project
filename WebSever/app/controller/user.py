@@ -55,7 +55,7 @@ def create(request: request_data.UserCreate, db: Session):
         except:
             print(f"ERROR : Duplicate name_user:'{request.name}'.")
             raise HTTPException(status_code=status.HTTP_409_CONFLICT,
-                                detail=f"ERROR : Username:'{request.name} already registered'.")
+                                detail=f"ERROR : Username:'{request.name}' already registered.")
     else:
         print(f"ERROR : Duplicate email:'{request.email}'.")
         raise HTTPException(status_code=status.HTTP_409_CONFLICT,
@@ -93,21 +93,19 @@ def update_by_id(request: request_data.UserUpdate,  db: Session):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f"Can't delete this user")
     else:
         # update user
+        user_query = db.query(models.User).filter(models.User.id == request.id)
         msg = "update "
-        if request.password:
-            db.query(models.User).filter(models.User.id == request.id) \
-                .update({models.User.password: hashing.hash_password(request.password)}, synchronize_session="fetch")
+        if request.password is not None:
+            user_query.update({models.User.password: hashing.hash_password(request.password)}, synchronize_session="fetch")
             db.commit()
             msg += "password "
-        if request.type:
-            db.query(models.User).filter(models.User.id == request.id) \
-                .update({models.User.type: request.type}, synchronize_session="fetch")
+        if request.type is not None:
+            user_query.update({models.User.type: request.type}, synchronize_session="fetch")
             db.commit()
             msg += "type "
-        if request.email:
+        if request.email is not None:
             if not email_in_db(request.email,db):
-                db.query(models.User).filter(models.User.id == request.id)\
-                    .update({models.User.email: request.email}, synchronize_session="fetch")
+                user_query.update({models.User.email: request.email}, synchronize_session="fetch")
                 db.commit()
                 msg += "email "
             else:

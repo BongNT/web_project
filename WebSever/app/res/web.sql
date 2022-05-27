@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th5 22, 2022 lúc 07:49 PM
+-- Thời gian đã tạo: Th5 27, 2022 lúc 09:41 AM
 -- Phiên bản máy phục vụ: 10.4.24-MariaDB
 -- Phiên bản PHP: 7.4.29
 
@@ -32,11 +32,17 @@ USE `web`;
 CREATE TABLE `coso` (
   `id_coso` int(11) NOT NULL,
   `ten` varchar(50) NOT NULL,
-  `loaihinh` varchar(45) NOT NULL,
+  `loaihinh` int(1) NOT NULL,
   `id_huyen` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `sdt` varchar(10) NOT NULL,
-  `id_giay` int(11) NOT NULL
+  `sdt` varchar(15) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Đang đổ dữ liệu cho bảng `coso`
+--
+
+INSERT INTO `coso` (`id_coso`, `ten`, `loaihinh`, `id_huyen`, `sdt`) VALUES
+(8, 'test', 1, '002HH', '0132');
 
 -- --------------------------------------------------------
 
@@ -48,7 +54,8 @@ CREATE TABLE `giaychungnhan` (
   `id_giay` int(11) NOT NULL,
   `ngaycap` date NOT NULL,
   `ngayhethan` date NOT NULL,
-  `status` varchar(20) NOT NULL
+  `status` int(1) NOT NULL,
+  `id_coso` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -790,7 +797,7 @@ CREATE TABLE `mau` (
   `id_mau` int(11) NOT NULL,
   `id_thanhtra` int(11) NOT NULL,
   `donvigiamdinh` varchar(50) NOT NULL,
-  `status` varchar(50) NOT NULL,
+  `status` int(1) NOT NULL,
   `ngaynhanKQ` date NOT NULL,
   `ketqua` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -805,14 +812,6 @@ CREATE TABLE `quanly` (
   `id_user` int(11) NOT NULL,
   `id_huyen` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Đang đổ dữ liệu cho bảng `quanly`
---
-
-INSERT INTO `quanly` (`id_user`, `id_huyen`) VALUES
-(52, '001HH'),
-(52, '002HH');
 
 -- --------------------------------------------------------
 
@@ -927,7 +926,9 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id_user`, `username`, `password`, `email`, `type`) VALUES
-(52, 'admin', '$2b$12$1GnAsGCKg5a/E5PA4qti1.J', 'b123@abc.xyz', 1);
+(53, 'ntb', '$2b$12$ryzTuIE/Q7FtX6A9ZvdcaOD', 'string@da.vc', 0),
+(55, 'ntb1', '$2b$12$q1qWfHKxEijrJ5.fe9GWKeO', '19021226@vnu.edu.vn', 1),
+(56, 'string1', '$2b$12$xOJpkxtMjHWtSn3L0ZioEu3', 'string@asd.xy', 2);
 
 --
 -- Chỉ mục cho các bảng đã đổ
@@ -938,14 +939,14 @@ INSERT INTO `user` (`id_user`, `username`, `password`, `email`, `type`) VALUES
 --
 ALTER TABLE `coso`
   ADD PRIMARY KEY (`id_coso`),
-  ADD UNIQUE KEY `id_giay` (`id_giay`) USING BTREE,
-  ADD UNIQUE KEY `id_huyen` (`id_huyen`);
+  ADD KEY `id_huyen` (`id_huyen`) USING BTREE;
 
 --
 -- Chỉ mục cho bảng `giaychungnhan`
 --
 ALTER TABLE `giaychungnhan`
-  ADD PRIMARY KEY (`id_giay`);
+  ADD PRIMARY KEY (`id_giay`),
+  ADD KEY `id_coso` (`id_coso`);
 
 --
 -- Chỉ mục cho bảng `huyen`
@@ -978,7 +979,7 @@ ALTER TABLE `thanhpho`
 -- Chỉ mục cho bảng `thanhtra`
 --
 ALTER TABLE `thanhtra`
-  ADD PRIMARY KEY (`id_thanhtra`,`id_coso`),
+  ADD PRIMARY KEY (`id_thanhtra`) USING BTREE,
   ADD KEY `fk1` (`id_coso`);
 
 --
@@ -994,6 +995,18 @@ ALTER TABLE `user`
 --
 
 --
+-- AUTO_INCREMENT cho bảng `coso`
+--
+ALTER TABLE `coso`
+  MODIFY `id_coso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT cho bảng `giaychungnhan`
+--
+ALTER TABLE `giaychungnhan`
+  MODIFY `id_giay` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT cho bảng `mau`
 --
 ALTER TABLE `mau`
@@ -1003,7 +1016,7 @@ ALTER TABLE `mau`
 -- AUTO_INCREMENT cho bảng `user`
 --
 ALTER TABLE `user`
-  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
 
 --
 -- Các ràng buộc cho các bảng đã đổ
@@ -1013,8 +1026,13 @@ ALTER TABLE `user`
 -- Các ràng buộc cho bảng `coso`
 --
 ALTER TABLE `coso`
-  ADD CONSTRAINT `coso_ibfk_1` FOREIGN KEY (`id_giay`) REFERENCES `giaychungnhan` (`id_giay`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `coso_ibfk_2` FOREIGN KEY (`id_huyen`) REFERENCES `huyen` (`id_huyen`);
+
+--
+-- Các ràng buộc cho bảng `giaychungnhan`
+--
+ALTER TABLE `giaychungnhan`
+  ADD CONSTRAINT `f1` FOREIGN KEY (`id_coso`) REFERENCES `coso` (`id_coso`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Các ràng buộc cho bảng `huyen`

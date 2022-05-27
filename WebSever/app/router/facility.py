@@ -11,31 +11,23 @@ router = APIRouter(
     prefix="/facilities"
 )
 
-@router.get('/', status_code=status.HTTP_200_OK, response_model=List[response_data.UserDistrict])
+
+@router.get('/', status_code=status.HTTP_200_OK, response_model=List[response_data.Facility])
 def get_all_facilities(db: Session = Depends(database.get_db)):
     return facility.get_all(db)
 
-@router.post("/{id}/register")
-def register_facilities( request:request_data., db: Session = Depends(database.get_db)):
-    # find manager by id
-    # find district by id
-    # create data in database "quanly"
+
+@router.post("/register")
+def register_facilities(request: request_data.FacilityCreate, db: Session = Depends(database.get_db)):
     return facility.create(request, db)
 
 @router.post("/{id}/delete")
-def delete_facility_by_id(id: int, request:request_data., db: Session = Depends(database.get_db)):
-    # find manager by id
-    # find district by id
-    # delete data in database "quanly"
-    return facility.delete(id, request, db)
+def delete_facility_by_id(id: int, db: Session = Depends(database.get_db)):
+    return facility.delete(id, db)
 
 
-@router.post("/{id}/update")
-def update_facility_by_id(id: int, request:request_data., db: Session = Depends(database.get_db)):
-    # find manager by id
-    # find district by id
-    # delete old district in "quanly"
-    # create data in database "quanly"
-    return facility.update(id, request, db)
+@router.put("/update")
+def update_facility_by_id(request:request_data.FacilityUpdate, db: Session = Depends(database.get_db)):
+    return facility.update(request, db)
 
 

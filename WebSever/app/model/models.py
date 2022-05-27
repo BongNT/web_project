@@ -53,11 +53,10 @@ class Facility(Base):
     name = Column("ten", String)
     type = Column("loaihinh", Integer)
     district_id = Column("id_huyen", String, ForeignKey("huyen.id_huyen"))
-    phone_number = Column("sdt", Integer)
-    certificate_id = Column("id_giay", Integer, ForeignKey("giaychungnhan.id_giay"))
+    phone_number = Column("sdt", String)
     # set relationship
     in_district = relationship("District", back_populates="facilities")
-    certificate = relationship("Certificate", back_populates="facility_certificate")
+    certificate = relationship("Certificate", back_populates="facility_certificate", uselist=False)
     inspections = relationship("Inspection", back_populates="facility_inspection")
 
 class Inspection(Base):
@@ -77,6 +76,7 @@ class Certificate(Base):
     issue_date = Column("ngaycap", Date)
     expiry_date = Column("ngayhethan", Date)
     status = Column("status", Integer)
+    facility_id = Column("id_coso", Integer, ForeignKey("coso.id_coso"))
     # set relationship
     facility_certificate = relationship("Facility", back_populates="certificate", uselist=False)
 

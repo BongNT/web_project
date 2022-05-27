@@ -1,6 +1,6 @@
 from pydantic import BaseModel,ValidationError, validator
 from typing import Optional
-from app.util.special_value import UserType
+from app.util.special_value import UserType, FacilityType
 import re
 
 """
@@ -89,10 +89,6 @@ class LoginData(BaseModel):
             raise ValueError("Invalid password")
 
 
-class Token(BaseModel):
-    access_token: str
-    token_type: str
-
 class DistrictRegister(BaseModel):
     manager_id: int
     district_id: str
@@ -167,3 +163,36 @@ class UserUpdate(BaseModel):
         if not re.fullmatch(regex, email):
             raise ValueError("Invalid email")
         return email
+
+class FacilityCreate(BaseModel):
+    name: str
+    type: int
+    district_id: str
+    phone_number: Optional[str] = None
+    @validator("type")
+    def valid_type(cls, t):
+        if t in FacilityType.get_list_value():
+            return t
+        else:
+            raise ValueError("Invalid type")
+class FacilityUpdate(BaseModel):
+    id: int
+    name: Optional[str] = None
+    type: Optional[int] = None
+    district_id: Optional[str] = None
+    phone_number: Optional[str] = None
+    @validator("type")
+    def valid_type(cls, t):
+        if t is None:
+            return t
+        if t in FacilityType.get_list_value():
+            return t
+        else:
+            raise ValueError("Invalid type")
+
+    @validator("phone_number")
+    def is_number(cls, n):
+        if n.isnumeric():
+            return n
+        else:
+            raise ValueError("Invalid phone number")

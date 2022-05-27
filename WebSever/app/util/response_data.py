@@ -1,6 +1,5 @@
 from pydantic import BaseModel
 from app.util.special_value import UserType
-from app.model.models import District
 from typing import Optional, List
 
 class User(BaseModel):
@@ -12,14 +11,32 @@ class User(BaseModel):
     class Config():
         orm_mode = True
 
+class Province(BaseModel):
+    id: str
+    name: str
+    class Config():
+        orm_mode = True
 
 class District(BaseModel):
     id: str
-    province_id: str
     name: str
-
+    province: Province
     class Config():
         orm_mode = True
 
 class UserDistrict(User):
     districts: List[District]
+
+
+
+
+class Facility(BaseModel):
+    id: int
+    name: str
+    type: int
+    # district_id: str
+    phone_number: int
+    # certificate_id: int
+    in_district: District
+    class Config():
+        orm_mode = True
