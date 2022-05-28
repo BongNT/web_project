@@ -20,18 +20,22 @@ def create(request: request_data.FacilityCreate, db: Session):
     # check valid district id
     district = db.query(models.District).filter(models.District.id == request.district_id).first()
     if district:
-        # create facility
-        facility = models.Facility(name=request.name,
-                                   type=request.type,
-                                   district_id=request.district_id,
-                                   phone_number=request.phone_number)
-        db.add(facility)
-        db.commit()
-        db.refresh(facility)
-        return {"detail": "Create facility successfully"}
+        try:
+            # create facility
+            facility = models.Facility(name=request.name,
+                                       type=request.type,
+                                       district_id=request.district_id,
+                                       phone_number=request.phone_number)
+            db.add(facility)
+            db.commit()
+            db.refresh(facility)
+            return {"detail": "Create facility successfully"}
+        except:
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT,
+                                detail=f"This facility name has been registered")
     else:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f"ERROR : Invalid district id")
+                            detail=f"Invalid district id")
 
 
 def delete(id: int, db: Session):

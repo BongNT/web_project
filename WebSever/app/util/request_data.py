@@ -1,12 +1,14 @@
 from pydantic import BaseModel,ValidationError, validator
 from typing import Optional
-from app.util.special_value import UserType, FacilityType
+from app.util.special_value import UserType, FacilityType, CertificateStatus
+from datetime import date
 import re
 
 """
 Pydantic uses the term "model" to refer to something different, the data validation, conversion, 
 and documentation classes and instances.
 """
+
 
 class UserCreate(BaseModel):
     name: str
@@ -165,6 +167,7 @@ class UserUpdate(BaseModel):
             raise ValueError("Invalid email")
         return email
 
+
 class FacilityCreate(BaseModel):
     name: str
     type: int
@@ -176,12 +179,15 @@ class FacilityCreate(BaseModel):
             return t
         else:
             raise ValueError("Invalid type")
+
+
 class FacilityUpdate(BaseModel):
     id: int
     name: Optional[str] = None
     type: Optional[int] = None
     district_id: Optional[str] = None
     phone_number: Optional[str] = None
+
     @validator("type")
     def valid_type(cls, t):
         if t is None:
@@ -197,3 +203,24 @@ class FacilityUpdate(BaseModel):
             return n
         else:
             raise ValueError("Invalid phone number")
+
+
+class CertificateCreate(BaseModel):
+    issue_date: date
+    expiry_date: date
+    status: int
+    facility_id: int
+
+    @validator('expiry_date')
+    def expiry_date_greater_than_issue_date(cls, field_value, values, field, config):
+        if field_value <= values["issue_date"]:
+            raise ValueError("Invalid Issue date and Expiry date")
+        else:
+            return field_value
+
+    @validator('status')
+    def status_in_CertificateStatus(cls, t):
+        if t in FacilityType.get_list_value():
+            return t
+        else:
+            raise ValueError("Invalid type")

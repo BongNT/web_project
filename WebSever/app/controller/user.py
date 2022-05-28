@@ -78,7 +78,7 @@ def delete_by_id(id: int, db: Session):
             db.commit()
             return {"detail": "delete successfully"}
     else:
-        raise HTTPException(detail="Invalid id")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Invalid id")
 
 
 def update_by_id(request: request_data.UserUpdate,  db: Session):
