@@ -11,31 +11,21 @@ router = APIRouter(
     prefix="/samples"
 )
 
-@router.get('/', status_code=status.HTTP_200_OK, response_model=List[response_data.UserDistrict])
+@router.get('/', status_code=status.HTTP_200_OK, response_model=List[response_data.Sample])
 def get_all_samples(db: Session = Depends(database.get_db)):
     return sample.get_all(db)
 
 @router.post("/create")
-def create_sample( request:request_data., db: Session = Depends(database.get_db)):
-    # find manager by id
-    # find district by id
-    # create data in database "quanly"
+def create_sample( request:request_data.SampleCreate, db: Session = Depends(database.get_db)):
     return sample.create( request, db)
 
-@router.post("/{id}/delete")
-def delete_sample_by_id(id: int, request:request_data., db: Session = Depends(database.get_db)):
-    # find manager by id
-    # find district by id
-    # delete data in database "quanly"
-    return sample.delete(id, request, db)
+@router.delete("/{id}/delete")
+def delete_sample_by_id(id: int, db: Session = Depends(database.get_db)):
+    return sample.delete_by_id(id, db)
 
 
-@router.post("/{id}/update")
-def update_sample_by_id(id: int, request:request_data., db: Session = Depends(database.get_db)):
-    # find manager by id
-    # find district by id
-    # delete old district in "quanly"
-    # create data in database "quanly"
-    return sample.update(id, request, db)
+@router.put("/update")
+def update_sample_by_id(request:request_data.SampleUpdate, db: Session = Depends(database.get_db)):
+    return sample.update_by_id(request, db)
 
 

@@ -52,11 +52,11 @@ def create(request: request_data.UserCreate, db: Session):
         except:
             print(f"ERROR : Duplicate name_user:'{request.name}'.")
             raise HTTPException(status_code=status.HTTP_409_CONFLICT,
-                                detail=f"ERROR : Username:'{request.name}' already registered.")
+                                detail=f"Username:'{request.name}' already registered.")
     else:
         print(f"ERROR : Duplicate email:'{request.email}'.")
         raise HTTPException(status_code=status.HTTP_409_CONFLICT,
-                            detail=f"ERROR : Email:'{request.email} already registered'.")
+                            detail=f"Email:'{request.email} already registered'.")
 
 
 def delete_by_id(id: int, db: Session):
@@ -107,8 +107,8 @@ def update_by_id(request: request_data.UserUpdate,  db: Session):
                 msg += "email "
             else:
                 raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"This email has been used")
-        msg += "successfully."
-        return {"detail": msg}
+                msg += "successfully."
+                return {"detail": msg}
 
 
 def email_in_db(email, db: Session) -> bool:

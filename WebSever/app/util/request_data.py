@@ -1,6 +1,6 @@
 from pydantic import BaseModel,ValidationError, validator
 from typing import Optional
-from app.util.special_value import UserType, FacilityType, CertificateStatus
+from app.util.special_value import UserType, FacilityType, CertificateStatus, SampleStatus
 from datetime import date
 import re
 
@@ -181,12 +181,21 @@ class FacilityCreate(BaseModel):
             raise ValueError("Invalid type")
 
 
+
+
 class FacilityUpdate(BaseModel):
     id: int
     name: Optional[str] = None
     type: Optional[int] = None
     district_id: Optional[str] = None
     phone_number: Optional[str] = None
+
+    @validator('id')
+    def unsign_id(cls, i):
+        if i < 0:
+            raise ValueError("Invalid id")
+        else:
+            return i
 
     @validator("type")
     def valid_type(cls, t):
@@ -208,9 +217,7 @@ class FacilityUpdate(BaseModel):
 class CertificateCreate(BaseModel):
     issue_date: date
     expiry_date: date
-    status: int
     facility_id: int
-
     @validator('expiry_date')
     def expiry_date_greater_than_issue_date(cls, field_value, values, field, config):
         if field_value <= values["issue_date"]:
@@ -218,9 +225,117 @@ class CertificateCreate(BaseModel):
         else:
             return field_value
 
+
+
+class CertificateUpdate(BaseModel):
+    id: int
+    expiry_date: Optional[date] = None
+    status: Optional[int] = None
+
+    @validator('id')
+    def unsign_id(cls, i):
+        if i < 0:
+            raise ValueError("Invalid id")
+        else:
+            return i
+
     @validator('status')
     def status_in_CertificateStatus(cls, t):
         if t in FacilityType.get_list_value():
             return t
         else:
             raise ValueError("Invalid type")
+
+class InspectionCreate(BaseModel):
+    facility_id: int
+    result: Optional[str] = None
+    start_date: date
+    end_date: date
+
+    @validator("result")
+    def trim_whitespace(cls, result):
+        if result is None:
+            return result
+        return result.strip()
+
+    @validator('end_date')
+    def end_date_greater_than_start_date(cls, field_value, values, field, config):
+        if field_value < values["start_date"]:
+            raise ValueError("Invalid Start date and End date")
+        else:
+            return field_value
+
+class InspectionUpdate(BaseModel):
+    id: int
+    result: Optional[str] = None
+    start_date: Optional[date] = None
+    end_date: Optional[date] = None
+
+    @validator("result")
+    def trim_whitespace(cls, result):
+        return result.strip()
+
+    @validator('end_date')
+    def end_date_greater_than_start_date(cls, field_value, values, field, config):
+        if values["start_date"] is None:
+            return field_value
+        if field_value < values["start_date"]:
+            raise ValueError("Invalid Start date and End date")
+        else:
+            return field_value
+
+class SampleCreate(BaseModel):
+    id: int
+    inspection_id: int
+    inspection_agency: str
+    status: int
+    result_date: date
+    result: Optional[str] = None
+
+    @validator('id')
+    def unsign_id(cls, i):
+        if i < 0:
+            raise ValueError("Invalid id")
+        else:
+            return i
+
+    @validator('inspection_id')
+    def unsign_inspection_id(cls, i):
+        if i < 0:
+            raise ValueError("Invalid inspection id")
+        else:
+            return i
+
+    @validator('result')
+    def valid_result(cls, re):
+        if re is not None:
+            return re.strip()
+        return re
+
+
+class SampleUpdate(BaseModel):
+    id: int
+    inspection_agency: Optional[str] = None
+    status: Optional[int] = None
+    result_date: Optional[date] = None
+    result: Optional[str] = None
+
+    @validator('id')
+    def unsign_id(cls, i):
+        if i < 0:
+            raise ValueError("Invalid id")
+        else:
+            return i
+
+    @validator('status')
+    def valid_status(cls, t):
+        if t in SampleStatus.get_list_value():
+            return t
+        else:
+            raise ValueError("Invalid type")
+
+    @validator('result')
+    def valid_result(cls, re):
+        if re is not None:
+            return re.strip()
+        return re

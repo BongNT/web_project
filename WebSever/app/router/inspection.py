@@ -11,31 +11,21 @@ router = APIRouter(
     prefix="/inspections"
 )
 
-@router.get('/', status_code=status.HTTP_200_OK, response_model=List[response_data.UserDistrict])
+@router.get('/', status_code=status.HTTP_200_OK,response_model=List[response_data.InspectionFacility])
 def get_all_inspections(db: Session = Depends(database.get_db)):
     return inspection.get_all(db)
 
-@router.post("/{id}/register")
-def create_inspections(id: int, request:request_data., db: Session = Depends(database.get_db)):
-    # find manager by id
-    # find district by id
-    # create data in database "quanly"
-    return inspection.create(id, request, db)
+@router.post("/create")
+def create_inspections( request:request_data.InspectionCreate, db: Session = Depends(database.get_db)):
+    return inspection.create( request, db)
 
-@router.post("/{id}/delete")
-def delete_inspection_by_id(id: int, request:request_data., db: Session = Depends(database.get_db)):
-    # find manager by id
-    # find district by id
-    # delete data in database "quanly"
-    return inspection.delete(id, request, db)
+@router.delete("/{id}/delete")
+def delete_inspection_by_id(id: int, db: Session = Depends(database.get_db)):
+    return inspection.delete_by_id(id, db)
 
 
-@router.post("/{id}/update")
-def update_inspection_by_id(id: int, request:request_data., db: Session = Depends(database.get_db)):
-    # find manager by id
-    # find district by id
-    # delete old district in "quanly"
-    # create data in database "quanly"
-    return inspection.update(id, request, db)
+@router.put("/{id}/update")
+def update_inspection_by_id(request: request_data.InspectionUpdate, db: Session = Depends(database.get_db)):
+    return inspection.update_by_id(request, db)
 
 

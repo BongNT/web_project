@@ -56,7 +56,7 @@ class Facility(Base):
     phone_number = Column("sdt", String)
     # set relationship
     in_district = relationship("District", back_populates="facilities")
-    certificate = relationship("Certificate", back_populates="facility_certificate", uselist=False)
+    certificate = relationship("Certificate", back_populates="facility", uselist=False)
     inspections = relationship("Inspection", back_populates="facility_inspection")
 
 class Inspection(Base):
@@ -78,7 +78,7 @@ class Certificate(Base):
     status = Column("status", Integer)
     facility_id = Column("id_coso", Integer, ForeignKey("coso.id_coso"))
     # set relationship
-    facility_certificate = relationship("Facility", back_populates="certificate", uselist=False)
+    facility = relationship("Facility", back_populates="certificate", uselist=False)
 
 
 

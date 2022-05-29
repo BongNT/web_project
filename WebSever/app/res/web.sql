@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th5 27, 2022 lúc 09:41 AM
+-- Thời gian đã tạo: Th5 29, 2022 lúc 08:48 PM
 -- Phiên bản máy phục vụ: 10.4.24-MariaDB
 -- Phiên bản PHP: 7.4.29
 
@@ -42,7 +42,10 @@ CREATE TABLE `coso` (
 --
 
 INSERT INTO `coso` (`id_coso`, `ten`, `loaihinh`, `id_huyen`, `sdt`) VALUES
-(8, 'test', 1, '002HH', '0132');
+(8, 'test', 1, '002HH', '0132'),
+(9, 'coso2', 1, '006HH', '132454'),
+(10, 'coso3', 1, '007HH', '132454'),
+(11, 'coso4', 1, '009HH', '132454');
 
 -- --------------------------------------------------------
 
@@ -57,6 +60,14 @@ CREATE TABLE `giaychungnhan` (
   `status` int(1) NOT NULL,
   `id_coso` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Đang đổ dữ liệu cho bảng `giaychungnhan`
+--
+
+INSERT INTO `giaychungnhan` (`id_giay`, `ngaycap`, `ngayhethan`, `status`, `id_coso`) VALUES
+(1, '2022-05-28', '2022-05-29', 1, 8),
+(7, '2022-05-27', '2022-05-28', 0, 9);
 
 -- --------------------------------------------------------
 
@@ -799,8 +810,17 @@ CREATE TABLE `mau` (
   `donvigiamdinh` varchar(50) NOT NULL,
   `status` int(1) NOT NULL,
   `ngaynhanKQ` date NOT NULL,
-  `ketqua` varchar(30) NOT NULL
+  `ketqua` varchar(200) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Đang đổ dữ liệu cho bảng `mau`
+--
+
+INSERT INTO `mau` (`id_mau`, `id_thanhtra`, `donvigiamdinh`, `status`, `ngaynhanKQ`, `ketqua`) VALUES
+(1, 1, 'Kiểm tra thực phẩm', 1, '2022-05-29', NULL),
+(3, 1, 'tét', 3, '2022-05-29', 'string'),
+(4, 1, 'Kiểm tra thực phẩm', 1, '2022-05-29', NULL);
 
 -- --------------------------------------------------------
 
@@ -812,6 +832,14 @@ CREATE TABLE `quanly` (
   `id_user` int(11) NOT NULL,
   `id_huyen` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Đang đổ dữ liệu cho bảng `quanly`
+--
+
+INSERT INTO `quanly` (`id_user`, `id_huyen`) VALUES
+(56, '003HH'),
+(56, '005HH');
 
 -- --------------------------------------------------------
 
@@ -902,10 +930,18 @@ INSERT INTO `thanhpho` (`id_thanhpho`, `tenthanhpho`) VALUES
 CREATE TABLE `thanhtra` (
   `id_thanhtra` int(11) NOT NULL,
   `id_coso` int(11) NOT NULL,
-  `kq_kiemtra` varchar(50) DEFAULT NULL,
+  `kq_kiemtra` varchar(200) DEFAULT NULL,
   `ngaybatdau` date NOT NULL,
   `ngayketthuc` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Đang đổ dữ liệu cho bảng `thanhtra`
+--
+
+INSERT INTO `thanhtra` (`id_thanhtra`, `id_coso`, `kq_kiemtra`, `ngaybatdau`, `ngayketthuc`) VALUES
+(1, 8, 'Đủ điều kiện an toàn thực phẩm', '2022-05-29', '2022-05-29'),
+(4, 10, NULL, '2022-05-29', '2022-06-29');
 
 -- --------------------------------------------------------
 
@@ -939,6 +975,7 @@ INSERT INTO `user` (`id_user`, `username`, `password`, `email`, `type`) VALUES
 --
 ALTER TABLE `coso`
   ADD PRIMARY KEY (`id_coso`),
+  ADD UNIQUE KEY `ten` (`ten`),
   ADD KEY `id_huyen` (`id_huyen`) USING BTREE;
 
 --
@@ -946,6 +983,7 @@ ALTER TABLE `coso`
 --
 ALTER TABLE `giaychungnhan`
   ADD PRIMARY KEY (`id_giay`),
+  ADD UNIQUE KEY `id_coso_2` (`id_coso`),
   ADD KEY `id_coso` (`id_coso`);
 
 --
@@ -960,7 +998,7 @@ ALTER TABLE `huyen`
 --
 ALTER TABLE `mau`
   ADD PRIMARY KEY (`id_mau`),
-  ADD KEY `id_thanhtra` (`id_thanhtra`);
+  ADD KEY `id_thanhtra` (`id_thanhtra`) USING BTREE;
 
 --
 -- Chỉ mục cho bảng `quanly`
@@ -998,19 +1036,19 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT cho bảng `coso`
 --
 ALTER TABLE `coso`
-  MODIFY `id_coso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id_coso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT cho bảng `giaychungnhan`
 --
 ALTER TABLE `giaychungnhan`
-  MODIFY `id_giay` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_giay` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
--- AUTO_INCREMENT cho bảng `mau`
+-- AUTO_INCREMENT cho bảng `thanhtra`
 --
-ALTER TABLE `mau`
-  MODIFY `id_mau` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `thanhtra`
+  MODIFY `id_thanhtra` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT cho bảng `user`
@@ -1044,7 +1082,7 @@ ALTER TABLE `huyen`
 -- Các ràng buộc cho bảng `mau`
 --
 ALTER TABLE `mau`
-  ADD CONSTRAINT `mau_ibfk_1` FOREIGN KEY (`id_thanhtra`) REFERENCES `thanhtra` (`id_thanhtra`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk4` FOREIGN KEY (`id_thanhtra`) REFERENCES `thanhtra` (`id_thanhtra`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Các ràng buộc cho bảng `quanly`

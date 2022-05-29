@@ -22,10 +22,19 @@ class FacilityType(Enum):
 
 
 class CertificateStatus(Enum):
-    VALID = 0
-    EXPIRED = 1
-    REVOKED = 2
+    VALID = 1
+    EXPIRED = 2
+    REVOKED = 3
 
     @classmethod
     def get_list_value(cls):
         return [e.value for e in CertificateStatus]
+
+class SampleStatus(Enum):
+    SENDING = 1
+    CHECKING = 2
+    FINISH = 3
+
+    @classmethod
+    def get_list_value(cls):
+        return [e.value for e in SampleStatus]

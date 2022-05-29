@@ -1,42 +1,93 @@
+from datetime import date
 from pydantic import BaseModel
-from app.util.special_value import UserType
-from typing import Optional, List
+from typing import List, Union
+
 
 class User(BaseModel):
     id: int
     name: str
-    email: str
+    email: Union[str, None]
     type: int
 
     class Config():
         orm_mode = True
 
+
 class Province(BaseModel):
     id: str
     name: str
+
     class Config():
         orm_mode = True
+
 
 class District(BaseModel):
     id: str
     name: str
+
+
+class DistrictProvince(District):
     province: Province
+
     class Config():
         orm_mode = True
 
+
 class UserDistrict(User):
-    districts: List[District]
-
-
+    districts: List[DistrictProvince]
 
 
 class Facility(BaseModel):
     id: int
     name: str
     type: int
-    # district_id: str
-    phone_number: str
-    # certificate_id: int
-    in_district: District
+    phone_number: Union[str, None]
+    in_district: DistrictProvince
+
+    class Config():
+        orm_mode = True
+
+
+class Facility2(BaseModel):
+    id: int
+    name: str
+    type: int
+    phone_number: Union[str, None]
+    district_id: str
+
+    class Config():
+        orm_mode = True
+
+
+class Certificate(BaseModel):
+    id: int
+    issue_date: date
+    expiry_date: date
+    status: int
+    facility: Facility2
+
+    class Config():
+        orm_mode = True
+
+
+class Inspection(BaseModel):
+    id: int
+    start_date: date
+    end_date: date
+    result: Union[str, None]
+
+
+    class Config():
+        orm_mode = True
+
+class InspectionFacility(Inspection):
+    facility_inspection: Facility2
+class Sample(BaseModel):
+    id: int
+    inspection_agency: str
+    status: int
+    result_date: date
+    result: Union[str, None]
+    in_inspection: Inspection
     class Config():
         orm_mode = True

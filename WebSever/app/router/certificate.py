@@ -11,29 +11,29 @@ router = APIRouter(
     prefix="/certificates"
 )
 
-@router.get('/', status_code=status.HTTP_200_OK)
+
+@router.get('/test', status_code=status.HTTP_200_OK)
+def test(db: Session = Depends(database.get_db)):
+    return certificate.auto_update_status(db)
+
+
+@router.get('/', status_code=status.HTTP_200_OK, response_model=List[response_data.Certificate])
 def get_all_certificates(db: Session = Depends(database.get_db)):
     return certificate.get_all(db)
 
+
 @router.post("/create")
 def create_certificates(request: request_data.CertificateCreate, db: Session = Depends(database.get_db)):
-
     return certificate.create(request, db)
 
-@router.post("/{id}/delete")
+
+@router.delete("/{id}/delete")
 def delete_certificate_by_id(id: int, db: Session = Depends(database.get_db)):
-    # find manager by id
-    # find district by id
-    # delete data in database "quanly"
     return certificate.delete_by_id(id, db)
 
 
-@router.post("/{id}/update")
-def update_certificate_by_id(id: int, request:request_data.DistrictRegister, db: Session = Depends(database.get_db)):
-    # find manager by id
-    # find district by id
-    # delete old district in "quanly"
-    # create data in database "quanly"
-    return certificate.update_by_id(id, request, db)
+@router.put("/update")
+def update_certificate_by_id(request:request_data.DistrictRegister, db: Session = Depends(database.get_db)):
+    return certificate.update_by_id(request, db)
 
 
