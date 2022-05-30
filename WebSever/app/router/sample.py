@@ -2,13 +2,14 @@ from fastapi import APIRouter, Depends, status
 from app.util import request_data, response_data
 from sqlalchemy.orm import Session
 from app.model import database
-from app.controller import sample
+from app.controller import sample, oauth2
 from typing import List
 
 
 router = APIRouter(
     tags=["samples"],
-    prefix="/samples"
+    prefix="/samples",
+    dependencies=[Depends(oauth2.get_current_user)]
 )
 
 @router.get('/', status_code=status.HTTP_200_OK, response_model=List[response_data.Sample])

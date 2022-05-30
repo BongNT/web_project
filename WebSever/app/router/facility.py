@@ -2,12 +2,13 @@ from fastapi import APIRouter, Depends, status
 from app.util import request_data, response_data
 from sqlalchemy.orm import Session
 from app.model import database
-from app.controller import facility
+from app.controller import facility, oauth2
 from typing import List
 
 router = APIRouter(
     tags=["facilities"],
-    prefix="/facilities"
+    prefix="/facilities",
+    dependencies=[Depends(oauth2.get_current_user)]
 )
 
 

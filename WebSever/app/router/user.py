@@ -3,11 +3,12 @@ from app.util import request_data, response_data
 from sqlalchemy.orm import Session
 from app.model import database
 from typing import List
-from app.controller import user
+from app.controller import user, oauth2
 
 router = APIRouter(
     tags=["users"],
-    prefix="/users"
+    prefix="/users",
+    dependencies=[Depends(oauth2.get_current_admin)]
 )
 
 

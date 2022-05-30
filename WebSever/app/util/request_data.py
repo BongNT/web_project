@@ -3,12 +3,21 @@ from typing import Optional
 from app.util.special_value import UserType, FacilityType, CertificateStatus, SampleStatus
 from datetime import date
 import re
+from typing import Union
 
 """
 Pydantic uses the term "model" to refer to something different, the data validation, conversion, 
 and documentation classes and instances.
 """
 
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+
+class TokenData(BaseModel):
+    username: Union[str, None] = None
 
 class UserCreate(BaseModel):
     name: str
@@ -208,7 +217,7 @@ class FacilityUpdate(BaseModel):
 
     @validator("phone_number")
     def is_number(cls, n):
-        if n.isnumeric():
+        if n.isnumeric() or len(n)==0:
             return n
         else:
             raise ValueError("Invalid phone number")

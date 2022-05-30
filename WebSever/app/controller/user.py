@@ -36,7 +36,7 @@ def get_by_id(id: int, db: Session):
         else:
             return user
     else:
-        raise HTTPException(detail="Invalid id",status_code=status.HTTP_400_BAD_REQUEST)
+        raise HTTPException(detail="Invalid id",status_code=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
 
 def create(request: request_data.UserCreate, db: Session):

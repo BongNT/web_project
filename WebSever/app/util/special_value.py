@@ -10,6 +10,10 @@ class UserType(Enum):
     def get_list_value(cls):
         return [e.value for e in UserType]
 
+    @classmethod
+    def get_admin_value(cls):
+        return [e.value for e in UserType if e.value != UserType.MANAGER.value]
+
 
 class FacilityType(Enum):
     FOOD_PRODUCTION = 1
@@ -29,6 +33,7 @@ class CertificateStatus(Enum):
     @classmethod
     def get_list_value(cls):
         return [e.value for e in CertificateStatus]
+
 
 class SampleStatus(Enum):
     SENDING = 1

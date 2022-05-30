@@ -2,12 +2,13 @@ from fastapi import APIRouter, Depends, status
 from app.util import request_data, response_data
 from sqlalchemy.orm import Session
 from app.model import database
-from app.controller import manager
+from app.controller import manager, oauth2
 from typing import List
 
 router = APIRouter(
     tags=["managers"],
-    prefix="/managers"
+    prefix="/managers",
+    dependencies=[Depends(oauth2.get_current_user)]
 )
 
 
