@@ -1,9 +1,5 @@
-#side-bar {
-	width: 20%;
-}
-
 #side-bar .css-ta84vm-MuiAccordionDetails-root {
-	padding: 0;
+	padding: 0 !important;
 }
 
 #side-bar .css-cveggr-MuiListItemIcon-root {

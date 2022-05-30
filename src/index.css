@@ -22,11 +22,6 @@ header .btn-secondary:focus {
 	box-shadow: none;
 }
 
-#main {
-	width: 80%;
-	height: 100%;
-}
-
 .h-custom {
 	height: calc(100% - 50px);
 }

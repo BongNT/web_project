@@ -77,13 +77,27 @@ export default function AccountMenu() {
 				transformOrigin={{ horizontal: "right", vertical: "top" }}
 				anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
 			>
-				<MenuItem>
-					<Avatar /> Tài khoản của tôi
-				</MenuItem>
+				<Link
+					to="/my-account"
+					style={{
+						color: "rgba(0,0,0,0.9)",
+						textDecoration: "none",
+					}}
+				>
+					<MenuItem>
+						<Avatar /> Tài khoản của tôi
+					</MenuItem>
+				</Link>
 
 				<Divider />
 
-				<Link to="/sign-in">
+				<Link
+					to="/sign-in"
+					style={{
+						color: "rgba(0,0,0,0.9)",
+						textDecoration: "none",
+					}}
+				>
 					<MenuItem>
 						<ListItemIcon>
 							<Logout fontSize="small" />

@@ -1,6 +1,7 @@
 import React from "react";
 import { LinkList } from "../List";
 import { styled } from "@mui/material/styles";
+import { Toolbar, Divider } from "@mui/material";
 import MuiAccordion from "@mui/material/Accordion";
 import MuiAccordionSummary from "@mui/material/AccordionSummary";
 import MuiAccordionDetails from "@mui/material/AccordionDetails";
@@ -51,7 +52,7 @@ export default function Sidebar() {
 			id: 3,
 			title: "Phân quyền",
 			items: [
-				{ id: 1, name: "Cán bộ", link: "/home" },
+				{ id: 1, name: "Cán bộ", link: "/user" },
 				{ id: 2, name: "Địa bàn", link: "/certificate" },
 			],
 		},
@@ -63,18 +64,23 @@ export default function Sidebar() {
 		setExpanded(newExpanded ? panel : false);
 	};
 
-	const list = objs.map((obj) => (
-		<Accordion
-			expanded={expanded === obj.id}
-			onChange={handleChange(obj.id)}
-		>
-			<AccordionSummary expandIcon={<ExpandMoreIcon />}>
-				<Typography>{obj.title}</Typography>
-			</AccordionSummary>
-			<AccordionDetails>
-				<LinkList list={obj.items} />
-			</AccordionDetails>
-		</Accordion>
-	));
-	return <div>{list}</div>;
+	return (
+		<div id="side-bar">
+			<Toolbar />
+			<Divider />
+			{objs.map((obj) => (
+				<Accordion
+					expanded={expanded === obj.id}
+					onChange={handleChange(obj.id)}
+				>
+					<AccordionSummary expandIcon={<ExpandMoreIcon />}>
+						<Typography>{obj.title}</Typography>
+					</AccordionSummary>
+					<AccordionDetails>
+						<LinkList list={obj.items} />
+					</AccordionDetails>
+				</Accordion>
+			))}
+		</div>
+	);
 }

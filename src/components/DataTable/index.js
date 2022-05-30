@@ -82,7 +82,20 @@ export default function DataTable(props) {
 	const handleDelete = () => {
 		setDelConfirm(false);
 		setRows(rows.filter((row) => row.id !== idDataRef.current));
-		console.log(idDataRef.current);
+		fetch("http://localhost:3000/assets/data", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(rows),
+		})
+			.then((response) => response.json())
+			.then((response) => {
+				console.log(response);
+			})
+			.catch((error) => {
+				console.error("Error:", error);
+			});
 	};
 	const handleClose = () => {
 		setDelConfirm(false);
@@ -128,7 +141,20 @@ export default function DataTable(props) {
 	const processRowUpdate = (newRow) => {
 		const updatedRow = { ...newRow, isNew: false };
 		setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
-
+		fetch("http://localhost:3000/assets/data", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(rows),
+		})
+			.then((response) => response.json())
+			.then((response) => {
+				console.log(response);
+			})
+			.catch((error) => {
+				console.error("Error:", error);
+			});
 		return updatedRow;
 	};
 
@@ -150,7 +176,7 @@ export default function DataTable(props) {
 						type: "actions",
 						headerName: "Hành động",
 						cellClassName: "actions",
-						flex: 0.3,
+						flex: 0.5,
 						getActions: ({ id }) => {
 							const isInEditMode =
 								rowModesModel[id]?.mode === GridRowModes.Edit;

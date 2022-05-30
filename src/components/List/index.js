@@ -56,6 +56,7 @@ ListItemLink.propTypes = {
 function LinkList(prop) {
 	const list = prop.list.map((item) => (
 		<ListItemLink
+			key={item.id}
 			to={item.link}
 			primary={item.name}
 			icon={<ArrowRightIcon />}
