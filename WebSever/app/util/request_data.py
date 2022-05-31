@@ -17,7 +17,8 @@ class Token(BaseModel):
 
 
 class TokenData(BaseModel):
-    username: Union[str, None] = None
+    userid: Union[int, None] = None
+    usertype: Union[int, None] = None
 
 class UserCreate(BaseModel):
     name: str
@@ -52,10 +53,9 @@ class UserCreate(BaseModel):
         type value must be one of UserType value and different from DEFAULT_ADMIN value
         """
         if type not in UserType.get_list_value():
-            if type == UserType.DEFAULT_ADMIN.value:
-                raise ValueError("Invalid type")
-            else:
-                raise ValueError("Invalid type")
+            raise ValueError("Invalid type")
+        if type == UserType.DEFAULT_ADMIN.value:
+            raise ValueError("Invalid type")
         return type
 
     @validator('email')
@@ -155,10 +155,11 @@ class UserUpdate(BaseModel):
         if type is None:
             return type
         if type not in UserType.get_list_value():
-            if type == UserType.DEFAULT_ADMIN.value:
-                raise ValueError("Invalid type")
-            else:
-                raise ValueError("Invalid type")
+
+
+            raise ValueError("Invalid type")
+        if type == UserType.DEFAULT_ADMIN.value:
+            raise ValueError("Invalid type")
         return type
 
     @validator('email')

@@ -10,7 +10,7 @@ def test(db: Session):
     Return: list contains all users
     """
     #     users = db.query(models.User).options(joinedload(models.UserCreate.districts).joinedload(models.District.province).joinedload(models.Facility)).all()
-    users = db.query(models.User).options(joinedload(models.User.districts).joinedload(models.District.facilities).joinedload(models.Facility.certificate)).all()
+    users = db.query(models.User).options(joinedload(models.User.districts)).all()
     #users = db.query(models.Facility).options(joinedload(models.Facility.in_district)).all()
     if not users:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No user in data")
@@ -85,9 +85,9 @@ def update_by_id(request: request_data.UserUpdate,  db: Session):
     user = db.query(models.User).filter(models.User.id == request.id).first()
     # check user with id is in database
     if user is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User id {id} not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User id not found")
     elif user.type == UserType.DEFAULT_ADMIN.value:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f"Can't delete this user")
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f"Can't update this user")
     else:
         # update user
         user_query = db.query(models.User).filter(models.User.id == request.id)
@@ -96,7 +96,7 @@ def update_by_id(request: request_data.UserUpdate,  db: Session):
             user_query.update({models.User.password: hashing.hash_password(request.password)}, synchronize_session="fetch")
             db.commit()
             msg += "password "
-        if request.type is not None:
+        if request.type is not None and user.type != UserType.DEFAULT_ADMIN.value:
             user_query.update({models.User.type: request.type}, synchronize_session="fetch")
             db.commit()
             msg += "type "

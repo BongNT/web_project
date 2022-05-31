@@ -12,7 +12,7 @@ router = APIRouter(
 )
 
 
-@router.get('/test', status_code=status.HTTP_200_OK, response_model=List[response_data.UserDistrict])
+@router.get('/test', status_code=status.HTTP_200_OK)
 def get_all_users(db: Session = Depends(database.get_db)):
     return user.test(db)
 

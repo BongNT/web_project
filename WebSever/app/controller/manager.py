@@ -6,10 +6,6 @@ from app.util.special_value import UserType
 
 
 
-router = APIRouter(
-    tags=["managers"]
-)
-
 
 def get_all(db: Session):
     """

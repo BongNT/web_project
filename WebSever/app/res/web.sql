@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th5 29, 2022 lúc 08:48 PM
+-- Thời gian đã tạo: Th5 31, 2022 lúc 06:16 PM
 -- Phiên bản máy phục vụ: 10.4.24-MariaDB
 -- Phiên bản PHP: 7.4.29
 
@@ -45,7 +45,8 @@ INSERT INTO `coso` (`id_coso`, `ten`, `loaihinh`, `id_huyen`, `sdt`) VALUES
 (8, 'test', 1, '002HH', '0132'),
 (9, 'coso2', 1, '006HH', '132454'),
 (10, 'coso3', 1, '007HH', '132454'),
-(11, 'coso4', 1, '009HH', '132454');
+(11, 'coso4', 1, '009HH', '132454'),
+(12, 'cs1', 2, '001HH', NULL);
 
 -- --------------------------------------------------------
 
@@ -66,8 +67,8 @@ CREATE TABLE `giaychungnhan` (
 --
 
 INSERT INTO `giaychungnhan` (`id_giay`, `ngaycap`, `ngayhethan`, `status`, `id_coso`) VALUES
-(1, '2022-05-28', '2022-05-29', 1, 8),
-(7, '2022-05-27', '2022-05-28', 0, 9);
+(1, '2022-05-28', '2022-05-29', 2, 8),
+(7, '2022-05-27', '2022-05-28', 2, 9);
 
 -- --------------------------------------------------------
 
@@ -820,7 +821,9 @@ CREATE TABLE `mau` (
 INSERT INTO `mau` (`id_mau`, `id_thanhtra`, `donvigiamdinh`, `status`, `ngaynhanKQ`, `ketqua`) VALUES
 (1, 1, 'Kiểm tra thực phẩm', 1, '2022-05-29', NULL),
 (3, 1, 'tét', 3, '2022-05-29', 'string'),
-(4, 1, 'Kiểm tra thực phẩm', 1, '2022-05-29', NULL);
+(10, 5, 'cskt', 3, '2022-05-31', 'chưa có'),
+(11, 5, 'cskt', 3, '2022-06-01', 'không vấn đề'),
+(12, 5, 'cskt', 3, '2022-06-01', 'chưa có');
 
 -- --------------------------------------------------------
 
@@ -839,7 +842,8 @@ CREATE TABLE `quanly` (
 
 INSERT INTO `quanly` (`id_user`, `id_huyen`) VALUES
 (56, '003HH'),
-(56, '005HH');
+(56, '005HH'),
+(60, '001HH');
 
 -- --------------------------------------------------------
 
@@ -941,7 +945,8 @@ CREATE TABLE `thanhtra` (
 
 INSERT INTO `thanhtra` (`id_thanhtra`, `id_coso`, `kq_kiemtra`, `ngaybatdau`, `ngayketthuc`) VALUES
 (1, 8, 'Đủ điều kiện an toàn thực phẩm', '2022-05-29', '2022-05-29'),
-(4, 10, NULL, '2022-05-29', '2022-06-29');
+(4, 10, NULL, '2022-05-29', '2022-06-29'),
+(5, 12, 'chua co', '2022-05-31', '2022-06-30');
 
 -- --------------------------------------------------------
 
@@ -952,7 +957,7 @@ INSERT INTO `thanhtra` (`id_thanhtra`, `id_coso`, `kq_kiemtra`, `ngaybatdau`, `n
 CREATE TABLE `user` (
   `id_user` int(11) NOT NULL,
   `username` varchar(45) NOT NULL,
-  `password` varchar(30) NOT NULL,
+  `password` varchar(512) NOT NULL,
   `email` varchar(50) DEFAULT NULL,
   `type` int(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -964,7 +969,9 @@ CREATE TABLE `user` (
 INSERT INTO `user` (`id_user`, `username`, `password`, `email`, `type`) VALUES
 (53, 'ntb', '$2b$12$ryzTuIE/Q7FtX6A9ZvdcaOD', 'string@da.vc', 0),
 (55, 'ntb1', '$2b$12$q1qWfHKxEijrJ5.fe9GWKeO', '19021226@vnu.edu.vn', 1),
-(56, 'string1', '$2b$12$xOJpkxtMjHWtSn3L0ZioEu3', 'string@asd.xy', 2);
+(56, 'string1', '$2b$12$xOJpkxtMjHWtSn3L0ZioEu3', 'string@asd.xy', 2),
+(58, 'admin', '$2b$12$jozxCo.atK9QfXYd4STZMuVluM9eZbgP5IC7nZy0ZLeiB0yPkDGM.', 'bn@gmail.com', 0),
+(60, 'manager', '$2b$12$qRngUn8QLCbQ4iLmDbhxGuvsUu13KvhN8n5M.vfT05vdO4yJsi2Eu', NULL, 2);
 
 --
 -- Chỉ mục cho các bảng đã đổ
@@ -1036,7 +1043,7 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT cho bảng `coso`
 --
 ALTER TABLE `coso`
-  MODIFY `id_coso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id_coso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT cho bảng `giaychungnhan`
@@ -1048,13 +1055,13 @@ ALTER TABLE `giaychungnhan`
 -- AUTO_INCREMENT cho bảng `thanhtra`
 --
 ALTER TABLE `thanhtra`
-  MODIFY `id_thanhtra` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_thanhtra` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT cho bảng `user`
 --
 ALTER TABLE `user`
-  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
+  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
 
 --
 -- Các ràng buộc cho các bảng đã đổ

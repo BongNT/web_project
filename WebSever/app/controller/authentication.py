@@ -16,5 +16,9 @@ def login(request: OAuth2PasswordRequestForm, db: Session):
     if not hashing.verify(user.password, request.password):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid password")
     # generate JWT and return
-    access_token = token.create_access_token(data={"sub": user.name})
+    user_data = {
+        "id": user.id,
+        "type": user.type
+    }
+    access_token = token.create_access_token(data={"sub": str(user_data)})
     return {"access_token": access_token, "token_type": "bearer", "user_type": user.type}
