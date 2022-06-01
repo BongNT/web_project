@@ -5,6 +5,14 @@ from app.model import models
 from app.util.special_value import UserType
 
 
+def get_districts(db: Session, current_user):
+    if current_user.type == UserType.MANAGER.value:
+        list_district = []
+        for i in current_user.districts:
+            list_district.append(i.id)
+        return db.query(models.District).filter(models.District.id.in_(list_district)).all()
+    else:
+        return db.query(models.District).all()
 
 
 def get_all(db: Session):
@@ -13,7 +21,7 @@ def get_all(db: Session):
     """
     managers = db.query(models.User).filter(models.User.type == UserType.MANAGER.value).all()
     if not managers:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Managers not found")
+        raise HTTPException(status_code=status.HTTP_204_NO_CONTENT, detail="Managers not found")
     else:
         return managers
 

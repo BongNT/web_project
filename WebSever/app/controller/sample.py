@@ -6,7 +6,6 @@ from app.util.special_value import UserType
 
 
 def get_all(db: Session, current_user):
-    print(current_user)
     samples = db.query(models.Sample)
     if current_user.type == UserType.MANAGER.value:
         list_district = []

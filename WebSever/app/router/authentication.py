@@ -16,5 +16,4 @@ async def login(request: OAuth2PasswordRequestForm = Depends(), db: Session = De
 
 @router.post('/logout')
 def logout():
-    # delete session
     return 1

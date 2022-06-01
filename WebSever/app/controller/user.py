@@ -13,7 +13,7 @@ def test(db: Session):
     users = db.query(models.User).options(joinedload(models.User.districts)).all()
     #users = db.query(models.Facility).options(joinedload(models.Facility.in_district)).all()
     if not users:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No user in data")
+        raise HTTPException(status_code=status.HTTP_204_NO_CONTENT, detail="No user in data")
     return users
 
 
@@ -23,7 +23,7 @@ def get_all(db: Session):
     """
     users = db.query(models.User).options(joinedload(models.User.districts)).all()
     if not users:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No user in data")
+        raise HTTPException(status_code=status.HTTP_204_NO_CONTENT, detail="No user in data")
     return users
 
 

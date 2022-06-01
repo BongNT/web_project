@@ -23,7 +23,7 @@ class TokenData(BaseModel):
 class UserCreate(BaseModel):
     name: str
     password: str
-    email: Optional[str] = None
+    email: str = None
     type: Optional[int] = UserType.MANAGER.value
 
     @validator('name')

@@ -5,14 +5,28 @@ from app.model import models,hashing
 from app.util.special_value import UserType, CertificateStatus
 from datetime import date
 
-def get_all(db: Session):
-    certificates = db.query(models.Certificate).options(joinedload(models.Certificate.facility)).all()
+def get_all(db: Session, current_user):
+    certificates = db.query(models.Certificate)
+    if current_user.type == UserType.MANAGER.value:
+        list_district = []
+        for i in current_user.districts:
+            list_district.append(i.id)
+        certificates = certificates.join(models.Certificate.facility).join(models.Facility.in_district).filter(models.District.id.in_(list_district)).all()
+    else:
+        certificates = certificates.options(joinedload(models.Certificate.facility)).all()
     if not certificates:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No certificate in data")
+        raise HTTPException(status_code=status.HTTP_204_NO_CONTENT, detail="No certificate")
     return certificates
 
-def create(request: request_data.CertificateCreate, db: Session):
-    facility = db.query(models.Facility).filter(models.Facility.id == request.facility_id).first()
+def create(request: request_data.CertificateCreate, db: Session, current_user):
+    facility = db.query(models.Facility)
+    if current_user.type == UserType.MANAGER.value:
+        list_district = []
+        for i in current_user.districts:
+            list_district.append(i.id)
+        facility = facility.join(models.Facility.in_district).filter(models.District.id.in_(list_district), models.Facility.id == request.facility_id).first()
+    else:
+        facility = facility.filter(models.Facility.id == request.facility_id).first()
     if facility:
         # check duplicate in db
         try:
@@ -26,14 +40,21 @@ def create(request: request_data.CertificateCreate, db: Session):
             raise HTTPException(status_code=status.HTTP_409_CONFLICT,
                                 detail=f"Facility id {request.facility_id} has been registered")
     else:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Facility id {request.facility_id} not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Facility id not found")
 
-def delete_by_id(id: int, db: Session):
+def delete_by_id(id: int, db: Session, current_user):
     if id > 0:
-        certificate = db.query(models.Certificate).filter(models.Certificate.id == id).first()
-        # check user with id is in database
+        certificate = db.query(models.Certificate)
+        if current_user.type == UserType.MANAGER.value:
+            list_district = []
+            for i in current_user.districts:
+                list_district.append(i.id)
+            certificate = certificate.join(models.Certificate.facility).join(models.Facility.in_district).filter(models.District.id.in_(list_district), models.Certificate.id == id).first()
+        else:
+            certificate = certificate.filter(models.Certificate.id == id).first()
+        # check certificate with id is in database
         if certificate is None:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Certificate id {id} not found")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Certificate id not found")
         else:
             # delete user
             db.query(models.Certificate).filter(models.Certificate.id == id).delete(synchronize_session="fetch")
@@ -42,11 +63,19 @@ def delete_by_id(id: int, db: Session):
     else:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Invalid id")
 
-def update_by_id(request: request_data.CertificateUpdate,db: Session):
-    certificate = db.query(models.Certificate).filter(models.Certificate.id == request.id).first()
+def update_by_id(request: request_data.CertificateUpdate,db: Session, current_user):
+    certificate = db.query(models.Certificate)
+    if current_user.type == UserType.MANAGER.value:
+        list_district = []
+        for i in current_user.districts:
+            list_district.append(i.id)
+        certificate = certificate.join(models.Certificate.facility).join(models.Facility.in_district).filter(
+            models.District.id.in_(list_district), models.Certificate.id == request.id).first()
+    else:
+        certificate = certificate.filter(models.Certificate.id == request.id).first()
     # check certificate in database
     if certificate is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User id {request.id} not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Certificate id not found")
     else:
         certificate_query = db.query(models.Certificate).filter(models.Certificate.id == request.id)
         msg = "update "

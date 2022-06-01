@@ -5,20 +5,34 @@ from app.model import models, hashing
 from app.util.special_value import UserType
 
 
-def get_all(db: Session):
+def get_all(db: Session, current_user):
     """
         Return: list contains all users
         """
-    facilities = db.query(models.Facility).options(
-        joinedload(models.Facility.in_district).joinedload(models.District.province)).all()
+    facilities = db.query(models.Facility)
+    if current_user.type == UserType.MANAGER.value:
+        list_district = []
+        for i in current_user.districts:
+            list_district.append(i.id)
+        facilities = facilities.join(models.Facility.in_district).filter(models.District.id.in_(list_district)).all()
+    else:
+        facilities = facilities.options(joinedload(models.Facility.in_district).joinedload(models.District.province)).all()
     if not facilities:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No facility in data")
+        raise HTTPException(status_code=status.HTTP_204_NO_CONTENT, detail="No facility in data")
     return facilities
 
 
-def create(request: request_data.FacilityCreate, db: Session):
+def create(request: request_data.FacilityCreate, db: Session, current_user):
     # check valid district id
-    district = db.query(models.District).filter(models.District.id == request.district_id).first()
+
+    district = db.query(models.District)
+    if current_user.type == UserType.MANAGER.value:
+        list_district = []
+        for i in current_user.districts:
+            list_district.append(i.id)
+        district = district.filter(models.District.id.in_(list_district), models.District.id == request.district_id).first()
+    else:
+        district = district.filter(models.District.id == request.district_id).first()
     if district:
         try:
             # create facility
@@ -38,17 +52,25 @@ def create(request: request_data.FacilityCreate, db: Session):
                             detail=f"Invalid district id")
 
 
-def delete(id: int, db: Session):
+def delete(id: int, db: Session, current_user):
     """
     Param id: Facility id.
     Return: action status
     """
     # check valid id
     if id > 0:
-        user = db.query(models.Facility).filter(models.Facility.id == id).first()
+        facility = db.query(models.Facility)
+        if current_user.type == UserType.MANAGER.value:
+            list_district = []
+            for i in current_user.districts:
+                list_district.append(i.id)
+            facility = facility.join(models.Facility.in_district).filter(
+                models.District.id.in_(list_district),models.Facility.id == id).first()
+        else:
+            facility = facility.filter(models.Facility.id == id).first()
         # check Facility with id is in database
-        if user is None:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Facility id {id} not found")
+        if facility is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Facility id not found")
         else:
             # delete Facility
             db.query(models.Facility).filter(models.Facility.id == id).delete(synchronize_session="fetch")
@@ -58,11 +80,19 @@ def delete(id: int, db: Session):
         raise HTTPException(detail="Invalid id")
 
 
-def update(request: request_data.FacilityUpdate, db: Session):
-    # chech facility id is in database
-    facility = db.query(models.Facility).filter(models.Facility.id == request.id).first()
+def update(request: request_data.FacilityUpdate, db: Session, current_user):
+    # check facility id is in database
+    facility = db.query(models.Facility)
+    if current_user.type == UserType.MANAGER.value:
+        list_district = []
+        for i in current_user.districts:
+            list_district.append(i.id)
+        facility = facility.join(models.Facility.in_district).filter(
+            models.District.id.in_(list_district), models.Facility.id == request.id).first()
+    else:
+        facility = facility.filter(models.Facility.id == request.id).first()
     if facility is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Facility id {id} not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Facility id not found")
     else:
         # update facility
         facility_query = db.query(models.Facility).filter(models.Facility.id == request.id)

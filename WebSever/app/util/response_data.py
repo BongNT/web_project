@@ -24,7 +24,8 @@ class Province(BaseModel):
 class District(BaseModel):
     id: str
     name: str
-
+    class Config():
+        orm_mode = True
 
 class DistrictProvince(District):
     province: Province

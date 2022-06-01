@@ -12,9 +12,9 @@ router = APIRouter(
 )
 
 
-@router.get('/test', status_code=status.HTTP_200_OK)
-def get_all_users(db: Session = Depends(database.get_db)):
-    return user.test(db)
+# @router.get('/test', status_code=status.HTTP_200_OK)
+# def get_all_users(db: Session = Depends(database.get_db)):
+#     return user.test(db)
 
 
 @router.post('/create', status_code=status.HTTP_201_CREATED)
