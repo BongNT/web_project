@@ -3,18 +3,8 @@ from app.util import request_data
 from sqlalchemy.orm import Session, joinedload
 from app.model import models,hashing
 from app.util.special_value import UserType
+from app.controller import user_information
 
-
-def test(db: Session):
-    """
-    Return: list contains all users
-    """
-    #     users = db.query(models.User).options(joinedload(models.UserCreate.districts).joinedload(models.District.province).joinedload(models.Facility)).all()
-    users = db.query(models.User).options(joinedload(models.User.districts)).all()
-    #users = db.query(models.Facility).options(joinedload(models.Facility.in_district)).all()
-    if not users:
-        raise HTTPException(status_code=status.HTTP_204_NO_CONTENT, detail="No user in data")
-    return users
 
 
 def get_all(db: Session):
@@ -48,7 +38,8 @@ def create(request: request_data.UserCreate, db: Session):
             db.add(new_user)
             db.commit()
             db.refresh(new_user)
-            return {"detail": "Create user successfully"}
+            user = db.query(models.User).filter(models.User.name==request.name).first()
+            return user_information.create_info(db, user.id)
         except:
             print(f"ERROR : Duplicate name_user:'{request.name}'.")
             raise HTTPException(status_code=status.HTTP_409_CONFLICT,

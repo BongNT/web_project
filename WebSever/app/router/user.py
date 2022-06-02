@@ -42,3 +42,4 @@ def update_user_by_id(request: request_data.UserUpdate, db: Session = Depends(da
     return user.update_by_id(request, db)
 
 
+

@@ -20,6 +20,7 @@ class User(Base):
     type = Column("type", Integer)
     # set relationship
     districts = relationship("District", secondary='quanly', back_populates='managers')
+    information = relationship("UserInformation", back_populates="user")
 
 class Manager(Base):
     __tablename__ = "quanly"
@@ -88,6 +89,18 @@ class Sample(Base):
     result = Column("ketqua", String)
     # set relationship
     in_inspection = relationship("Inspection", back_populates="samples")
+
+class UserInformation(Base):
+    __tablename__ = "user_information"
+    id = Column("id", Integer, primary_key=True)
+    user_id = Column("id_user", Integer, ForeignKey("user.id_user"))
+    fullname = Column("fullname", String)
+    DOB = Column("DOB", Date)
+    gender = Column("gender", Integer)
+    phone_number = Column("phone_number", String)
+    address = Column("address", String)
+    # set relationship
+    user = relationship("User", back_populates="information")
 
 
 

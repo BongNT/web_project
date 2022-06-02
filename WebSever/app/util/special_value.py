@@ -43,3 +43,13 @@ class SampleStatus(Enum):
     @classmethod
     def get_list_value(cls):
         return [e.value for e in SampleStatus]
+
+
+class Gender(Enum):
+    MALE = 1
+    FEMALE = 2
+    OTHER = 3
+
+    @classmethod
+    def get_list_value(cls):
+        return [e.value for e in Gender]

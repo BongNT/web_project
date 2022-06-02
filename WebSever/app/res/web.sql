@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th5 31, 2022 lúc 06:16 PM
+-- Thời gian đã tạo: Th6 02, 2022 lúc 03:06 PM
 -- Phiên bản máy phục vụ: 10.4.24-MariaDB
 -- Phiên bản PHP: 7.4.29
 
@@ -45,8 +45,9 @@ INSERT INTO `coso` (`id_coso`, `ten`, `loaihinh`, `id_huyen`, `sdt`) VALUES
 (8, 'test', 1, '002HH', '0132'),
 (9, 'coso2', 1, '006HH', '132454'),
 (10, 'coso3', 1, '007HH', '132454'),
-(11, 'coso4', 1, '009HH', '132454'),
-(12, 'cs1', 2, '001HH', NULL);
+(11, 'coso4', 1, '009HH', '987654321'),
+(12, 'cs1', 2, '001HH', NULL),
+(14, 'quán nướng2', 1, '001HH', '987654321');
 
 -- --------------------------------------------------------
 
@@ -68,7 +69,9 @@ CREATE TABLE `giaychungnhan` (
 
 INSERT INTO `giaychungnhan` (`id_giay`, `ngaycap`, `ngayhethan`, `status`, `id_coso`) VALUES
 (1, '2022-05-28', '2022-05-29', 2, 8),
-(7, '2022-05-27', '2022-05-28', 2, 9);
+(7, '2022-05-27', '2022-05-28', 2, 9),
+(10, '2022-07-01', '2022-10-01', 2, 14),
+(11, '2022-07-01', '2022-10-01', 1, 12);
 
 -- --------------------------------------------------------
 
@@ -945,8 +948,9 @@ CREATE TABLE `thanhtra` (
 
 INSERT INTO `thanhtra` (`id_thanhtra`, `id_coso`, `kq_kiemtra`, `ngaybatdau`, `ngayketthuc`) VALUES
 (1, 8, 'Đủ điều kiện an toàn thực phẩm', '2022-05-29', '2022-05-29'),
-(4, 10, NULL, '2022-05-29', '2022-06-29'),
-(5, 12, 'chua co', '2022-05-31', '2022-06-30');
+(4, 10, 'ok', '2022-05-29', '2022-06-29'),
+(5, 12, 'chua co', '2022-05-31', '2022-06-30'),
+(7, 12, 'string', '2022-07-01', '2022-07-01');
 
 -- --------------------------------------------------------
 
@@ -971,7 +975,34 @@ INSERT INTO `user` (`id_user`, `username`, `password`, `email`, `type`) VALUES
 (55, 'ntb1', '$2b$12$q1qWfHKxEijrJ5.fe9GWKeO', '19021226@vnu.edu.vn', 1),
 (56, 'string1', '$2b$12$xOJpkxtMjHWtSn3L0ZioEu3', 'string@asd.xy', 2),
 (58, 'admin', '$2b$12$jozxCo.atK9QfXYd4STZMuVluM9eZbgP5IC7nZy0ZLeiB0yPkDGM.', 'bn@gmail.com', 0),
-(60, 'manager', '$2b$12$qRngUn8QLCbQ4iLmDbhxGuvsUu13KvhN8n5M.vfT05vdO4yJsi2Eu', NULL, 2);
+(60, 'manager', '$2b$12$qRngUn8QLCbQ4iLmDbhxGuvsUu13KvhN8n5M.vfT05vdO4yJsi2Eu', NULL, 2),
+(61, 'manager2', '$2b$12$jlgMxfjJuivJCYfn5Gni3u.slmwBhjFUVQ4qI7HnhoEyasgJqRRL.', 'test@gmail.com', 2),
+(63, 'manager3', '$2b$12$ToYZR1FJKK9Td26oRu/tdeqPowujEX/RnqHK6aFXPi2QsD5a8bk8y', 'bn@vnu.edu.vn', 2);
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `user_information`
+--
+
+CREATE TABLE `user_information` (
+  `id_user` int(11) NOT NULL,
+  `fullname` varchar(100) CHARACTER SET utf8mb4 NOT NULL,
+  `id` int(11) NOT NULL,
+  `DOB` date NOT NULL,
+  `gender` int(1) NOT NULL,
+  `phone_number` varchar(15) CHARACTER SET utf8mb4 DEFAULT NULL,
+  `address` varchar(200) CHARACTER SET utf8mb4 DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Đang đổ dữ liệu cho bảng `user_information`
+--
+
+INSERT INTO `user_information` (`id_user`, `fullname`, `id`, `DOB`, `gender`, `phone_number`, `address`) VALUES
+(63, 'Nguyễn Văn A', 1, '2001-01-01', 3, '0123456789', 'Việt Nam'),
+(58, 'Admin', 2, '2001-08-20', 1, '12345678', 'Việt Nam'),
+(60, '001HHManager', 3, '2001-08-21', 1, '12345678', 'Việt Nam');
 
 --
 -- Chỉ mục cho các bảng đã đổ
@@ -1033,7 +1064,14 @@ ALTER TABLE `thanhtra`
 ALTER TABLE `user`
   ADD PRIMARY KEY (`id_user`),
   ADD UNIQUE KEY `name_user` (`username`),
-  ADD UNIQUE KEY `email` (`email`);
+  ADD UNIQUE KEY `email` (`email`) USING BTREE;
+
+--
+-- Chỉ mục cho bảng `user_information`
+--
+ALTER TABLE `user_information`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `id_user` (`id_user`) USING BTREE;
 
 --
 -- AUTO_INCREMENT cho các bảng đã đổ
@@ -1043,25 +1081,31 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT cho bảng `coso`
 --
 ALTER TABLE `coso`
-  MODIFY `id_coso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id_coso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT cho bảng `giaychungnhan`
 --
 ALTER TABLE `giaychungnhan`
-  MODIFY `id_giay` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id_giay` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT cho bảng `thanhtra`
 --
 ALTER TABLE `thanhtra`
-  MODIFY `id_thanhtra` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_thanhtra` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT cho bảng `user`
 --
 ALTER TABLE `user`
-  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
+  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
+
+--
+-- AUTO_INCREMENT cho bảng `user_information`
+--
+ALTER TABLE `user_information`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Các ràng buộc cho các bảng đã đổ
@@ -1103,6 +1147,12 @@ ALTER TABLE `quanly`
 --
 ALTER TABLE `thanhtra`
   ADD CONSTRAINT `fk1` FOREIGN KEY (`id_coso`) REFERENCES `coso` (`id_coso`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Các ràng buộc cho bảng `user_information`
+--
+ALTER TABLE `user_information`
+  ADD CONSTRAINT `f2` FOREIGN KEY (`id_user`) REFERENCES `user` (`id_user`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

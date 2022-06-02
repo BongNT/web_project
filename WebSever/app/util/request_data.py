@@ -349,3 +349,38 @@ class SampleUpdate(BaseModel):
         if re is not None:
             return re.strip()
         return re
+
+class UserInformationUpdate(BaseModel):
+    fullname:Optional[str] = None
+    DOB: Optional[date] = None
+    gender: Optional[int] = None
+    phone_number: Optional[str] = None
+    address: Optional[str] = None
+
+    @validator("fullname")
+    def valid_name(cls, name):
+        if name is not None:
+            return name.strip().title()
+        raise ValueError("Invalid name")
+
+    @validator("gender")
+    def valid_gender(cls, gender):
+        if gender is not None:
+            if gender in SampleStatus.get_list_value():
+                return gender
+            else:
+                raise ValueError("Invalid gender")
+        raise ValueError("Invalid gender")
+
+    @validator("phone_number")
+    def is_number(cls, n):
+        if n.isnumeric() or len(n) == 0:
+            return n
+        else:
+            raise ValueError("Invalid phone number")
+
+    @validator("address")
+    def valid_address(cls, address):
+        if address is not None:
+            return address.strip()
+        raise ValueError("Invalid address")

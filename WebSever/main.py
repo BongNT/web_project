@@ -1,6 +1,6 @@
 import uvicorn
 from fastapi import FastAPI
-from app.router import manager, user, facility, certificate, inspection, sample,authentication
+from app.router import manager, user, facility, certificate, inspection, sample,authentication, user_information
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import AppConfig
 
@@ -12,6 +12,7 @@ app.include_router(facility.router)
 app.include_router(certificate.router)
 app.include_router(inspection.router)
 app.include_router(sample.router)
+app.include_router(user_information.router)
 origins = [
     "http://localhost",
     "http://localhost:8000",

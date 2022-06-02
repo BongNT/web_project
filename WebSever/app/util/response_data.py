@@ -92,3 +92,12 @@ class Sample(BaseModel):
     in_inspection: Inspection
     class Config():
         orm_mode = True
+class UserInformation(BaseModel):
+    fullname:str
+    DOB: date
+    gender: int
+    phone_number: str
+    address:str
+
+    class Config():
+        orm_mode = True
