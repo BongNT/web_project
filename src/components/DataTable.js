@@ -16,55 +16,43 @@ import {
 	viVN,
 	GridToolbarExport,
 } from "@mui/x-data-grid";
-import { randomId } from "@mui/x-data-grid-generator";
-import {
-	Dialog,
-	DialogTitle,
-	DialogContent,
-	DialogContentText,
-	DialogActions,
-	Button,
-} from "@mui/material";
-import "./index.css";
+import "./DataTable.css";
+import { AddModal, DeleteDialog, EditModal } from "./Modal";
+import AuthProvider from "../contexts/AuthProvider";
 
 function EditToolbar(props) {
-	const { setRows, setRowModesModel, setFilterButtonEl } = props;
-
+	const { setRows, setFilterButtonEl } = props;
 	//Add
-	const handleClick = () => {
-		const id = randomId();
-		setRows((oldRows) => [
-			{ id, name: "", email: "", type: "", isNew: true },
-			...oldRows,
-		]);
-		setRowModesModel((oldModel) => ({
-			...oldModel,
-			[id]: { mode: GridRowModes.Edit, fieldToFocus: "name" },
-		}));
-	};
+	const [openAddModal, setOpenAddModal] = React.useState(false);
 
 	return (
-		<GridToolbarContainer className="justify-content-end">
-			<GridToolbarExport className="ms-3 me-3" />
-			<GridToolbarFilterButton
-				className="ms-3 me-3"
-				ref={setFilterButtonEl}
+		<div>
+			<GridToolbarContainer className="justify-content-end">
+				<GridToolbarExport className="ms-3 me-3" />
+				<GridToolbarFilterButton
+					className="ms-3 me-3"
+					ref={setFilterButtonEl}
+				/>
+				<Fab
+					className="ms-3 me-3"
+					size="small"
+					color="primary"
+					aria-label="add"
+					onClick={() => setOpenAddModal(true)}
+				>
+					<AddIcon />
+				</Fab>
+			</GridToolbarContainer>
+			<AddModal
+				open={openAddModal}
+				setOpen={setOpenAddModal}
+				setRows={setRows}
 			/>
-			<Fab
-				className="ms-3 me-3"
-				size="small"
-				color="primary"
-				aria-label="add"
-				onClick={handleClick}
-			>
-				<AddIcon />
-			</Fab>
-		</GridToolbarContainer>
+		</div>
 	);
 }
 
 EditToolbar.propTypes = {
-	setRowModesModel: PropTypes.func.isRequired,
 	setRows: PropTypes.func.isRequired,
 };
 
@@ -76,29 +64,32 @@ export default function DataTable(props) {
 	const [rows, setRows] = React.useState(data);
 	const [rowModesModel, setRowModesModel] = React.useState({});
 
+	const [openEditDialog, setOpenEditDialog] = React.useState(false);
+
 	//Delete dialog
-	const [delConfirm, setDelConfirm] = React.useState(false);
+	const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
 	const idDataRef = React.useRef();
+	const userNameRef = React.useRef();
+
+	const emailRef = React.useRef();
+	const typeRef = React.useRef();
+
 	const handleDelete = () => {
-		setDelConfirm(false);
-		setRows(rows.filter((row) => row.id !== idDataRef.current));
-		fetch("http://localhost:3000/assets/data", {
-			method: "POST",
+		fetch(`http://127.0.0.1:8000/users/${idDataRef.current}/delete`, {
+			method: "DELETE",
 			headers: {
 				"Content-Type": "application/json",
 			},
-			body: JSON.stringify(rows),
 		})
 			.then((response) => response.json())
 			.then((response) => {
-				console.log(response);
+				console.log(response.detail);
 			})
 			.catch((error) => {
 				console.error("Error:", error);
 			});
-	};
-	const handleClose = () => {
-		setDelConfirm(false);
+		setOpenDeleteDialog(false);
+		setRows(rows.filter((row) => row.id !== idDataRef.current));
 	};
 
 	const handleRowEditStart = (params, event) => {
@@ -110,19 +101,36 @@ export default function DataTable(props) {
 
 	//Actions
 	const handleEditClick = (id) => () => {
-		setRowModesModel({
-			...rowModesModel,
-			[id]: { mode: GridRowModes.Edit },
-		});
+		setOpenEditDialog(true);
+		idDataRef.current = id;
+		const editRow = rows.find((row) => row.id === id);
+		userNameRef.current = editRow.name;
+
+		emailRef.current = editRow.email;
+
+		typeRef.current = editRow.type === "Quản trị viên" ? 1 : 2;
 	};
 	const handleSaveClick = (id) => () => {
 		setRowModesModel({
 			...rowModesModel,
 			[id]: { mode: GridRowModes.View },
 		});
+		const saveRow = rows.find((row) => row.id === id);
+		console.log(saveRow.id);
+		console.log({
+			id: saveRow.id,
+			password: saveRow.password,
+			email: saveRow.email,
+			type:
+				saveRow.type === "Siêu quản trị viên"
+					? 0
+					: saveRow.type === "Quản trị viên"
+					? 1
+					: 2,
+		});
 	};
 	const handleDeleteClick = (id) => () => {
-		setDelConfirm(true);
+		setOpenDeleteDialog(true);
 		idDataRef.current = id;
 	};
 	const handleCancelClick = (id) => () => {
@@ -141,20 +149,6 @@ export default function DataTable(props) {
 	const processRowUpdate = (newRow) => {
 		const updatedRow = { ...newRow, isNew: false };
 		setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
-		fetch("http://localhost:3000/assets/data", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify(rows),
-		})
-			.then((response) => response.json())
-			.then((response) => {
-				console.log(response);
-			})
-			.catch((error) => {
-				console.error("Error:", error);
-			});
 		return updatedRow;
 	};
 
@@ -235,18 +229,25 @@ export default function DataTable(props) {
 				pageSize={6}
 			/>
 
-			<Dialog open={delConfirm} onClose={handleClose}>
-				<DialogTitle>{"Are you sure about that?"}</DialogTitle>
-				<DialogContent>
-					<DialogContentText>
-						Kiểm tra lại trước khi xóa, không thì mất cmn dữ liệu!
-					</DialogContentText>
-				</DialogContent>
-				<DialogActions>
-					<Button onClick={handleClose}>Từ từ</Button>
-					<Button onClick={handleDelete}>Kệ, cứ xóa</Button>
-				</DialogActions>
-			</Dialog>
+			{openDeleteDialog && (
+				<DeleteDialog
+					open={openDeleteDialog}
+					setOpen={setOpenDeleteDialog}
+					handleDelete={handleDelete}
+				/>
+			)}
+
+			{openEditDialog && (
+				<EditModal
+					open={openEditDialog}
+					setOpen={setOpenEditDialog}
+					setRows={setRows}
+					id={idDataRef.current}
+					userName={userNameRef.current}
+					email={emailRef.current}
+					type={typeRef.current}
+				/>
+			)}
 		</Box>
 	);
 }
