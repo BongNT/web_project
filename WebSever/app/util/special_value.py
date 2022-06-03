@@ -53,3 +53,12 @@ class Gender(Enum):
     @classmethod
     def get_list_value(cls):
         return [e.value for e in Gender]
+
+class InspectionResult(Enum):
+    CHECKING = 1
+    ELIGIBLE = 2
+    INELIGIBLE = 3
+
+    @classmethod
+    def get_list_value(cls):
+        return [e.value for e in InspectionResult]

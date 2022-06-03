@@ -1,6 +1,6 @@
 from pydantic import BaseModel,ValidationError, validator
 from typing import Optional
-from app.util.special_value import UserType, FacilityType, CertificateStatus, SampleStatus
+from app.util.special_value import UserType, FacilityType, CertificateStatus, SampleStatus, InspectionResult
 from datetime import date
 import re
 from typing import Union
@@ -258,7 +258,7 @@ class CertificateUpdate(BaseModel):
 
 class InspectionCreate(BaseModel):
     facility_id: int
-    result: Optional[str] = None
+    result: Optional[int] = InspectionResult.CHECKING.value
     start_date: date
     end_date: date
 
@@ -266,7 +266,10 @@ class InspectionCreate(BaseModel):
     def trim_whitespace(cls, result):
         if result is None:
             return result
-        return result.strip()
+        if result in InspectionResult.get_list_value():
+            return result
+        else:
+            raise ValueError("Invalid result")
 
     @validator('end_date')
     def end_date_greater_than_start_date(cls, field_value, values, field, config):
@@ -277,13 +280,18 @@ class InspectionCreate(BaseModel):
 
 class InspectionUpdate(BaseModel):
     id: int
-    result: Optional[str] = None
+    result: Optional[int] = None
     start_date: Optional[date] = None
     end_date: Optional[date] = None
 
     @validator("result")
     def trim_whitespace(cls, result):
-        return result.strip()
+        if result is None:
+            return result
+        if result in InspectionResult.get_list_value():
+            return result
+        else:
+            raise ValueError("Invalid result")
 
     @validator('end_date')
     def end_date_greater_than_start_date(cls, field_value, values, field, config):

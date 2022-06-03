@@ -126,6 +126,8 @@ def update(request: request_data.FacilityUpdate, db: Session, current_user):
         return {"detail": msg}
 
 
+
+
 def certificate_in_db(id: int, db) -> bool:
     # if id == -1:
     #     return True

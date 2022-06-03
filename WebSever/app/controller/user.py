@@ -98,8 +98,8 @@ def update_by_id(request: request_data.UserUpdate,  db: Session):
                 msg += "email "
             else:
                 raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"This email has been used")
-                msg += "successfully."
-                return {"detail": msg}
+        msg += "successfully."
+        return {"detail": msg}
 
 
 def email_in_db(email, db: Session) -> bool:

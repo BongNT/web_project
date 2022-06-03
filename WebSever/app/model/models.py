@@ -60,7 +60,7 @@ class Inspection(Base):
     __tablename__ = "thanhtra"
     id = Column("id_thanhtra", Integer, primary_key=True)
     facility_id = Column("id_coso", Integer, ForeignKey("coso.id_coso"))
-    result = Column("kq_kiemtra", String)
+    result = Column("kq_kiemtra", Integer)
     start_date = Column("ngaybatdau", Date)
     end_date = Column("ngayketthuc", Date)
     # set relationship

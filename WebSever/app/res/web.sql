@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th6 02, 2022 lúc 03:06 PM
+-- Thời gian đã tạo: Th6 03, 2022 lúc 09:06 PM
 -- Phiên bản máy phục vụ: 10.4.24-MariaDB
 -- Phiên bản PHP: 7.4.29
 
@@ -47,7 +47,18 @@ INSERT INTO `coso` (`id_coso`, `ten`, `loaihinh`, `id_huyen`, `sdt`) VALUES
 (10, 'coso3', 1, '007HH', '132454'),
 (11, 'coso4', 1, '009HH', '987654321'),
 (12, 'cs1', 2, '001HH', NULL),
-(14, 'quán nướng2', 1, '001HH', '987654321');
+(14, 'quán nướng2', 1, '001HH', '987654321'),
+(15, 'hoa quả', 2, '002HH', '0123495'),
+(16, 'rau sạch', 2, '002HH', '0123495'),
+(17, 'sữa', 1, '002HH', '0123456789'),
+(18, 'kem', 2, '002HH', '0123456789'),
+(19, 'gạo', 2, '002HH', '0123456789'),
+(21, 'gạo sạch', 2, '001HH', '0123456789'),
+(22, 'gạo sạch 2', 2, '001HH', '0123456789'),
+(23, 'kem tươi', 2, '001HH', '0123456789'),
+(25, 'rau xanh', 2, '001HH', '0123456789'),
+(26, 'siêu thị 1', 2, '001HH', '0123456789'),
+(27, 'siêu thị 2', 2, '001HH', '0123456789');
 
 -- --------------------------------------------------------
 
@@ -71,7 +82,13 @@ INSERT INTO `giaychungnhan` (`id_giay`, `ngaycap`, `ngayhethan`, `status`, `id_c
 (1, '2022-05-28', '2022-05-29', 2, 8),
 (7, '2022-05-27', '2022-05-28', 2, 9),
 (10, '2022-07-01', '2022-10-01', 2, 14),
-(11, '2022-07-01', '2022-10-01', 1, 12);
+(11, '2022-07-01', '2022-10-01', 1, 12),
+(12, '2022-06-03', '2022-06-04', 1, 15),
+(13, '2022-06-03', '2022-06-11', 1, 16),
+(14, '2022-01-03', '2022-06-11', 1, 21),
+(15, '2022-01-03', '2022-07-11', 1, 22),
+(17, '2022-01-03', '2022-07-11', 1, 23),
+(18, '2022-01-03', '2022-07-11', 1, 25);
 
 -- --------------------------------------------------------
 
@@ -846,7 +863,9 @@ CREATE TABLE `quanly` (
 INSERT INTO `quanly` (`id_user`, `id_huyen`) VALUES
 (56, '003HH'),
 (56, '005HH'),
-(60, '001HH');
+(60, '001HH'),
+(61, '002HH'),
+(63, '003HH');
 
 -- --------------------------------------------------------
 
@@ -937,7 +956,7 @@ INSERT INTO `thanhpho` (`id_thanhpho`, `tenthanhpho`) VALUES
 CREATE TABLE `thanhtra` (
   `id_thanhtra` int(11) NOT NULL,
   `id_coso` int(11) NOT NULL,
-  `kq_kiemtra` varchar(200) DEFAULT NULL,
+  `kq_kiemtra` int(1) DEFAULT NULL,
   `ngaybatdau` date NOT NULL,
   `ngayketthuc` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -947,10 +966,23 @@ CREATE TABLE `thanhtra` (
 --
 
 INSERT INTO `thanhtra` (`id_thanhtra`, `id_coso`, `kq_kiemtra`, `ngaybatdau`, `ngayketthuc`) VALUES
-(1, 8, 'Đủ điều kiện an toàn thực phẩm', '2022-05-29', '2022-05-29'),
-(4, 10, 'ok', '2022-05-29', '2022-06-29'),
-(5, 12, 'chua co', '2022-05-31', '2022-06-30'),
-(7, 12, 'string', '2022-07-01', '2022-07-01');
+(1, 8, 2, '2022-05-29', '2022-05-29'),
+(4, 10, 2, '2022-05-29', '2022-06-29'),
+(5, 12, 1, '2022-05-31', '2022-06-30'),
+(7, 12, 3, '2022-07-01', '2022-07-01'),
+(9, 17, 2, '2021-06-03', '2021-07-03'),
+(10, 17, 2, '2022-01-03', '2022-01-03'),
+(11, 18, 2, '2022-01-03', '2022-01-03'),
+(12, 16, 3, '2022-01-03', '2022-01-03'),
+(13, 21, 3, '2022-01-03', '2022-01-03'),
+(14, 21, 3, '2022-02-03', '2022-02-03'),
+(15, 21, 3, '2022-05-03', '2022-05-03'),
+(16, 21, 3, '2022-06-03', '2022-06-03'),
+(17, 14, 3, '2022-06-03', '2022-06-03'),
+(18, 14, 2, '2022-06-04', '2022-06-04'),
+(19, 14, 2, '2022-06-25', '2022-06-25'),
+(20, 25, 2, '2022-06-01', '2022-06-01'),
+(21, 26, 2, '2022-06-01', '2022-06-01');
 
 -- --------------------------------------------------------
 
@@ -971,9 +1003,7 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id_user`, `username`, `password`, `email`, `type`) VALUES
-(53, 'ntb', '$2b$12$ryzTuIE/Q7FtX6A9ZvdcaOD', 'string@da.vc', 0),
-(55, 'ntb1', '$2b$12$q1qWfHKxEijrJ5.fe9GWKeO', '19021226@vnu.edu.vn', 1),
-(56, 'string1', '$2b$12$xOJpkxtMjHWtSn3L0ZioEu3', 'string@asd.xy', 2),
+(56, 'string1', '$2b$12$WSMp3fAPxEcBluk3/LyosOh4MTuKvhQFSxNCpoj7RPOTMZPdFNnve', 'string@asd.xy', 2),
 (58, 'admin', '$2b$12$jozxCo.atK9QfXYd4STZMuVluM9eZbgP5IC7nZy0ZLeiB0yPkDGM.', 'bn@gmail.com', 0),
 (60, 'manager', '$2b$12$qRngUn8QLCbQ4iLmDbhxGuvsUu13KvhN8n5M.vfT05vdO4yJsi2Eu', NULL, 2),
 (61, 'manager2', '$2b$12$jlgMxfjJuivJCYfn5Gni3u.slmwBhjFUVQ4qI7HnhoEyasgJqRRL.', 'test@gmail.com', 2),
@@ -1081,19 +1111,19 @@ ALTER TABLE `user_information`
 -- AUTO_INCREMENT cho bảng `coso`
 --
 ALTER TABLE `coso`
-  MODIFY `id_coso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id_coso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT cho bảng `giaychungnhan`
 --
 ALTER TABLE `giaychungnhan`
-  MODIFY `id_giay` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id_giay` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT cho bảng `thanhtra`
 --
 ALTER TABLE `thanhtra`
-  MODIFY `id_thanhtra` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id_thanhtra` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT cho bảng `user`

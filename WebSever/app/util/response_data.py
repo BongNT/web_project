@@ -75,7 +75,7 @@ class Inspection(BaseModel):
     id: int
     start_date: date
     end_date: date
-    result: Union[str, None]
+    result: Union[int, None]
 
 
     class Config():
@@ -83,6 +83,7 @@ class Inspection(BaseModel):
 
 class InspectionFacility(Inspection):
     facility_inspection: Facility2
+
 class Sample(BaseModel):
     id: int
     inspection_agency: str
@@ -92,12 +93,13 @@ class Sample(BaseModel):
     in_inspection: Inspection
     class Config():
         orm_mode = True
+
 class UserInformation(BaseModel):
-    fullname:str
+    fullname: str
     DOB: date
     gender: int
     phone_number: str
-    address:str
+    address: str
 
     class Config():
         orm_mode = True
