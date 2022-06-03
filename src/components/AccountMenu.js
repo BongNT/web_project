@@ -8,9 +8,21 @@ import Divider from "@mui/material/Divider";
 import Button from "@mui/material/Button";
 import Logout from "@mui/icons-material/Logout";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import AuthContext from "../contexts/AuthProvider";
 
 export default function AccountMenu() {
+	const { setAuth } = React.useContext(AuthContext);
+	const navigate = useNavigate();
+	const handleLogout = async () => {
+		setAuth({});
+		navigate("/login");
+	};
+
+	const handleShowInfo = async () => {
+		navigate("/my-account");
+	};
+
 	const [anchorEl, setAnchorEl] = React.useState(null);
 	const open = Boolean(anchorEl);
 	const handleClick = (event) => {
@@ -77,34 +89,30 @@ export default function AccountMenu() {
 				transformOrigin={{ horizontal: "right", vertical: "top" }}
 				anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
 			>
-				<Link
-					to="/my-account"
+				<MenuItem
 					style={{
 						color: "rgba(0,0,0,0.9)",
 						textDecoration: "none",
 					}}
+					onClick={handleShowInfo}
 				>
-					<MenuItem>
-						<Avatar /> Tài khoản của tôi
-					</MenuItem>
-				</Link>
+					<Avatar /> Tài khoản của tôi
+				</MenuItem>
 
 				<Divider />
 
-				<Link
-					to="/sign-in"
+				<MenuItem
 					style={{
 						color: "rgba(0,0,0,0.9)",
 						textDecoration: "none",
 					}}
+					onClick={handleLogout}
 				>
-					<MenuItem>
-						<ListItemIcon>
-							<Logout fontSize="small" />
-						</ListItemIcon>
-						Đăng xuất
-					</MenuItem>
-				</Link>
+					<ListItemIcon>
+						<Logout fontSize="small" />
+					</ListItemIcon>
+					Đăng xuất
+				</MenuItem>
 			</Menu>
 		</React.Fragment>
 	);

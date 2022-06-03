@@ -1,6 +1,7 @@
 import { Box, Typography, CircularProgress } from "@mui/material";
 import { useEffect, useState } from "react";
 import DataTable from "../components/DataTable";
+import useAuth from "../hooks/useAuth";
 
 const columns = [
 	{
@@ -32,11 +33,23 @@ const columns = [
 export default function User() {
 	const [fetchOk, setFetchOk] = useState(false);
 
+	const { auth } = useAuth();
 	const [data, setData] = useState(null);
 	useEffect(() => {
-		fetch("http://localhost:3000/assets/data/data.json")
+		fetch("http://127.0.0.1:8000/users/", {
+			headers: { Authorization: `bearer ${auth.token}` },
+		})
 			.then((response) => response.json())
 			.then((data) => {
+				data.forEach((row) => {
+					if (row.type === 0) {
+						row.type = "Siêu quản trị viên";
+					} else if (row.type === 1) {
+						row.type = "Quản trị viên";
+					} else {
+						row.type = "Quản lý";
+					}
+				});
 				setData(data);
 				setFetchOk(true);
 			});
@@ -49,7 +62,14 @@ export default function User() {
 			<DataTable data={data} columns={columns} />
 		</Box>
 	) : (
-		<Box sx={{ display: "flex", height: 550 }}>
+		<Box
+			sx={{
+				display: "flex",
+				justifyContent: "center",
+				alignItems: "center",
+				height: 550,
+			}}
+		>
 			<CircularProgress />
 		</Box>
 	);

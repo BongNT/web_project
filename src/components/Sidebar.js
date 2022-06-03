@@ -1,5 +1,5 @@
 import React from "react";
-import { LinkList } from "../List";
+import { LinkList } from "./List";
 import { styled } from "@mui/material/styles";
 import { Toolbar, Divider } from "@mui/material";
 import MuiAccordion from "@mui/material/Accordion";
@@ -7,7 +7,7 @@ import MuiAccordionSummary from "@mui/material/AccordionSummary";
 import MuiAccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import "./index.css";
+import "./Sidebar.css";
 
 const Accordion = styled((props) => (
 	<MuiAccordion disableGutters elevation={0} square {...props} />
@@ -70,6 +70,7 @@ export default function Sidebar() {
 			<Divider />
 			{objs.map((obj) => (
 				<Accordion
+					key={obj.id}
 					expanded={expanded === obj.id}
 					onChange={handleChange(obj.id)}
 				>
