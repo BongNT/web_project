@@ -43,7 +43,7 @@ class Facility(BaseModel):
     name: str
     type: int
     phone_number: Union[str, None]
-    in_district: DistrictProvince
+    in_district: District
 
     class Config():
         orm_mode = True
