@@ -15,7 +15,7 @@ router = APIRouter(
 def get_all_managers(db: Session = Depends(database.get_db), current_user=Depends(oauth2.get_current_admin)):
     return manager.get_all(db)
 
-@router.get('/districts', status_code=status.HTTP_200_OK, response_model=List[response_data.DistrictProvince])
+@router.get('/districts', status_code=status.HTTP_200_OK, response_model=List[response_data.District])
 def get_list_districts(db: Session = Depends(database.get_db), current_user=Depends(oauth2.get_current_user)):
     return manager.get_districts(db,current_user)
 

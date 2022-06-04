@@ -18,6 +18,6 @@ def get_info(db: Session = Depends(database.get_db), current_user=Depends(oauth2
 def get_districts(current_user=Depends(oauth2.get_current_user)):
     return user_information.get_districts( current_user)
 
-@router.get('/update', status_code=status.HTTP_200_OK)
+@router.put('/update', status_code=status.HTTP_200_OK)
 def get_info(request: request_data.UserInformationUpdate, db: Session = Depends(database.get_db), current_user=Depends(oauth2.get_current_user)):
     return user_information.update_info(request, db, current_user)

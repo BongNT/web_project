@@ -27,15 +27,14 @@ class District(BaseModel):
     class Config():
         orm_mode = True
 
-class DistrictProvince(District):
-    province: Province
+
 
     class Config():
         orm_mode = True
 
 
 class UserDistrict(User):
-    districts: List[DistrictProvince]
+    districts: List[District]
 
 
 class Facility(BaseModel):
