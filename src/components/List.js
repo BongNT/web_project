@@ -9,18 +9,6 @@ import PropTypes from "prop-types";
 import ListItem from "@mui/material/ListItem";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 
-function Lists(prop) {
-	const list = prop.list.map((item) => (
-		<li className={prop.classLi}>
-			<a className={prop.classA}>
-				<i className={prop.classIcon}></i>
-				{item}
-			</a>
-		</li>
-	));
-	return <ul className={prop.classUl}>{list}</ul>;
-}
-
 function ListItemLink(props) {
 	const { icon, primary, to } = props;
 
@@ -47,13 +35,7 @@ function ListItemLink(props) {
 	);
 }
 
-ListItemLink.propTypes = {
-	icon: PropTypes.element,
-	primary: PropTypes.string.isRequired,
-	to: PropTypes.string.isRequired,
-};
-
-function LinkList(prop) {
+export default function LinkList(prop) {
 	const list = prop.list.map((item) => (
 		<ListItemLink
 			key={item.id}
@@ -64,5 +46,3 @@ function LinkList(prop) {
 	));
 	return <List>{list}</List>;
 }
-
-export { Lists, LinkList };

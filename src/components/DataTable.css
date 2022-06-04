@@ -1,9 +1,0 @@
-#main div.MuiDataGrid-cell:focus,
-#main div.MuiDataGrid-cell:focus-within,
-#main div.MuiDataGrid-columnHeader:focus-within {
-	outline: none;
-}
-
-#main p {
-	margin: initial;
-}

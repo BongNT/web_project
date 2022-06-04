@@ -19,13 +19,14 @@ import {
 	Typography,
 	useMediaQuery,
 } from "@mui/material";
-import "./Login.css";
+import "../css/Login.css";
 import useAuth from "../hooks/useAuth";
+import AuthContext from "../contexts/AuthProvider";
 
 const USER_REGEX = /^[a-zA-Z0-9]+$/;
 const PWD_REGEX = /^([A-Za-z0-9@#$%^&+=]{8,})$/;
 export default function Login() {
-	const { setAuth } = useAuth();
+	const { setAuth } = React.useContext(AuthContext);
 	const navigate = useNavigate();
 	const location = useLocation();
 	const from = location?.state?.from?.pathname || "/";
@@ -133,10 +134,10 @@ export default function Login() {
 
 							<TextField
 								fullWidth
-								error={!validUserName}
 								label="Tên người dùng"
 								variant="filled"
 								value={userName}
+								error={!validUserName}
 								helperText={
 									validUserName
 										? undefined
@@ -166,11 +167,11 @@ export default function Login() {
 
 							<TextField
 								label="Mật khẩu"
-								error={!validPassword}
 								type={values.showPassword ? "text" : "password"}
 								value={values.password}
 								fullWidth
 								variant="filled"
+								error={!validPassword}
 								helperText={
 									validPassword
 										? undefined

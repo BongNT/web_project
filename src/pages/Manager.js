@@ -1,53 +1,34 @@
 import { Box, Typography, CircularProgress } from "@mui/material";
 import React from "react";
 import DataTable from "../components/DataTable";
-import AuthContext from "../contexts/AuthProvider";
 import {
 	AddModal,
 	EditModal,
 	DeleteModal,
-} from "../components/Modal/CertificateModal";
-import CertificateContext from "../contexts/CertificateProvider";
+} from "../components/Modal/ManagerModal";
+import AuthContext from "../contexts/AuthProvider";
+import ManagerContext from "../contexts/ManagerProvider";
+import useAuth from "../hooks/useAuth";
 
 const columns = [
 	{
-		field: "id",
-		headerName: "Số",
-		headerAlign: "center",
-		align: "center",
-		flex: 1,
-	},
-	{
 		field: "name",
-		headerName: "Cơ sở",
+		headerName: "Tên",
 		headerAlign: "center",
 		align: "center",
-		flex: 1,
+		width: 250,
 	},
 	{
-		field: "issue_date",
-		headerName: "Ngày cấp",
+		field: "districts_name",
+		headerName: "Địa bàn quản lý",
 		headerAlign: "center",
 		align: "center",
-		flex: 1,
-	},
-	{
-		field: "expiry_date",
-		headerName: "Ngày hết hạn",
-		headerAlign: "center",
-		align: "center",
-		flex: 1,
-	},
-	{
-		field: "status",
-		headerName: "Trạng thái",
-		headerAlign: "center",
-		align: "center",
-		flex: 1,
+		width: 800,
+		// renderCell: renderCellExpand,
 	},
 ];
 
-export default function Certificate() {
+export default function Manager() {
 	const {
 		auth,
 		fetchOk,
@@ -60,25 +41,20 @@ export default function Certificate() {
 		handleEditClick,
 		handleDeleteClick,
 		setFetchOk,
-	} = React.useContext(CertificateContext);
+	} = React.useContext(ManagerContext);
 
 	React.useEffect(
 		() => async () => {
-			const response = await fetch(
-				"http://127.0.0.1:8000/certificates/",
-				{
-					headers: { Authorization: `bearer ${auth.token}` },
-				}
-			);
+			const response = await fetch("http://127.0.0.1:8000/managers/", {
+				headers: { Authorization: `bearer ${auth.token}` },
+			});
 			const data = await response.json();
 			console.log(data);
-			data.forEach((row) => {
-				row.status === 1
-					? (row.status = "Còn hiệu lực")
-					: row.status === 2
-					? (row.status = "Hết hạn")
-					: (row.status = "Bị thu hồi");
-				row.name = row.facility.name;
+			data.map((row) => {
+				row.districts_name = "";
+				row.districts.forEach((element) => {
+					row.districts_name += element.name + ", ";
+				});
 			});
 			setRows(data);
 
@@ -90,7 +66,7 @@ export default function Certificate() {
 	return fetchOk ? (
 		<Box className="main" sx={{ height: 550 }}>
 			<Typography variant="h6" className="p-3">
-				Thông tin chứng nhận
+				Phụ trách địa bàn
 			</Typography>
 			<DataTable
 				rows={rows}

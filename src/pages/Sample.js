@@ -1,13 +1,13 @@
 import { Box, Typography, CircularProgress } from "@mui/material";
 import React from "react";
 import DataTable from "../components/DataTable";
-import AuthContext from "../contexts/AuthProvider";
 import {
 	AddModal,
 	EditModal,
 	DeleteModal,
-} from "../components/Modal/CertificateModal";
-import CertificateContext from "../contexts/CertificateProvider";
+} from "../components/Modal/SampleModal";
+import SampleContext from "../contexts/SampleProvider";
+import useAuth from "../hooks/useAuth";
 
 const columns = [
 	{
@@ -18,22 +18,8 @@ const columns = [
 		flex: 1,
 	},
 	{
-		field: "name",
-		headerName: "Cơ sở",
-		headerAlign: "center",
-		align: "center",
-		flex: 1,
-	},
-	{
-		field: "issue_date",
-		headerName: "Ngày cấp",
-		headerAlign: "center",
-		align: "center",
-		flex: 1,
-	},
-	{
-		field: "expiry_date",
-		headerName: "Ngày hết hạn",
+		field: "inspection_agency",
+		headerName: "Đơn vị giám định",
 		headerAlign: "center",
 		align: "center",
 		flex: 1,
@@ -45,9 +31,23 @@ const columns = [
 		align: "center",
 		flex: 1,
 	},
+	{
+		field: "result_date",
+		headerName: "Ngày nhận kết quả",
+		headerAlign: "center",
+		align: "center",
+		flex: 1,
+	},
+	{
+		field: "result",
+		headerName: "Kết quả",
+		headerAlign: "center",
+		align: "center",
+		flex: 1,
+	},
 ];
 
-export default function Certificate() {
+export default function Sample() {
 	const {
 		auth,
 		fetchOk,
@@ -60,25 +60,21 @@ export default function Certificate() {
 		handleEditClick,
 		handleDeleteClick,
 		setFetchOk,
-	} = React.useContext(CertificateContext);
+	} = React.useContext(SampleContext);
 
 	React.useEffect(
 		() => async () => {
-			const response = await fetch(
-				"http://127.0.0.1:8000/certificates/",
-				{
-					headers: { Authorization: `bearer ${auth.token}` },
-				}
-			);
+			const response = await fetch("http://127.0.0.1:8000/samples/", {
+				headers: { Authorization: `bearer ${auth.token}` },
+			});
 			const data = await response.json();
-			console.log(data);
+
 			data.forEach((row) => {
 				row.status === 1
-					? (row.status = "Còn hiệu lực")
+					? (row.status = "Đang gửi đi")
 					: row.status === 2
-					? (row.status = "Hết hạn")
-					: (row.status = "Bị thu hồi");
-				row.name = row.facility.name;
+					? (row.status = "Đang xử lý")
+					: (row.status = "Hoàn tất");
 			});
 			setRows(data);
 
@@ -90,7 +86,7 @@ export default function Certificate() {
 	return fetchOk ? (
 		<Box className="main" sx={{ height: 550 }}>
 			<Typography variant="h6" className="p-3">
-				Thông tin chứng nhận
+				Mẫu kiểm tra
 			</Typography>
 			<DataTable
 				rows={rows}

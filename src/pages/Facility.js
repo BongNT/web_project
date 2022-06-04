@@ -1,53 +1,45 @@
 import { Box, Typography, CircularProgress } from "@mui/material";
 import React from "react";
 import DataTable from "../components/DataTable";
-import AuthContext from "../contexts/AuthProvider";
 import {
 	AddModal,
 	EditModal,
 	DeleteModal,
-} from "../components/Modal/CertificateModal";
-import CertificateContext from "../contexts/CertificateProvider";
+} from "../components/Modal/FacilityModal";
+import FacilityContext from "../contexts/FacilityProvider";
 
 const columns = [
 	{
-		field: "id",
-		headerName: "Số",
-		headerAlign: "center",
-		align: "center",
-		flex: 1,
-	},
-	{
 		field: "name",
-		headerName: "Cơ sở",
+		headerName: "Tên cơ sở",
 		headerAlign: "center",
 		align: "center",
 		flex: 1,
 	},
 	{
-		field: "issue_date",
-		headerName: "Ngày cấp",
+		field: "type",
+		headerName: "Loại hình",
 		headerAlign: "center",
 		align: "center",
 		flex: 1,
 	},
 	{
-		field: "expiry_date",
-		headerName: "Ngày hết hạn",
+		field: "district",
+		headerName: "Địa chỉ",
 		headerAlign: "center",
 		align: "center",
 		flex: 1,
 	},
 	{
-		field: "status",
-		headerName: "Trạng thái",
+		field: "phone_number",
+		headerName: "Số điện thoại",
 		headerAlign: "center",
 		align: "center",
 		flex: 1,
 	},
 ];
 
-export default function Certificate() {
+export default function Facility() {
 	const {
 		auth,
 		fetchOk,
@@ -60,25 +52,22 @@ export default function Certificate() {
 		handleEditClick,
 		handleDeleteClick,
 		setFetchOk,
-	} = React.useContext(CertificateContext);
+	} = React.useContext(FacilityContext);
 
 	React.useEffect(
 		() => async () => {
-			const response = await fetch(
-				"http://127.0.0.1:8000/certificates/",
-				{
-					headers: { Authorization: `bearer ${auth.token}` },
-				}
-			);
+			const response = await fetch("http://127.0.0.1:8000/facilities/", {
+				headers: { Authorization: `bearer ${auth.token}` },
+			});
 			const data = await response.json();
 			console.log(data);
 			data.forEach((row) => {
-				row.status === 1
-					? (row.status = "Còn hiệu lực")
-					: row.status === 2
-					? (row.status = "Hết hạn")
-					: (row.status = "Bị thu hồi");
-				row.name = row.facility.name;
+				row.type === 1
+					? (row.type = "Sản xuất thực phẩm")
+					: row.type === 2
+					? (row.type = "Kinh doanh thực phẩm")
+					: (row.type = "Sản xuất và kinh doanh thực phẩm");
+				row.district = row.in_district.name;
 			});
 			setRows(data);
 
@@ -90,7 +79,7 @@ export default function Certificate() {
 	return fetchOk ? (
 		<Box className="main" sx={{ height: 550 }}>
 			<Typography variant="h6" className="p-3">
-				Thông tin chứng nhận
+				Thông tin cơ sở
 			</Typography>
 			<DataTable
 				rows={rows}

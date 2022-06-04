@@ -1,5 +1,5 @@
 import React from "react";
-import { LinkList } from "./List";
+import LinkList from "./List";
 import { styled } from "@mui/material/styles";
 import { Toolbar, Divider } from "@mui/material";
 import MuiAccordion from "@mui/material/Accordion";
@@ -7,7 +7,7 @@ import MuiAccordionSummary from "@mui/material/AccordionSummary";
 import MuiAccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import "./Sidebar.css";
+import "../css/Sidebar.css";
 
 const Accordion = styled((props) => (
 	<MuiAccordion disableGutters elevation={0} square {...props} />
@@ -37,15 +37,17 @@ export default function Sidebar() {
 		{
 			id: 1,
 			title: "Cơ sở sản xuất",
-			items: [{ id: 1, name: "Giấy chứng nhận", link: "/home" }],
+			items: [
+				{ id: 1, name: "Thông tin cơ sở", link: "/facility" },
+				{ id: 2, name: "Giấy chứng nhận", link: "/certificate" },
+			],
 		},
 		{
 			id: 2,
 			title: "Thanh tra, kiểm tra",
 			items: [
-				{ id: 1, name: "Kế hoạch", link: "/home" },
-				{ id: 2, name: "Mẫu kiểm tra", link: "/certificate" },
-				{ id: 3, name: "Kết quả thanh tra", link: "/certificate" },
+				{ id: 1, name: "Thanh tra", link: "/inspection" },
+				{ id: 2, name: "Mẫu kiểm tra", link: "/sample" },
 			],
 		},
 		{
@@ -53,7 +55,7 @@ export default function Sidebar() {
 			title: "Phân quyền",
 			items: [
 				{ id: 1, name: "Cán bộ", link: "/user" },
-				{ id: 2, name: "Địa bàn", link: "/certificate" },
+				{ id: 2, name: "Địa bàn", link: "/manager" },
 			],
 		},
 	];

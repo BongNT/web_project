@@ -11,11 +11,9 @@ import AccountMenu from "../components/AccountMenu";
 import MyAccount from "./MyAccount";
 import RequireAuth from "../components/RequireAuth";
 import Unauthorized from "../components/Unauthorized";
-import RoleContext from "../contexts/RoleProvider";
 
 const drawerWidth = 240;
 function Home(props) {
-	const ROLES = React.useContext(RoleContext);
 	//responsive
 	const { window } = props;
 	const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -55,7 +53,6 @@ function Home(props) {
 			<Box
 				component="nav"
 				sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
-				aria-label="mailbox folders"
 			>
 				{/* The implementation can be swapped with js to avoid SEO duplication of links. */}
 				<Drawer
@@ -95,8 +92,6 @@ function Home(props) {
 				component="main"
 				sx={{
 					flexGrow: 1,
-					paddingLeft: 3,
-					paddingRight: 3,
 					width: { sm: `calc(100% - ${drawerWidth}px)` },
 				}}
 			>

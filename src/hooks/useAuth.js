@@ -1,8 +1,30 @@
-import { useContext } from "react";
-import AuthContext from "../contexts/AuthProvider";
+import { useState, useEffect } from "react";
 
-const useAuth = () => {
-	return useContext(AuthContext);
-};
+export default function useAuth() {
+	function getValue() {
+		const userAccess = JSON.parse(sessionStorage.getItem("user_access"));
 
-export default useAuth;
+		return {
+			user: userAccess?.user,
+			token: userAccess?.token,
+			role: userAccess?.role,
+		};
+	}
+
+	const [value, setValue] = useState(() => {
+		return getValue();
+	});
+
+	useEffect(() => {
+		sessionStorage.setItem(
+			"user_access",
+			JSON.stringify({
+				user: value.user,
+				token: value.token,
+				role: value.role,
+			})
+		);
+	}, [value]);
+
+	return [value, setValue];
+}

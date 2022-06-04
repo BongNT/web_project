@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 export default function Unauthorized() {
@@ -7,12 +7,23 @@ export default function Unauthorized() {
 	const goBack = () => navigate(-1);
 
 	return (
-		<Box>
-			<Typography variant="h2">Chỉ dành cho Admin</Typography>
-			<p>Bạn không có quyền truy cập chức năng này.</p>
-			<div className="flexGrow">
-				<button onClick={goBack}>Trở lại</button>
-			</div>
+		<Box
+			sx={{
+				display: "flex",
+				flexWrap: "wrap",
+				alignItems: "center",
+				justifyContent: "center",
+				height: 550,
+			}}
+		>
+			<Box className="w-100 text-center">
+				<Typography variant="h2">Chỉ dành cho Admin</Typography>
+				<Typography>
+					Bạn không có quyền truy cập chức năng này.
+				</Typography>
+			</Box>
+
+			<Button onClick={goBack}>Trở lại</Button>
 		</Box>
 	);
 }
