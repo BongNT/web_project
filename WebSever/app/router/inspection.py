@@ -38,3 +38,8 @@ def update_inspection_by_id(request: request_data.InspectionUpdate, db: Session 
 @router.get("/suggest", status_code=status.HTTP_200_OK, response_model=List[response_data.Facility])
 def suggest_facility(db: Session = Depends(database.get_db), current_user=Depends(oauth2.get_current_user)):
     return inspection.suggest_facility(db, current_user)
+
+@router.get("/statistic", status_code=status.HTTP_200_OK)
+def get_statistic( db: Session = Depends(database.get_db),
+                             current_user=Depends(oauth2.get_current_user)):
+    return inspection.statistic( db, current_user)

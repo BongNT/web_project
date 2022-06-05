@@ -18,8 +18,6 @@ def get_all(db: Session, current_user):
             models.District.id.in_(list_district)).all()
     else:
         certificates = certificates.options(joinedload(models.Certificate.facility)).all()
-    if not certificates:
-        raise HTTPException(status_code=status.HTTP_204_NO_CONTENT, detail="No certificate")
     return certificates
 
 
@@ -114,6 +112,36 @@ def update_by_id(request: request_data.CertificateUpdate, db: Session, current_u
             msg += "status "
         msg += "successfully."
         return {"detail": msg}
+
+
+def statistic(db: Session, current_user):
+    total = 0
+    valid = 0
+    expired = 0
+    revoked = 0
+    try:
+        certificates = get_all(db, current_user)
+    except:
+        return {
+            "total": total,
+            "valid": valid,
+            "expired": expired,
+            "revoked": revoked
+        }
+    for certi in certificates:
+        total+=1
+        if certi.status == CertificateStatus.VALID.value:
+            valid += 1
+        elif certi.status == CertificateStatus.EXPIRED.value:
+            expired +=1
+        elif certi.status == CertificateStatus.REVOKED.value:
+            revoked += 1
+    return {
+        "total": total,
+        "valid": valid,
+        "expired": expired,
+        "revoked": revoked
+    }
 
 
 def auto_update_status(db: Session):

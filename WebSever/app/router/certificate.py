@@ -40,3 +40,8 @@ def delete_certificate_by_id(id: int, db: Session = Depends(database.get_db),
 def update_certificate_by_id(request: request_data.CertificateUpdate, db: Session = Depends(database.get_db),
                              current_user=Depends(oauth2.get_current_user)):
     return certificate.update_by_id(request, db, current_user)
+
+@router.get("/statistic", status_code=status.HTTP_200_OK)
+def get_statistic( db: Session = Depends(database.get_db),
+                             current_user=Depends(oauth2.get_current_user)):
+    return certificate.statistic( db, current_user)

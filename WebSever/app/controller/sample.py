@@ -95,7 +95,7 @@ def update_by_id(request: request_data.SampleUpdate, db: Session, current_user):
             .join(models.Facility.in_district).filter(models.District.id.in_(list_district)) \
             .filter(models.Sample.id == request.id, models.Facility.district_id.in_(list_district)).first()
     else:
-        sample = sample.filter(models.Sample.id == id).first()
+        sample = sample.filter(models.Sample.id == request.id).first()
 
     if sample is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Sample id not found")

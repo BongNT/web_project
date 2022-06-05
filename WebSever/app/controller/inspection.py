@@ -178,3 +178,38 @@ def suggest_facility(db: Session, current_user):
     suggest_facilities = db.query(models.Facility).filter(models.Facility.id.in_(list_id_facility)).all()
 
     return suggest_facilities
+
+
+def statistic(db, current_user):
+    total = 0
+    init = 0
+    checking = 0
+    eligible = 0
+    ineligible = 0
+    try:
+        inspections = get_all(db, current_user)
+    except:
+        return {
+            "total": total,
+            "init": init,
+            "checking": checking,
+            "eligible": eligible,
+            "ineligible": ineligible
+        }
+    for inspec in inspections:
+        total += 1
+        if inspec.result == InspectionResult.INIT.value:
+            init += 1
+        elif inspec.result == InspectionResult.CHECKING.value:
+            checking += 1
+        elif inspec.result == InspectionResult.ELIGIBLE.value:
+            eligible += 1
+        elif inspec.result == InspectionResult.INELIGIBLE.value:
+            ineligible += 1
+    return {
+        "total": total,
+        "init": init,
+        "checking": checking,
+        "eligible": eligible,
+        "ineligible": ineligible
+    }

@@ -34,3 +34,8 @@ def delete_facility_by_id(id: int, db: Session = Depends(database.get_db),
 def update_facility_by_id(request: request_data.FacilityUpdate, db: Session = Depends(database.get_db),
                           current_user=Depends(oauth2.get_current_user)):
     return facility.update(request, db, current_user)
+
+@router.get("/statistic", status_code=status.HTTP_200_OK)
+def get_statistic( db: Session = Depends(database.get_db),
+                             current_user=Depends(oauth2.get_current_user)):
+    return facility.statistic( db, current_user)

@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session, joinedload
 
 from app.model import models
 from app.util import request_data
-from app.util.special_value import UserType
+from app.util.special_value import UserType, FacilityType
 
 
 def get_all(db: Session, current_user):
@@ -19,8 +19,6 @@ def get_all(db: Session, current_user):
     else:
         facilities = facilities.options(
             joinedload(models.Facility.in_district).joinedload(models.District.province)).all()
-    if not facilities:
-        raise HTTPException(status_code=status.HTTP_204_NO_CONTENT, detail="No facility in data")
     return facilities
 
 
@@ -137,3 +135,33 @@ def certificate_in_db(id: int, db) -> bool:
         return True
     else:
         return False
+
+
+def statistic(db, current_user):
+    total = 0
+    production = 0
+    business = 0
+    both = 0
+    try:
+        facilities = get_all(db, current_user)
+    except:
+        return {
+            "total": total,
+            "production": production,
+            "business": business,
+            "production_and_business": both
+        }
+    for facility in facilities:
+        total += 1
+        if facility.type == FacilityType.FOOD_PRODUCTION.value:
+            production += 1
+        elif facility.type == FacilityType.FOOD_BUSINESS.value:
+            business += 1
+        elif facility.type == FacilityType.FOOD_PRODUCTION_AND_BUSINESS.value:
+            both += 1
+    return {
+        "total": total,
+        "production": production,
+        "business": business,
+        "production_and_business": both
+    }
