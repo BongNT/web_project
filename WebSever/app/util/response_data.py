@@ -79,7 +79,7 @@ class Inspection(BaseModel):
     id: int
     start_date: date
     end_date: date
-    result: Union[str, None]
+    result: Union[int, None]
 
     class Config():
         orm_mode = True

@@ -1,6 +1,7 @@
 from fastapi import status, HTTPException
 from sqlalchemy.orm import Session, joinedload
-
+from app.util.special_value import UserType, InspectionResult, CertificateStatus
+from datetime import date
 from app.model import models
 from app.util import request_data
 from app.util.special_value import UserType
@@ -43,6 +44,7 @@ def create(request: request_data.InspectionCreate, db: Session, current_user):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"Not found facility id {request.facility_id}")
     else:
+        # check inspections at same facility are conflict date
         inspections = db.query(models.Inspection) \
             .filter(models.Inspection.facility_id == request.facility_id).all()
         if len(inspections) > 0:
@@ -52,7 +54,7 @@ def create(request: request_data.InspectionCreate, db: Session, current_user):
                                         detail=f"This facility has inspection from {i.start_date} to {i.end_date}")
 
         # create
-        new_inspection = models.Inspection(facility_id=request.facility_id, result=request.result,
+        new_inspection = models.Inspection(facility_id=request.facility_id, result= InspectionResult.INIT.value,
                                            start_date=request.start_date, end_date=request.end_date)
         db.add(new_inspection)
         db.commit()
@@ -126,3 +128,53 @@ def update_by_id(request: request_data.InspectionUpdate, db: Session, current_us
                 msg += "End date "
         msg += "successfully."
         return {"detail": msg}
+
+def suggest_facility(db: Session, current_user):
+    facilities = db.query(models.Facility)
+    if current_user.type == UserType.MANAGER.value:
+        list_district = []
+        for i in current_user.districts:
+            list_district.append(i.id)
+        facilities = facilities.join(models.Facility.in_district).filter(models.District.id.in_(list_district)).all()
+    else:
+        facilities = facilities.all()
+    list_point = []
+    for facility in facilities:
+        point = 0
+        certi = db.query(models.Certificate).filter(models.Certificate.facility_id == facility.id).first()
+        if certi is None:
+            point += 100
+        else:
+            if certi.status == CertificateStatus.EXPIRED.value or certi.status == CertificateStatus.REVOKED.value:
+                point += 100
+            else:
+                point -= 70
+        inspections = db.query(models.Inspection).filter(models.Inspection.facility_id == facility.id).all()
+        if inspections is None:
+            point += 200
+        latest_inspect_day = date(2000,1,1)
+        for i in inspections:
+            if i.result == InspectionResult.INELIGIBLE.value:
+               point += 100
+            elif i.result == InspectionResult.CHECKING.value:
+                point -= 20
+            else:
+                point -= 70
+            if i.end_date > latest_inspect_day:
+                latest_inspect_day = i.end_date
+        delta = (date.today() - latest_inspect_day).days
+        if delta > 30:
+            point += (delta-30) * 5
+        elif -30<delta <0:
+            # has inspection in next month
+            point -= (30+delta)*5
+        list_point.append({"facility_id": facility.id, "point": point})
+    # list_point.sort(key=lambda e: e["point"], reverse=True)
+    list_id_facility = []
+    for i in list_point:
+        if i["point"] >=100:
+            list_id_facility.append(i["facility_id"])
+
+    suggest_facilities = db.query(models.Facility).filter(models.Facility.id.in_(list_id_facility)).all()
+
+    return suggest_facilities

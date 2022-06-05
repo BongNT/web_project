@@ -24,7 +24,7 @@ def register_facilities(request: request_data.FacilityCreate, db: Session = Depe
     return facility.create(request, db, current_user)
 
 
-@router.post("/{id}/delete", status_code=status.HTTP_200_OK)
+@router.delete("/{id}/delete", status_code=status.HTTP_200_OK)
 def delete_facility_by_id(id: int, db: Session = Depends(database.get_db),
                           current_user=Depends(oauth2.get_current_user)):
     return facility.delete(id, db, current_user)

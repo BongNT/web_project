@@ -111,7 +111,7 @@ def update_by_id(request: request_data.CertificateUpdate, db: Session, current_u
                     certificate_query.update({models.Certificate.status: CertificateStatus.EXPIRED.value},
                                              synchronize_session="fetch")
                     db.commit()
-            msg += "expiry date "
+            msg += "status "
         msg += "successfully."
         return {"detail": msg}
 
@@ -130,13 +130,14 @@ def update_status(id: int, db):
     certificate = certificate_query.first()
 
     today = date.today()
-    if today <= certificate.expiry_date:
-        certificate_query.update({models.Certificate.status: CertificateStatus.VALID.value},
-                                 synchronize_session="fetch")
-        db.commit()
-        return f"id '{id}' change {certificate.status} to valid-1"
-    else:
-        certificate_query.update({models.Certificate.status: CertificateStatus.EXPIRED.value},
-                                 synchronize_session="fetch")
-        db.commit()
-        return f"id '{id}' change {certificate.status} to expired-0"
+    if certificate.status != CertificateStatus.REVOKED.value:
+        if today <= certificate.expiry_date:
+            certificate_query.update({models.Certificate.status: CertificateStatus.VALID.value},
+                                     synchronize_session="fetch")
+            db.commit()
+            return f"id '{id}' change {certificate.status} to valid-1"
+        else:
+            certificate_query.update({models.Certificate.status: CertificateStatus.EXPIRED.value},
+                                     synchronize_session="fetch")
+            db.commit()
+            return f"id '{id}' change {certificate.status} to expired-0"
