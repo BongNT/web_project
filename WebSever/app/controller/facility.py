@@ -1,7 +1,8 @@
-from fastapi import APIRouter, status, HTTPException
-from app.util import request_data
+from fastapi import status, HTTPException
 from sqlalchemy.orm import Session, joinedload
-from app.model import models, hashing
+
+from app.model import models
+from app.util import request_data
 from app.util.special_value import UserType
 
 
@@ -16,7 +17,8 @@ def get_all(db: Session, current_user):
             list_district.append(i.id)
         facilities = facilities.join(models.Facility.in_district).filter(models.District.id.in_(list_district)).all()
     else:
-        facilities = facilities.options(joinedload(models.Facility.in_district).joinedload(models.District.province)).all()
+        facilities = facilities.options(
+            joinedload(models.Facility.in_district).joinedload(models.District.province)).all()
     if not facilities:
         raise HTTPException(status_code=status.HTTP_204_NO_CONTENT, detail="No facility in data")
     return facilities
@@ -30,7 +32,8 @@ def create(request: request_data.FacilityCreate, db: Session, current_user):
         list_district = []
         for i in current_user.districts:
             list_district.append(i.id)
-        district = district.filter(models.District.id.in_(list_district), models.District.id == request.district_id).first()
+        district = district.filter(models.District.id.in_(list_district),
+                                   models.District.id == request.district_id).first()
     else:
         district = district.filter(models.District.id == request.district_id).first()
     if district:
@@ -65,7 +68,7 @@ def delete(id: int, db: Session, current_user):
             for i in current_user.districts:
                 list_district.append(i.id)
             facility = facility.join(models.Facility.in_district).filter(
-                models.District.id.in_(list_district),models.Facility.id == id).first()
+                models.District.id.in_(list_district), models.Facility.id == id).first()
         else:
             facility = facility.filter(models.Facility.id == id).first()
         # check Facility with id is in database
@@ -124,8 +127,6 @@ def update(request: request_data.FacilityUpdate, db: Session, current_user):
             msg += "name "
         msg += "successfully."
         return {"detail": msg}
-
-
 
 
 def certificate_in_db(id: int, db) -> bool:

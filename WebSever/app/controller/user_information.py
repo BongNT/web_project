@@ -1,22 +1,26 @@
-from fastapi import APIRouter, status, HTTPException
+from fastapi import status, HTTPException
+from sqlalchemy.orm import Session
+
+from app.model import models
 from app.util import request_data
-from sqlalchemy.orm import Session, joinedload
-from app.model import models,hashing
 from app.util.special_value import UserType, Gender
 
-import json
-def get_info(db: Session, current_user:models.User):
+
+def get_info(db: Session, current_user: models.User):
     info = db.query(models.UserInformation).filter(models.UserInformation.user_id == current_user.id).first()
     if info is None:
         raise HTTPException(status_code=status.HTTP_204_NO_CONTENT, detail="Information not found")
     return info
 
-def get_districts( current_user:models.User):
+
+def get_districts(current_user: models.User):
     if current_user.type == UserType.MANAGER.value:
         return current_user.districts
     else:
         return {"districts": "all districts"}
-def update_info(request: request_data.UserInformationUpdate ,db: Session, current_user:models.User):
+
+
+def update_info(request: request_data.UserInformationUpdate, db: Session, current_user: models.User):
     info_query = db.query(models.UserInformation).filter(models.UserInformation.user_id == current_user.id)
     info = info_query.first()
     if info is None:
@@ -48,7 +52,8 @@ def update_info(request: request_data.UserInformationUpdate ,db: Session, curren
 
 
 def create_info(db: Session, user_id: int):
-    new_info = models.UserInformation(user_id=user_id, fullname="Nguyễn Văn A", DOB="2001-01-01", gender=Gender.OTHER.value, phone_number="0123456789", address="Việt Nam")
+    new_info = models.UserInformation(user_id=user_id, fullname="Nguyễn Văn A", DOB="2001-01-01",
+                                      gender=Gender.OTHER.value, phone_number="0123456789", address="Việt Nam")
     db.add(new_info)
     db.commit()
     db.refresh(new_info)

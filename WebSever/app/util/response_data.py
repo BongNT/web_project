@@ -1,6 +1,7 @@
 from datetime import date
-from pydantic import BaseModel
 from typing import List, Union
+
+from pydantic import BaseModel
 
 
 class User(BaseModel):
@@ -24,9 +25,13 @@ class Province(BaseModel):
 class District(BaseModel):
     id: str
     name: str
+
     class Config():
         orm_mode = True
 
+
+class DistrictProvince(District):
+    province: Province
 
 
     class Config():
@@ -74,14 +79,15 @@ class Inspection(BaseModel):
     id: int
     start_date: date
     end_date: date
-    result: Union[int, None]
-
+    result: Union[str, None]
 
     class Config():
         orm_mode = True
 
+
 class InspectionFacility(Inspection):
     facility_inspection: Facility2
+
 
 class Sample(BaseModel):
     id: int
@@ -90,8 +96,10 @@ class Sample(BaseModel):
     result_date: date
     result: Union[str, None]
     in_inspection: Inspection
+
     class Config():
         orm_mode = True
+
 
 class UserInformation(BaseModel):
     fullname: str

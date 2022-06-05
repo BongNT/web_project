@@ -1,10 +1,10 @@
-from fastapi import APIRouter, status, HTTPException
-from app.util import request_data
+from fastapi import status, HTTPException
 from sqlalchemy.orm import Session, joinedload
-from app.model import models,hashing
-from app.util.special_value import UserType
-from app.controller import user_information
 
+from app.controller import user_information
+from app.model import models, hashing
+from app.util import request_data
+from app.util.special_value import UserType
 
 
 def get_all(db: Session):
@@ -26,11 +26,10 @@ def get_by_id(id: int, db: Session):
         else:
             return user
     else:
-        raise HTTPException(detail="Invalid id",status_code=status.HTTP_422_UNPROCESSABLE_ENTITY)
+        raise HTTPException(detail="Invalid id", status_code=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
 
 def create(request: request_data.UserCreate, db: Session):
-
     if not email_in_db(request.email, db):
         try:
             new_user = models.User(name=request.name, password=hashing.hash_password(request.password)
@@ -38,7 +37,7 @@ def create(request: request_data.UserCreate, db: Session):
             db.add(new_user)
             db.commit()
             db.refresh(new_user)
-            user = db.query(models.User).filter(models.User.name==request.name).first()
+            user = db.query(models.User).filter(models.User.name == request.name).first()
             return user_information.create_info(db, user.id)
         except:
             print(f"ERROR : Duplicate name_user:'{request.name}'.")
@@ -72,7 +71,7 @@ def delete_by_id(id: int, db: Session):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Invalid id")
 
 
-def update_by_id(request: request_data.UserUpdate,  db: Session):
+def update_by_id(request: request_data.UserUpdate, db: Session):
     user = db.query(models.User).filter(models.User.id == request.id).first()
     # check user with id is in database
     if user is None:
@@ -84,7 +83,8 @@ def update_by_id(request: request_data.UserUpdate,  db: Session):
         user_query = db.query(models.User).filter(models.User.id == request.id)
         msg = "update "
         if request.password is not None:
-            user_query.update({models.User.password: hashing.hash_password(request.password)}, synchronize_session="fetch")
+            user_query.update({models.User.password: hashing.hash_password(request.password)},
+                              synchronize_session="fetch")
             db.commit()
             msg += "password "
         if request.type is not None and user.type != UserType.DEFAULT_ADMIN.value:
@@ -92,14 +92,14 @@ def update_by_id(request: request_data.UserUpdate,  db: Session):
             db.commit()
             msg += "type "
         if request.email is not None:
-            if not email_in_db(request.email,db):
+            if not email_in_db(request.email, db):
                 user_query.update({models.User.email: request.email}, synchronize_session="fetch")
                 db.commit()
                 msg += "email "
             else:
                 raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"This email has been used")
-        msg += "successfully."
-        return {"detail": msg}
+                msg += "successfully."
+                return {"detail": msg}
 
 
 def email_in_db(email, db: Session) -> bool:
@@ -108,4 +108,3 @@ def email_in_db(email, db: Session) -> bool:
         return True
     else:
         return False
-

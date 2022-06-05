@@ -1,9 +1,11 @@
-from fastapi import APIRouter, Depends, status
-from app.util import request_data, response_data
-from sqlalchemy.orm import Session
-from app.model import database
 from typing import List
+
+from fastapi import APIRouter, Depends, status
+from sqlalchemy.orm import Session
+
 from app.controller import user, oauth2
+from app.model import database
+from app.util import request_data, response_data
 
 router = APIRouter(
     tags=["users"],
@@ -40,6 +42,3 @@ def delete_user_by_id(id: int, db: Session = Depends(database.get_db)):
 @router.put('/update', status_code=status.HTTP_200_OK)
 def update_user_by_id(request: request_data.UserUpdate, db: Session = Depends(database.get_db)):
     return user.update_by_id(request, db)
-
-
-

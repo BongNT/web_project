@@ -1,9 +1,12 @@
-from fastapi import APIRouter, status, HTTPException
-from app.util import request_data
-from sqlalchemy.orm import Session, joinedload
-from app.model import models,hashing
-from app.util.special_value import UserType, CertificateStatus
 from datetime import date
+
+from fastapi import status, HTTPException
+from sqlalchemy.orm import Session, joinedload
+
+from app.model import models
+from app.util import request_data
+from app.util.special_value import UserType, CertificateStatus
+
 
 def get_all(db: Session, current_user):
     certificates = db.query(models.Certificate)
@@ -11,12 +14,14 @@ def get_all(db: Session, current_user):
         list_district = []
         for i in current_user.districts:
             list_district.append(i.id)
-        certificates = certificates.join(models.Certificate.facility).join(models.Facility.in_district).filter(models.District.id.in_(list_district)).all()
+        certificates = certificates.join(models.Certificate.facility).join(models.Facility.in_district).filter(
+            models.District.id.in_(list_district)).all()
     else:
         certificates = certificates.options(joinedload(models.Certificate.facility)).all()
     if not certificates:
         raise HTTPException(status_code=status.HTTP_204_NO_CONTENT, detail="No certificate")
     return certificates
+
 
 def create(request: request_data.CertificateCreate, db: Session, current_user):
     facility = db.query(models.Facility)
@@ -24,7 +29,8 @@ def create(request: request_data.CertificateCreate, db: Session, current_user):
         list_district = []
         for i in current_user.districts:
             list_district.append(i.id)
-        facility = facility.join(models.Facility.in_district).filter(models.District.id.in_(list_district), models.Facility.id == request.facility_id).first()
+        facility = facility.join(models.Facility.in_district).filter(models.District.id.in_(list_district),
+                                                                     models.Facility.id == request.facility_id).first()
     else:
         facility = facility.filter(models.Facility.id == request.facility_id).first()
     if facility:
@@ -42,6 +48,7 @@ def create(request: request_data.CertificateCreate, db: Session, current_user):
     else:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Facility id not found")
 
+
 def delete_by_id(id: int, db: Session, current_user):
     if id > 0:
         certificate = db.query(models.Certificate)
@@ -49,7 +56,8 @@ def delete_by_id(id: int, db: Session, current_user):
             list_district = []
             for i in current_user.districts:
                 list_district.append(i.id)
-            certificate = certificate.join(models.Certificate.facility).join(models.Facility.in_district).filter(models.District.id.in_(list_district), models.Certificate.id == id).first()
+            certificate = certificate.join(models.Certificate.facility).join(models.Facility.in_district).filter(
+                models.District.id.in_(list_district), models.Certificate.id == id).first()
         else:
             certificate = certificate.filter(models.Certificate.id == id).first()
         # check certificate with id is in database
@@ -63,7 +71,8 @@ def delete_by_id(id: int, db: Session, current_user):
     else:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Invalid id")
 
-def update_by_id(request: request_data.CertificateUpdate,db: Session, current_user):
+
+def update_by_id(request: request_data.CertificateUpdate, db: Session, current_user):
     certificate = db.query(models.Certificate)
     if current_user.type == UserType.MANAGER.value:
         list_district = []
@@ -94,7 +103,7 @@ def update_by_id(request: request_data.CertificateUpdate,db: Session, current_us
                 db.commit()
             else:
                 today = date.today()
-                if certificate.issue_date<= today <= certificate.expiry_date:
+                if certificate.issue_date <= today <= certificate.expiry_date:
                     certificate_query.update({models.Certificate.status: CertificateStatus.VALID.value},
                                              synchronize_session="fetch")
                     db.commit()
@@ -106,13 +115,15 @@ def update_by_id(request: request_data.CertificateUpdate,db: Session, current_us
         msg += "successfully."
         return {"detail": msg}
 
+
 def auto_update_status(db: Session):
     list_id = db.query(models.Certificate.id).all()
-    res =[]
+    res = []
     # return list_id
     for i in list_id:
         res.append(update_status(i.id, db))
     return res
+
 
 def update_status(id: int, db):
     certificate_query = db.query(models.Certificate).filter(models.Certificate.id == id)
@@ -129,4 +140,3 @@ def update_status(id: int, db):
                                  synchronize_session="fetch")
         db.commit()
         return f"id '{id}' change {certificate.status} to expired-0"
-

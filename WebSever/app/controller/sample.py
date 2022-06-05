@@ -1,7 +1,8 @@
-from fastapi import APIRouter, status, HTTPException
-from app.util import request_data
+from fastapi import status, HTTPException
 from sqlalchemy.orm import Session, joinedload
-from app.model import models,hashing
+
+from app.model import models
+from app.util import request_data
 from app.util.special_value import UserType
 
 
@@ -11,7 +12,8 @@ def get_all(db: Session, current_user):
         list_district = []
         for i in current_user.districts:
             list_district.append(i.id)
-        samples = samples.join(models.Sample.in_inspection).join(models.Inspection.facility_inspection).join(models.Facility.in_district).filter(models.District.id.in_(list_district)).all()
+        samples = samples.join(models.Sample.in_inspection).join(models.Inspection.facility_inspection).join(
+            models.Facility.in_district).filter(models.District.id.in_(list_district)).all()
     else:
         samples = samples.options(joinedload(models.Sample.in_inspection, innerjoin=True)).all()
 
@@ -28,8 +30,9 @@ def create(request: request_data.SampleCreate, db: Session, current_user):
         list_district = []
         for i in current_user.districts:
             list_district.append(i.id)
-        inspection = inspection.join(models.Inspection.facility_inspection).join(models.Facility.in_district)\
-            .filter(models.Inspection.id == request.inspection_id, models.Facility.district_id.in_(list_district)).first()
+        inspection = inspection.join(models.Inspection.facility_inspection).join(models.Facility.in_district) \
+            .filter(models.Inspection.id == request.inspection_id,
+                    models.Facility.district_id.in_(list_district)).first()
     else:
         inspection = inspection.filter(models.Inspection.id == request.inspection_id).first()
 
@@ -55,7 +58,7 @@ def create(request: request_data.SampleCreate, db: Session, current_user):
                             detail=f"Invalid inspection id")
 
 
-def delete_by_id(id: int,db: Session, current_user):
+def delete_by_id(id: int, db: Session, current_user):
     if id > 0:
         sample = db.query(models.Sample)
         # check sample with id is in database
@@ -63,8 +66,9 @@ def delete_by_id(id: int,db: Session, current_user):
             list_district = []
             for i in current_user.districts:
                 list_district.append(i.id)
-            sample = sample.join(models.Sample.in_inspection).join(models.Inspection.facility_inspection)\
-                .join(models.Facility.in_district).filter(models.District.id.in_(list_district)).filter(models.Sample.id == id, models.Facility.district_id.in_(list_district)).first()
+            sample = sample.join(models.Sample.in_inspection).join(models.Inspection.facility_inspection) \
+                .join(models.Facility.in_district).filter(models.District.id.in_(list_district)).filter(
+                models.Sample.id == id, models.Facility.district_id.in_(list_district)).first()
         else:
             sample = sample.filter(models.Sample.id == id).first()
 
@@ -88,7 +92,7 @@ def update_by_id(request: request_data.SampleUpdate, db: Session, current_user):
         for i in current_user.districts:
             list_district.append(i.id)
         sample = sample.join(models.Sample.in_inspection).join(models.Inspection.facility_inspection) \
-            .join(models.Facility.in_district).filter(models.District.id.in_(list_district))\
+            .join(models.Facility.in_district).filter(models.District.id.in_(list_district)) \
             .filter(models.Sample.id == request.id, models.Facility.district_id.in_(list_district)).first()
     else:
         sample = sample.filter(models.Sample.id == id).first()
@@ -106,7 +110,8 @@ def update_by_id(request: request_data.SampleUpdate, db: Session, current_user):
             db.commit()
             msg += "result date "
         if request.inspection_agency is not None:
-            sample_query.update({models.Sample.inspection_agency: request.inspection_agency}, synchronize_session="fetch")
+            sample_query.update({models.Sample.inspection_agency: request.inspection_agency},
+                                synchronize_session="fetch")
             db.commit()
             msg += "inspection agency "
         if request.status is not None:

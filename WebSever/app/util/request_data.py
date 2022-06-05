@@ -1,9 +1,11 @@
-from pydantic import BaseModel,ValidationError, validator
-from typing import Optional
-from app.util.special_value import UserType, FacilityType, CertificateStatus, SampleStatus, InspectionResult
-from datetime import date
 import re
+from datetime import date
+from typing import Optional
 from typing import Union
+
+from pydantic import BaseModel, validator
+
+from app.util.special_value import UserType, FacilityType, SampleStatus
 
 """
 Pydantic uses the term "model" to refer to something different, the data validation, conversion, 
@@ -19,6 +21,7 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     userid: Union[int, None] = None
     usertype: Union[int, None] = None
+
 
 class UserCreate(BaseModel):
     name: str
@@ -129,7 +132,6 @@ class UserUpdate(BaseModel):
         else:
             return i
 
-
     @validator('password')
     def valid_password(cls, password):
         """
@@ -155,8 +157,6 @@ class UserUpdate(BaseModel):
         if type is None:
             return type
         if type not in UserType.get_list_value():
-
-
             raise ValueError("Invalid type")
         if type == UserType.DEFAULT_ADMIN.value:
             raise ValueError("Invalid type")
@@ -183,14 +183,13 @@ class FacilityCreate(BaseModel):
     type: int
     district_id: str
     phone_number: Optional[str] = None
+
     @validator("type")
     def valid_type(cls, t):
         if t in FacilityType.get_list_value():
             return t
         else:
             raise ValueError("Invalid type")
-
-
 
 
 class FacilityUpdate(BaseModel):
@@ -218,7 +217,7 @@ class FacilityUpdate(BaseModel):
 
     @validator("phone_number")
     def is_number(cls, n):
-        if n.isnumeric() or len(n)==0:
+        if n.isnumeric() or len(n) == 0:
             return n
         else:
             raise ValueError("Invalid phone number")
@@ -228,13 +227,13 @@ class CertificateCreate(BaseModel):
     issue_date: date
     expiry_date: date
     facility_id: int
+
     @validator('expiry_date')
     def expiry_date_greater_than_issue_date(cls, field_value, values, field, config):
         if field_value <= values["issue_date"]:
             raise ValueError("Invalid Issue date and Expiry date")
         else:
             return field_value
-
 
 
 class CertificateUpdate(BaseModel):
@@ -256,9 +255,10 @@ class CertificateUpdate(BaseModel):
         else:
             raise ValueError("Invalid type")
 
+
 class InspectionCreate(BaseModel):
     facility_id: int
-    result: Optional[int] = InspectionResult.CHECKING.value
+    result: Optional[str] = None
     start_date: date
     end_date: date
 
@@ -266,10 +266,7 @@ class InspectionCreate(BaseModel):
     def trim_whitespace(cls, result):
         if result is None:
             return result
-        if result in InspectionResult.get_list_value():
-            return result
-        else:
-            raise ValueError("Invalid result")
+        return result.strip()
 
     @validator('end_date')
     def end_date_greater_than_start_date(cls, field_value, values, field, config):
@@ -278,20 +275,16 @@ class InspectionCreate(BaseModel):
         else:
             return field_value
 
+
 class InspectionUpdate(BaseModel):
     id: int
-    result: Optional[int] = None
+    result: Optional[str] = None
     start_date: Optional[date] = None
     end_date: Optional[date] = None
 
     @validator("result")
     def trim_whitespace(cls, result):
-        if result is None:
-            return result
-        if result in InspectionResult.get_list_value():
-            return result
-        else:
-            raise ValueError("Invalid result")
+        return result.strip()
 
     @validator('end_date')
     def end_date_greater_than_start_date(cls, field_value, values, field, config):
@@ -301,6 +294,7 @@ class InspectionUpdate(BaseModel):
             raise ValueError("Invalid Start date and End date")
         else:
             return field_value
+
 
 class SampleCreate(BaseModel):
     id: int
@@ -358,8 +352,9 @@ class SampleUpdate(BaseModel):
             return re.strip()
         return re
 
+
 class UserInformationUpdate(BaseModel):
-    fullname:Optional[str] = None
+    fullname: Optional[str] = None
     DOB: Optional[date] = None
     gender: Optional[int] = None
     phone_number: Optional[str] = None
