@@ -1,12 +1,10 @@
-from fastapi import APIRouter, status, HTTPException
+from fastapi import status, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
+from sqlalchemy.orm import Session
 
-from app.util import request_data
-from sqlalchemy.orm import Session, joinedload
-from app.model import models,hashing
-from app.util.special_value import UserType
 from app.controller import token
-from datetime import datetime, timedelta
+from app.model import models, hashing
+
 
 def login(request: OAuth2PasswordRequestForm, db: Session):
     user = db.query(models.User).filter(models.User.name == request.username).first()

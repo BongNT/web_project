@@ -1,8 +1,10 @@
-from fastapi import APIRouter, status, HTTPException
-from app.util import request_data
+from fastapi import status, HTTPException
 from sqlalchemy.orm import Session, joinedload
-from app.model import models,hashing
+
+from app.model import models
+from app.util import request_data
 from app.util.special_value import UserType
+
 
 def get_all(db: Session, current_user):
     """
@@ -13,12 +15,14 @@ def get_all(db: Session, current_user):
         list_district = []
         for i in current_user.districts:
             list_district.append(i.id)
-        inspection = inspection.join(models.Inspection.facility_inspection).join(models.Facility.in_district).filter(models.District.id.in_(list_district)).all()
+        inspection = inspection.join(models.Inspection.facility_inspection).join(models.Facility.in_district).filter(
+            models.District.id.in_(list_district)).all()
     else:
         inspection = inspection.options(joinedload(models.Inspection.facility_inspection)).all()
     if not inspection:
         raise HTTPException(status_code=status.HTTP_204_NO_CONTENT, detail="No inspection in data")
     return inspection
+
 
 def create(request: request_data.InspectionCreate, db: Session, current_user):
     """
@@ -30,7 +34,8 @@ def create(request: request_data.InspectionCreate, db: Session, current_user):
         list_district = []
         for i in current_user.districts:
             list_district.append(i.id)
-        facility = facility.join(models.Facility.in_district).filter(models.District.id.in_(list_district), models.Facility.id == request.facility_id).first()
+        facility = facility.join(models.Facility.in_district).filter(models.District.id.in_(list_district),
+                                                                     models.Facility.id == request.facility_id).first()
     else:
         facility = facility.filter(models.Facility.id == request.facility_id).first()
 
@@ -55,7 +60,7 @@ def create(request: request_data.InspectionCreate, db: Session, current_user):
         return {"detail": "Create inspection successfully"}
 
 
-def delete_by_id(id: int,db: Session, current_user):
+def delete_by_id(id: int, db: Session, current_user):
     if id > 0:
         inspection = db.query(models.Inspection)
         if current_user.type == UserType.MANAGER.value:
@@ -63,7 +68,8 @@ def delete_by_id(id: int,db: Session, current_user):
             for i in current_user.districts:
                 list_district.append(i.id)
             inspection = inspection.join(models.Inspection.facility_inspection).join(
-                models.Facility.in_district).filter(models.District.id.in_(list_district), models.Inspection.id == id).first()
+                models.Facility.in_district).filter(models.District.id.in_(list_district),
+                                                    models.Inspection.id == id).first()
         else:
             inspection = inspection.filter(models.Inspection.id == id).first()
         # check inspection with id is in database
@@ -77,7 +83,8 @@ def delete_by_id(id: int,db: Session, current_user):
     else:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Invalid id")
 
-def update_by_id(request:request_data.InspectionUpdate ,db: Session, current_user):
+
+def update_by_id(request: request_data.InspectionUpdate, db: Session, current_user):
     inspection_query = db.query(models.Inspection).filter(models.Inspection.id == request.id)
     inspection = db.query(models.Inspection)
     if current_user.type == UserType.MANAGER.value:

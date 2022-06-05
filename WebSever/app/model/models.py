@@ -1,6 +1,5 @@
-from unicodedata import name
+from sqlalchemy import Column, Integer, String, ForeignKey, Date
 from sqlalchemy.orm import declarative_base
-from sqlalchemy import Column, Integer, String, ForeignKey,Date
 from sqlalchemy.orm import relationship
 
 """
@@ -8,7 +7,6 @@ SQLAlchemy uses the term "model" to refer to these classes and instances that in
 """
 
 Base = declarative_base()
-
 
 
 class User(Base):
@@ -22,20 +20,23 @@ class User(Base):
     districts = relationship("District", secondary='quanly', back_populates='managers')
     information = relationship("UserInformation", back_populates="user")
 
+
 class Manager(Base):
     __tablename__ = "quanly"
     user_id = Column("id_user", Integer, ForeignKey("user.id_user"), primary_key=True)
     district_id = Column("id_huyen", String, ForeignKey("huyen.id_huyen"), primary_key=True)
 
+
 class District(Base):
     __tablename__ = "huyen"
     id = Column("id_huyen", primary_key=True)
     name = Column("tenhuyen", String)
-    province_id = Column("id_thanhpho", String, ForeignKey("thanhpho.id_thanhpho") )
+    province_id = Column("id_thanhpho", String, ForeignKey("thanhpho.id_thanhpho"))
     # set relationship
     managers = relationship("User", secondary='quanly', back_populates='districts')
     province = relationship("Province", back_populates="districts")
     facilities = relationship("Facility", back_populates="in_district")
+
 
 class Province(Base):
     __tablename__ = "thanhpho"
@@ -43,6 +44,7 @@ class Province(Base):
     name = Column("tenthanhpho", String)
     # set relationship
     districts = relationship("District", back_populates="province")
+
 
 class Facility(Base):
     __tablename__ = "coso"
@@ -56,6 +58,7 @@ class Facility(Base):
     certificate = relationship("Certificate", back_populates="facility", uselist=False)
     inspections = relationship("Inspection", back_populates="facility_inspection")
 
+
 class Inspection(Base):
     __tablename__ = "thanhtra"
     id = Column("id_thanhtra", Integer, primary_key=True)
@@ -66,6 +69,7 @@ class Inspection(Base):
     # set relationship
     samples = relationship("Sample", back_populates="in_inspection")
     facility_inspection = relationship("Facility", back_populates="inspections")
+
 
 class Certificate(Base):
     __tablename__ = "giaychungnhan"
@@ -78,17 +82,17 @@ class Certificate(Base):
     facility = relationship("Facility", back_populates="certificate", uselist=False)
 
 
-
 class Sample(Base):
     __tablename__ = "mau"
     id = Column("id_mau", Integer, primary_key=True)
-    inspection_id = Column("id_thanhtra",Integer, ForeignKey("thanhtra.id_thanhtra"))
+    inspection_id = Column("id_thanhtra", Integer, ForeignKey("thanhtra.id_thanhtra"))
     inspection_agency = Column("donvigiamdinh", Integer)
     status = Column("status", Integer)
     result_date = Column("ngaynhanKQ", Date)
     result = Column("ketqua", String)
     # set relationship
     in_inspection = relationship("Inspection", back_populates="samples")
+
 
 class UserInformation(Base):
     __tablename__ = "user_information"
@@ -101,11 +105,3 @@ class UserInformation(Base):
     address = Column("address", String)
     # set relationship
     user = relationship("User", back_populates="information")
-
-
-
-
-
-
-
-
