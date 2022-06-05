@@ -1,4 +1,3 @@
-
 class DatabaseConfig:
     """
     This data base using is mysql.
@@ -16,3 +15,8 @@ class DatabaseConfig:
     def get_URL(self):
         # mysql+pymysql://<username>:<password>@<host>/<dbname>
         return f"mysql+pymysql://{self.username}:{self.password}@{self.hostname}:{self.port}/{self.database_name}?charset=utf8mb4"
+
+
+class AppConfig:
+    host = "127.0.0.1"
+    port = 8000
