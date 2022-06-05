@@ -33,12 +33,13 @@ class District(BaseModel):
 class DistrictProvince(District):
     province: Province
 
+
     class Config():
         orm_mode = True
 
 
 class UserDistrict(User):
-    districts: List[DistrictProvince]
+    districts: List[District]
 
 
 class Facility(BaseModel):
@@ -46,7 +47,7 @@ class Facility(BaseModel):
     name: str
     type: int
     phone_number: Union[str, None]
-    in_district: DistrictProvince
+    in_district: District
 
     class Config():
         orm_mode = True
