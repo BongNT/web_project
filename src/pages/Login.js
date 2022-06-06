@@ -20,7 +20,6 @@ import {
 	useMediaQuery,
 } from "@mui/material";
 import "../css/Login.css";
-import useAuth from "../hooks/useAuth";
 import AuthContext from "../contexts/AuthProvider";
 
 const USER_REGEX = /^[a-zA-Z0-9]+$/;
@@ -88,8 +87,7 @@ export default function Login() {
 				return;
 			}
 			const res = await response.json();
-			console.log(res.access_token);
-			console.log(res.user_type);
+
 			setAuth({
 				user: userName,
 				token: res.access_token,

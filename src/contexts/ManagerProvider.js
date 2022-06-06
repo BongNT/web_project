@@ -1,4 +1,5 @@
 import React from "react";
+import useData from "../hooks/useData";
 import AuthContext from "./AuthProvider";
 
 const ManagerContext = React.createContext();
@@ -6,6 +7,10 @@ const ManagerContext = React.createContext();
 export function ManagerProvider({ children }) {
 	const { auth } = React.useContext(AuthContext);
 	const [fetchOk, setFetchOk] = React.useState(false);
+
+	const [managers, setManagers] = useData("managers");
+
+	const [districts, setDistricts] = useData("districts");
 
 	const [openAddModal, setOpenAddModal] = React.useState(false);
 
@@ -17,8 +22,7 @@ export function ManagerProvider({ children }) {
 
 	const idDataRef = React.useRef();
 	const userNameRef = React.useRef();
-	const emailRef = React.useRef();
-	const typeRef = React.useRef();
+	const districtRef = React.useRef();
 
 	//Actions
 	const handleEditClick = (id) => () => {
@@ -27,14 +31,17 @@ export function ManagerProvider({ children }) {
 		const editRow = rows.find((row) => row.id === id);
 		userNameRef.current = editRow.name;
 
-		emailRef.current = editRow.email;
-
-		typeRef.current = editRow.type === "Quản trị viên" ? 1 : 2;
+		districtRef.current = editRow.districts;
 	};
 
 	const handleDeleteClick = (id) => () => {
 		setOpenDeleteModal(true);
 		idDataRef.current = id;
+		const editRow = rows.find((row) => row.id === id);
+
+		userNameRef.current = editRow.name;
+
+		districtRef.current = editRow.districts;
 	};
 	return (
 		<ManagerContext.Provider
@@ -54,8 +61,11 @@ export function ManagerProvider({ children }) {
 				handleDeleteClick,
 				idDataRef,
 				userNameRef,
-				emailRef,
-				typeRef,
+				districtRef,
+				managers,
+				setManagers,
+				districts,
+				setDistricts,
 			}}
 		>
 			{children}

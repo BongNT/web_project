@@ -1,4 +1,5 @@
 import React from "react";
+import useData from "../hooks/useData";
 import AuthContext from "./AuthProvider";
 
 const CertificateContext = React.createContext();
@@ -6,6 +7,8 @@ const CertificateContext = React.createContext();
 export function CertificateProvider({ children }) {
 	const { auth } = React.useContext(AuthContext);
 	const [fetchOk, setFetchOk] = React.useState(false);
+
+	const [facilities, setFacilities] = useData("facilities");
 
 	const [openAddModal, setOpenAddModal] = React.useState(false);
 
@@ -16,20 +19,18 @@ export function CertificateProvider({ children }) {
 	const [openDeleteModal, setOpenDeleteModal] = React.useState(false);
 
 	const idDataRef = React.useRef();
-	const userNameRef = React.useRef();
-	const emailRef = React.useRef();
-	const typeRef = React.useRef();
+	const expiryDateRef = React.useRef();
+	const statusRef = React.useRef();
 
 	//Actions
 	const handleEditClick = (id) => () => {
 		setOpenEditModal(true);
 		idDataRef.current = id;
 		const editRow = rows.find((row) => row.id === id);
-		userNameRef.current = editRow.name;
+		expiryDateRef.current = editRow.expiry_date;
 
-		emailRef.current = editRow.email;
-
-		typeRef.current = editRow.type === "Quản trị viên" ? 1 : 2;
+		statusRef.current =
+			editRow.status === "Còn hiệu lực" ? 1 : "Hết hạn" ? 2 : 3;
 	};
 
 	const handleDeleteClick = (id) => () => {
@@ -41,6 +42,8 @@ export function CertificateProvider({ children }) {
 			value={{
 				auth,
 				fetchOk,
+				facilities,
+				setFacilities,
 				setFetchOk,
 				rows,
 				setRows,
@@ -53,9 +56,8 @@ export function CertificateProvider({ children }) {
 				handleEditClick,
 				handleDeleteClick,
 				idDataRef,
-				userNameRef,
-				emailRef,
-				typeRef,
+				expiryDateRef,
+				statusRef,
 			}}
 		>
 			{children}

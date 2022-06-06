@@ -11,86 +11,78 @@ import {
 	Select,
 	MenuItem,
 	InputLabel,
+	Autocomplete,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import SaveIcon from "@mui/icons-material/Save";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CancelIcon from "@mui/icons-material/Cancel";
-import AuthContext from "../../contexts/AuthProvider";
-import UserContext from "../../contexts/UserProvider";
-
-const USER_REGEX = /^[a-zA-Z0-9]+$/;
-const PWD_REGEX = /^([A-Za-z0-9@#$%^&+=]{8,})$/;
-const EMAIL_REGEX = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
+import SampleContext from "../../contexts/SampleProvider";
 
 function AddModal() {
-	const { auth, openAddModal, setRows, setOpenAddModal } =
-		React.useContext(UserContext);
+	const { auth, openAddModal, setRows, setOpenAddModal, inspections } =
+		React.useContext(SampleContext);
 
-	const [validUserName, setValidUserName] = React.useState(true);
-	const [validPassword, setValidPassword] = React.useState(true);
-	const [validEmail, setValidEmail] = React.useState(true);
+	const [id, setId] = React.useState("");
+	const handleChangeId = (event) => setId(event.target.value);
 
-	const [userName, setUserName] = React.useState("");
-	const handleChangeUserName = (event) => setUserName(event.target.value);
+	const [inspection, setInspection] = React.useState(null);
 
-	const [password, setPassword] = React.useState("");
-	const handleChangePassword = (event) => setPassword(event.target.value);
+	const [inspectionAgency, setInspectionAgency] = React.useState("");
+	const handleChangeInspectionAgency = (event) =>
+		setInspectionAgency(event.target.value);
 
-	const [email, setEmail] = React.useState("");
-	const handleChangeEmail = (event) => setEmail(event.target.value);
+	const [status, setStatus] = React.useState("");
+	const handleChangeStatus = (event) => setStatus(event.target.value);
 
-	const [type, setType] = React.useState("");
-	const handleChangeType = (event) => setType(event.target.value);
+	const [resultDate, setResultDate] = React.useState("");
+	const handleChangeResultDate = (event) => setResultDate(event.target.value);
+
+	const [result, setResult] = React.useState("");
+	const handleChangeResult = (event) => setResult(event.target.value);
 
 	const handleAdd = async (event) => {
 		event.preventDefault();
-		const v1 = USER_REGEX.test(userName);
-		setValidUserName(v1);
-		const v2 = PWD_REGEX.test(password);
-		setValidPassword(v2);
-		const v3 = EMAIL_REGEX.test(email);
-		setValidEmail(v3);
-		if (!v1 || !v2 || !v3) {
-			return;
-		}
-		await fetch("http://127.0.0.1:8000/users/create", {
+
+		await fetch("http://127.0.0.1:8000/samples/create", {
 			method: "POST",
 			headers: {
 				Authorization: `bearer ${auth.token}`,
 				"Content-Type": "application/json",
 			},
 			body: JSON.stringify({
-				name: userName,
-				password: password,
-				email: email,
-				type: type,
+				id: id,
+				inspection_id: inspection.id,
+				inspection_agency: inspectionAgency,
+				status: status,
+				result_date: resultDate,
+				result: result,
 			}),
 		})
 			.then((response) => response.json())
 			.then((response) => console.log(response.detail))
 			.then(() => {
-				fetch("http://127.0.0.1:8000/users/", {
+				fetch("http://127.0.0.1:8000/samples/", {
 					headers: { Authorization: `bearer ${auth.token}` },
 				})
 					.then((response) => response.json())
 					.then((data) => {
 						data.forEach((row) => {
-							if (row.type === 0) {
-								row.type = "Quản trị viên cấp cao";
-							} else if (row.type === 1) {
-								row.type = "Quản trị viên";
-							} else {
-								row.type = "Quản lý";
-							}
+							row.status === 1
+								? (row.status = "Đang gửi đi")
+								: row.status === 2
+								? (row.status = "Đang xử lý")
+								: (row.status = "Hoàn tất");
 						});
 						setRows(data);
 
 						//reset dialog
-						setUserName("");
-						setPassword("");
-						setEmail("");
-						setType("");
+						setId("");
+						setInspection(null);
+						setInspectionAgency("");
+						setStatus("");
+						setResultDate("");
+						setResult("");
 					});
 			});
 
@@ -99,73 +91,81 @@ function AddModal() {
 
 	const handleClose = () => {
 		setOpenAddModal(false);
-		setUserName("");
-		setPassword("");
-		setEmail("");
-		setType("");
-		setValidUserName(true);
-		setValidPassword(true);
-		setValidEmail(true);
+		setId("");
+		setInspection(null);
+		setInspectionAgency("");
+		setStatus("");
+		setResultDate("");
+		setResult("");
 	};
 
 	return (
 		<Dialog open={openAddModal} onClose={handleClose}>
-			<DialogTitle>Thêm người dùng</DialogTitle>
+			<DialogTitle>Thêm mẫu</DialogTitle>
 			<DialogContent>
 				<TextField
 					fullWidth
 					className="mb-3"
-					label="Tên người dùng"
+					label="Số"
 					variant="filled"
-					error={!validUserName}
-					helperText={
-						validUserName
-							? undefined
-							: "Tên người dùng không đúng định dạng"
-					}
-					value={userName}
-					onChange={handleChangeUserName}
-					onFocus={() => setValidUserName(true)}
+					value={id}
+					onChange={handleChangeId}
+				/>
+				<Autocomplete
+					className="mb-3"
+					value={inspection}
+					onChange={(event, newValue) => {
+						setInspection(newValue);
+					}}
+					options={inspections}
+					autoHighlight
+					getOptionLabel={(option) => option.id.toString()}
+					renderInput={(params) => (
+						<TextField
+							variant="filled"
+							fullWidth
+							{...params}
+							label="Thuộc cuộc thanh tra số"
+							inputProps={{
+								...params.inputProps,
+							}}
+						/>
+					)}
 				/>
 				<TextField
 					fullWidth
 					className="mb-3"
-					label="Mật khẩu"
-					error={!validPassword}
-					helperText={
-						validPassword
-							? undefined
-							: "Mật khẩu không đúng định dạng"
-					}
+					label="Đơn vị giám định"
 					autoComplete="current-password"
 					variant="filled"
-					value={password}
-					onChange={handleChangePassword}
-					onFocus={() => setValidPassword(true)}
+					value={inspectionAgency}
+					onChange={handleChangeInspectionAgency}
 				/>
+				<FormControl variant="filled" fullWidth className="mb-3">
+					<InputLabel>Trạng thái</InputLabel>
+					<Select value={status} onChange={handleChangeStatus}>
+						<MenuItem value={1}>Đang gửi đi</MenuItem>
+						<MenuItem value={2}>Đang kiểm tra</MenuItem>
+						<MenuItem value={3}>Hoàn tất</MenuItem>
+					</Select>
+				</FormControl>
 				<TextField
 					fullWidth
 					className="mb-3"
-					label="Thư điện tử"
-					type="email"
-					error={!validEmail}
-					helperText={
-						validEmail
-							? undefined
-							: "Thư điện tử không đúng định dạng"
-					}
+					label="Ngày nhận kết quả"
 					variant="filled"
-					value={email}
-					onChange={handleChangeEmail}
-					onFocus={() => setValidEmail(true)}
+					type="date"
+					value={resultDate}
+					onChange={handleChangeResultDate}
+					InputLabelProps={{ shrink: true }}
 				/>
-				<FormControl variant="filled" fullWidth>
-					<InputLabel>Chức vụ</InputLabel>
-					<Select value={type} onChange={handleChangeType}>
-						<MenuItem value={1}>Quản trị viên</MenuItem>
-						<MenuItem value={2}>Quản lý</MenuItem>
-					</Select>
-				</FormControl>
+				<TextField
+					fullWidth
+					label="Kết quả"
+					variant="filled"
+					value={result}
+					onChange={handleChangeResult}
+				/>
 			</DialogContent>
 			<DialogActions>
 				<Button onClick={handleClose}>
@@ -186,54 +186,58 @@ function EditModal() {
 		setOpenEditModal,
 		setRows,
 		idDataRef,
-		userNameRef,
-		emailRef,
-		typeRef,
-	} = React.useContext(UserContext);
-
-	const [validEmail, setValidEmail] = React.useState(true);
-	const [validPassword, setValidPassword] = React.useState(true);
+		inspectionAgencyRef,
+		statusRef,
+		resultDateRef,
+		resultRef,
+	} = React.useContext(SampleContext);
 
 	const [editInfo, setEditInfo] = React.useState({ id: idDataRef.current });
 
-	const [editPassword, setEditPassword] = React.useState("");
-	const handleChangePassword = (event) => {
-		setEditPassword(event.target.value);
+	const [editInspectionAgency, setEditInspectionAgency] = React.useState(
+		inspectionAgencyRef.current
+	);
+	const handleChangeInspectionAgency = (event) => {
+		setEditInspectionAgency(event.target.value);
 	};
 
-	const [editEmail, setEditEmail] = React.useState(emailRef.current || "");
-	const handleChangeEmail = (event) => {
-		setEditEmail(event.target.value);
+	const [editStatus, setEditStatus] = React.useState(statusRef.current);
+	const handleChangeStatus = (event) => {
+		setEditStatus(event.target.value);
 	};
 
-	const [editType, setEditType] = React.useState(typeRef.current);
-	const handleChangeType = (event) => {
-		setEditType(event.target.value);
+	const [editResultDate, setEditResultDate] = React.useState(
+		resultDateRef.current
+	);
+	const handleChangeResultDate = (event) => {
+		setEditResultDate(event.target.value);
+	};
+
+	const [editResult, setEditResult] = React.useState(resultRef.current);
+	const handleChangeResult = (event) => {
+		setEditResult(event.target.value);
 	};
 
 	React.useEffect(() => {
-		editPassword !== "" &&
-			setEditInfo({ ...editInfo, password: editPassword });
-	}, [editPassword]);
+		setEditInfo({ ...editInfo, inspection_agency: editInspectionAgency });
+	}, [editInspectionAgency]);
 
 	React.useEffect(() => {
-		setEditInfo({ ...editInfo, email: editEmail });
-	}, [editEmail]);
+		setEditInfo({ ...editInfo, status: editStatus });
+	}, [editStatus]);
 
 	React.useEffect(() => {
-		setEditInfo({ ...editInfo, type: editType });
-	}, [editType]);
+		setEditInfo({ ...editInfo, result_date: editResultDate });
+	}, [editResultDate]);
+
+	React.useEffect(() => {
+		setEditInfo({ ...editInfo, result: editResult });
+	}, [editResult]);
 
 	const handleChange = async (event) => {
 		event.preventDefault();
-		const v1 = PWD_REGEX.test(editPassword);
-		setValidPassword(v1);
-		const v2 = EMAIL_REGEX.test(editEmail);
-		setValidEmail(v2);
-		if (!v1 || !v2) {
-			return;
-		}
-		await fetch("http://127.0.0.1:8000/users/update", {
+		console.log(editInfo);
+		await fetch("http://127.0.0.1:8000/samples/update", {
 			method: "PUT",
 			headers: {
 				Authorization: `bearer ${auth.token}`,
@@ -244,19 +248,17 @@ function EditModal() {
 			.then((response) => response.json())
 			.then((response) => console.log(response))
 			.then(() => {
-				fetch("http://127.0.0.1:8000/users/", {
+				fetch("http://127.0.0.1:8000/samples/", {
 					headers: { Authorization: `bearer ${auth.token}` },
 				})
 					.then((response) => response.json())
 					.then((data) => {
 						data.forEach((row) => {
-							if (row.type === 0) {
-								row.type = "Quản trị viên cấp cao";
-							} else if (row.type === 1) {
-								row.type = "Quản trị viên";
-							} else {
-								row.type = "Quản lý";
-							}
+							row.status === 1
+								? (row.status = "Đang gửi đi")
+								: row.status === 2
+								? (row.status = "Đang xử lý")
+								: (row.status = "Hoàn tất");
 						});
 						setRows(data);
 					});
@@ -266,60 +268,53 @@ function EditModal() {
 
 	const handleClose = () => {
 		setOpenEditModal(false);
-		setValidPassword(true);
-		setValidEmail(true);
 	};
 
 	return (
 		<Dialog open={openEditModal} onClose={handleClose}>
-			<DialogTitle>Sửa người dùng {userNameRef.current}</DialogTitle>
+			<DialogTitle>Sửa mẫu số {idDataRef.current}</DialogTitle>
 			<DialogContent>
 				<TextField
 					fullWidth
 					className="mb-3"
-					label="Mật khẩu"
-					error={!validPassword}
-					helperText={
-						validPassword
-							? undefined
-							: "Mật khẩu không đúng định dạng"
-					}
+					label="Đơn vị giám định"
 					autoComplete="current-password"
 					variant="filled"
-					value={editPassword}
-					onChange={handleChangePassword}
-					onFocus={() => setValidPassword(true)}
+					value={editInspectionAgency}
+					onChange={handleChangeInspectionAgency}
 				/>
+				<FormControl variant="filled" fullWidth className="mb-3">
+					<InputLabel>Trạng thái</InputLabel>
+					<Select value={editStatus} onChange={handleChangeStatus}>
+						<MenuItem value={1}>Đang gửi đi</MenuItem>
+						<MenuItem value={2}>Đang kiểm tra</MenuItem>
+						<MenuItem value={3}>Hoàn tất</MenuItem>
+					</Select>
+				</FormControl>
 				<TextField
 					fullWidth
 					className="mb-3"
-					label="Thư điện tử"
-					type="email"
-					error={!validEmail}
-					helperText={
-						validEmail
-							? undefined
-							: "Thư điện tử không đúng định dạng"
-					}
+					label="Ngày nhận kết quả"
 					variant="filled"
-					value={editEmail}
-					onChange={handleChangeEmail}
-					onFocus={() => setValidEmail(true)}
+					type="date"
+					value={editResultDate}
+					onChange={handleChangeResultDate}
+					InputLabelProps={{ shrink: true }}
 				/>
-				<FormControl variant="filled" fullWidth>
-					<InputLabel>Chức vụ</InputLabel>
-					<Select value={editType} onChange={handleChangeType}>
-						<MenuItem value={1}>Quản trị viên</MenuItem>
-						<MenuItem value={2}>Quản lý</MenuItem>
-					</Select>
-				</FormControl>
+				<TextField
+					fullWidth
+					label="Kết quả"
+					variant="filled"
+					value={editResult}
+					onChange={handleChangeResult}
+				/>
 			</DialogContent>
 			<DialogActions>
 				<Button onClick={handleClose}>
 					<CancelIcon className="me-1" color="error" /> Hủy bỏ
 				</Button>
 				<Button onClick={handleChange}>
-					<SaveIcon className="me-1" /> Lưu thay đổi
+					<SaveIcon className="me-1" /> Lưu
 				</Button>
 			</DialogActions>
 		</Dialog>
@@ -334,16 +329,19 @@ function DeleteModal() {
 		idDataRef,
 		openDeleteModal,
 		setOpenDeleteModal,
-	} = React.useContext(UserContext);
+	} = React.useContext(SampleContext);
 
 	const handleDelete = async () => {
-		await fetch(`http://127.0.0.1:8000/users/${idDataRef.current}/delete`, {
-			method: "DELETE",
-			headers: {
-				Authorization: `bearer ${auth.token}`,
-				"Content-Type": "application/json",
-			},
-		})
+		await fetch(
+			`http://127.0.0.1:8000/samples/${idDataRef.current}/delete`,
+			{
+				method: "DELETE",
+				headers: {
+					Authorization: `bearer ${auth.token}`,
+					"Content-Type": "application/json",
+				},
+			}
+		)
 			.then((response) => response.json())
 			.then((response) => {
 				console.log(response.detail);

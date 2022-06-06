@@ -19,6 +19,7 @@ const ROLES = {
 	Admin: 1,
 	Manager: 2,
 };
+
 export default function App() {
 	return (
 		<Routes>

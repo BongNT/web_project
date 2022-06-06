@@ -15,21 +15,21 @@ const columns = [
 		headerName: "Tên",
 		headerAlign: "center",
 		align: "center",
-		flex: 1,
+		width: 357,
 	},
 	{
 		field: "email",
 		headerName: "Thư điện tử",
 		headerAlign: "center",
 		align: "center",
-		flex: 1,
+		width: 370,
 	},
 	{
 		field: "type",
 		headerName: "Chức vụ",
 		headerAlign: "center",
 		align: "center",
-		flex: 1,
+		width: 359,
 	},
 ];
 
@@ -70,8 +70,8 @@ export default function User() {
 	);
 
 	return fetchOk ? (
-		<Box className="main" sx={{ height: 550 }}>
-			<Typography variant="h6" className="p-3">
+		<Box className="main" sx={{ height: "34.375rem" }}>
+			<Typography variant="h6" className="p-4 pt-3 pb-3">
 				Người dùng
 			</Typography>
 			<DataTable

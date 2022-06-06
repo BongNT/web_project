@@ -226,7 +226,7 @@ function EditModal() {
 
 	const handleChange = async (event) => {
 		event.preventDefault();
-		const v1 = PWD_REGEX.test(editPassword);
+		const v1 = editPassword === "" || PWD_REGEX.test(editPassword);
 		setValidPassword(v1);
 		const v2 = EMAIL_REGEX.test(editEmail);
 		setValidEmail(v2);
@@ -319,7 +319,7 @@ function EditModal() {
 					<CancelIcon className="me-1" color="error" /> Hủy bỏ
 				</Button>
 				<Button onClick={handleChange}>
-					<SaveIcon className="me-1" /> Lưu thay đổi
+					<SaveIcon className="me-1" /> Lưu
 				</Button>
 			</DialogActions>
 		</Dialog>

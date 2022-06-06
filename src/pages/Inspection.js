@@ -14,28 +14,32 @@ const columns = [
 		headerName: "Tên cơ sở",
 		headerAlign: "center",
 		align: "center",
-		flex: 1,
+		width: 270,
 	},
 	{
 		field: "start_date",
 		headerName: "Ngày bắt đầu",
 		headerAlign: "center",
 		align: "center",
-		flex: 1,
+		width: 270,
+		type: "date",
+		valueGetter: ({ value }) => value && new Date(value),
 	},
 	{
 		field: "end_date",
 		headerName: "Ngày kết thúc",
 		headerAlign: "center",
 		align: "center",
-		flex: 1,
+		width: 270,
+		type: "date",
+		valueGetter: ({ value }) => value && new Date(value),
 	},
 	{
 		field: "result",
 		headerName: "Kết quả",
 		headerAlign: "center",
 		align: "center",
-		flex: 1,
+		width: 276,
 	},
 ];
 
@@ -52,7 +56,19 @@ export default function Inspection() {
 		handleEditClick,
 		handleDeleteClick,
 		setFetchOk,
+		facilities,
+		setFacilities,
 	} = React.useContext(InspectionContext);
+
+	React.useEffect(() => {
+		fetch("http://127.0.0.1:8000/facilities/", {
+			headers: { Authorization: `bearer ${auth.token}` },
+		})
+			.then((response) => response.json())
+			.then((data) => {
+				setFacilities(data);
+			});
+	}, []);
 
 	React.useEffect(
 		() => async () => {
@@ -60,13 +76,15 @@ export default function Inspection() {
 				headers: { Authorization: `bearer ${auth.token}` },
 			});
 			const data = await response.json();
-
+			console.log(data);
 			data.forEach((row) => {
 				row.result === 1
 					? (row.result = "Đang kiểm tra")
 					: row.result === 2
 					? (row.result = "Đạt chuẩn")
-					: (row.result = "Không đạt chuẩn");
+					: row.result === 3
+					? (row.result = "Không đạt chuẩn")
+					: (row.result = "Chưa kiểm tra");
 				row.name = row.facility_inspection.name;
 			});
 			setRows(data);
@@ -76,8 +94,8 @@ export default function Inspection() {
 	);
 
 	return fetchOk ? (
-		<Box className="main" sx={{ height: 550 }}>
-			<Typography variant="h6" className="p-3">
+		<Box className="main" sx={{ height: "34.375rem" }}>
+			<Typography variant="h6" className="p-4 pt-3 pb-3">
 				Thông tin thanh tra
 			</Typography>
 			<DataTable

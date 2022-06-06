@@ -15,35 +15,39 @@ const columns = [
 		headerName: "Số",
 		headerAlign: "center",
 		align: "center",
-		flex: 1,
+		width: 130,
 	},
 	{
 		field: "name",
 		headerName: "Cơ sở",
 		headerAlign: "center",
 		align: "center",
-		flex: 1,
+		width: 240,
 	},
 	{
 		field: "issue_date",
 		headerName: "Ngày cấp",
 		headerAlign: "center",
 		align: "center",
-		flex: 1,
+		width: 240,
+		type: "date",
+		valueGetter: ({ value }) => value && new Date(value),
 	},
 	{
 		field: "expiry_date",
 		headerName: "Ngày hết hạn",
 		headerAlign: "center",
 		align: "center",
-		flex: 1,
+		width: 240,
+		type: "date",
+		valueGetter: ({ value }) => value && new Date(value),
 	},
 	{
 		field: "status",
 		headerName: "Trạng thái",
 		headerAlign: "center",
 		align: "center",
-		flex: 1,
+		width: 236,
 	},
 ];
 
@@ -60,7 +64,18 @@ export default function Certificate() {
 		handleEditClick,
 		handleDeleteClick,
 		setFetchOk,
+		setFacilities,
 	} = React.useContext(CertificateContext);
+
+	React.useEffect(() => {
+		fetch("http://127.0.0.1:8000/facilities/", {
+			headers: { Authorization: `bearer ${auth.token}` },
+		})
+			.then((response) => response.json())
+			.then((data) => {
+				setFacilities(data);
+			});
+	}, []);
 
 	React.useEffect(
 		() => async () => {
@@ -71,7 +86,7 @@ export default function Certificate() {
 				}
 			);
 			const data = await response.json();
-			console.log(data);
+
 			data.forEach((row) => {
 				row.status === 1
 					? (row.status = "Còn hiệu lực")
@@ -88,8 +103,8 @@ export default function Certificate() {
 	);
 
 	return fetchOk ? (
-		<Box className="main" sx={{ height: 550 }}>
-			<Typography variant="h6" className="p-3">
+		<Box className="main" sx={{ height: "34.375rem" }}>
+			<Typography variant="h6" className="p-4 pt-3 pb-3">
 				Thông tin chứng nhận
 			</Typography>
 			<DataTable

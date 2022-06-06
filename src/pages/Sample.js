@@ -15,35 +15,37 @@ const columns = [
 		headerName: "Số",
 		headerAlign: "center",
 		align: "center",
-		flex: 1,
+		width: 130,
 	},
 	{
 		field: "inspection_agency",
 		headerName: "Đơn vị giám định",
 		headerAlign: "center",
 		align: "center",
-		flex: 1,
+		width: 300,
 	},
 	{
 		field: "status",
 		headerName: "Trạng thái",
 		headerAlign: "center",
 		align: "center",
-		flex: 1,
+		width: 200,
 	},
 	{
 		field: "result_date",
 		headerName: "Ngày nhận kết quả",
 		headerAlign: "center",
 		align: "center",
-		flex: 1,
+		width: 256,
+		type: "date",
+		valueGetter: ({ value }) => value && new Date(value),
 	},
 	{
 		field: "result",
 		headerName: "Kết quả",
 		headerAlign: "center",
 		align: "center",
-		flex: 1,
+		width: 200,
 	},
 ];
 
@@ -60,7 +62,18 @@ export default function Sample() {
 		handleEditClick,
 		handleDeleteClick,
 		setFetchOk,
+		setInspections,
 	} = React.useContext(SampleContext);
+
+	React.useEffect(() => {
+		fetch("http://127.0.0.1:8000/inspections/", {
+			headers: { Authorization: `bearer ${auth.token}` },
+		})
+			.then((response) => response.json())
+			.then((data) => {
+				setInspections(data);
+			});
+	}, []);
 
 	React.useEffect(
 		() => async () => {
@@ -68,7 +81,7 @@ export default function Sample() {
 				headers: { Authorization: `bearer ${auth.token}` },
 			});
 			const data = await response.json();
-
+			console.log(data);
 			data.forEach((row) => {
 				row.status === 1
 					? (row.status = "Đang gửi đi")
@@ -84,8 +97,8 @@ export default function Sample() {
 	);
 
 	return fetchOk ? (
-		<Box className="main" sx={{ height: 550 }}>
-			<Typography variant="h6" className="p-3">
+		<Box className="main" sx={{ height: "34.375rem" }}>
+			<Typography variant="h6" className="p-4 pt-3 pb-3">
 				Mẫu kiểm tra
 			</Typography>
 			<DataTable

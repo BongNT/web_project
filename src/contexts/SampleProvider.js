@@ -1,4 +1,5 @@
 import React from "react";
+import useData from "../hooks/useData";
 import AuthContext from "./AuthProvider";
 
 const SampleContext = React.createContext();
@@ -6,6 +7,8 @@ const SampleContext = React.createContext();
 export function SampleProvider({ children }) {
 	const { auth } = React.useContext(AuthContext);
 	const [fetchOk, setFetchOk] = React.useState(false);
+
+	const [inspections, setInspections] = useData("inspections");
 
 	const [openAddModal, setOpenAddModal] = React.useState(false);
 
@@ -16,20 +19,22 @@ export function SampleProvider({ children }) {
 	const [openDeleteModal, setOpenDeleteModal] = React.useState(false);
 
 	const idDataRef = React.useRef();
-	const userNameRef = React.useRef();
-	const emailRef = React.useRef();
-	const typeRef = React.useRef();
+	const inspectionAgencyRef = React.useRef();
+	const statusRef = React.useRef();
+	const resultDateRef = React.useRef();
+	const resultRef = React.useRef();
 
 	//Actions
 	const handleEditClick = (id) => () => {
 		setOpenEditModal(true);
 		idDataRef.current = id;
 		const editRow = rows.find((row) => row.id === id);
-		userNameRef.current = editRow.name;
 
-		emailRef.current = editRow.email;
-
-		typeRef.current = editRow.type === "Quản trị viên" ? 1 : 2;
+		inspectionAgencyRef.current = editRow.inspection_agency;
+		statusRef.current =
+			editRow.status === "Đang gửi đi" ? 1 : "Đang kiểm tra" ? 2 : 3;
+		resultDateRef.current = editRow.result_date;
+		resultRef.current = editRow.result;
 	};
 
 	const handleDeleteClick = (id) => () => {
@@ -53,9 +58,12 @@ export function SampleProvider({ children }) {
 				handleEditClick,
 				handleDeleteClick,
 				idDataRef,
-				userNameRef,
-				emailRef,
-				typeRef,
+				inspectionAgencyRef,
+				statusRef,
+				resultDateRef,
+				resultRef,
+				inspections,
+				setInspections,
 			}}
 		>
 			{children}

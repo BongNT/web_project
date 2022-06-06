@@ -1,4 +1,5 @@
 import React from "react";
+import useData from "../hooks/useData";
 import AuthContext from "./AuthProvider";
 
 const FacilityContext = React.createContext();
@@ -6,6 +7,8 @@ const FacilityContext = React.createContext();
 export function FacilityProvider({ children }) {
 	const { auth } = React.useContext(AuthContext);
 	const [fetchOk, setFetchOk] = React.useState(false);
+
+	const [districts, setDistricts] = useData("districts");
 
 	const [openAddModal, setOpenAddModal] = React.useState(false);
 
@@ -16,20 +19,28 @@ export function FacilityProvider({ children }) {
 	const [openDeleteModal, setOpenDeleteModal] = React.useState(false);
 
 	const idDataRef = React.useRef();
-	const userNameRef = React.useRef();
-	const emailRef = React.useRef();
+	const nameRef = React.useRef();
 	const typeRef = React.useRef();
+	const districtRef = React.useRef();
+	const phoneNumberRef = React.useRef();
 
 	//Actions
 	const handleEditClick = (id) => () => {
 		setOpenEditModal(true);
 		idDataRef.current = id;
 		const editRow = rows.find((row) => row.id === id);
-		userNameRef.current = editRow.name;
+		nameRef.current = editRow.name;
 
-		emailRef.current = editRow.email;
+		districtRef.current = editRow.in_district;
 
-		typeRef.current = editRow.type === "Quản trị viên" ? 1 : 2;
+		typeRef.current =
+			editRow.type === "Sản xuất thực phẩm"
+				? 1
+				: "Kinh doanh thực phẩm"
+				? 2
+				: 3;
+
+		phoneNumberRef.current = editRow.phone_number;
 	};
 
 	const handleDeleteClick = (id) => () => {
@@ -53,9 +64,12 @@ export function FacilityProvider({ children }) {
 				handleEditClick,
 				handleDeleteClick,
 				idDataRef,
-				userNameRef,
-				emailRef,
+				nameRef,
+				districtRef,
 				typeRef,
+				phoneNumberRef,
+				districts,
+				setDistricts,
 			}}
 		>
 			{children}

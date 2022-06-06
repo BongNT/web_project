@@ -36,7 +36,7 @@ export default function Sidebar() {
 	const objs = [
 		{
 			id: 1,
-			title: "Cơ sở sản xuất",
+			title: "Cơ sở",
 			items: [
 				{ id: 1, name: "Thông tin cơ sở", link: "/facility" },
 				{ id: 2, name: "Giấy chứng nhận", link: "/certificate" },

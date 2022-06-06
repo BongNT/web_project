@@ -62,7 +62,7 @@ export default function DataTable(props) {
 			}}
 		>
 			<DataGrid
-				className="m-3 mt-0"
+				className="m-xl-4 m-md-3 m-sm-2 m-2 mt-xl-0 mt-md-0 mt-sm-2 mt-3"
 				localeText={viVN.components.MuiDataGrid.defaultProps.localeText}
 				disableColumnMenu={true}
 				rows={rows}

@@ -14,28 +14,28 @@ const columns = [
 		headerName: "Tên cơ sở",
 		headerAlign: "center",
 		align: "center",
-		flex: 1,
+		width: 200,
 	},
 	{
 		field: "type",
 		headerName: "Loại hình",
 		headerAlign: "center",
 		align: "center",
-		flex: 1,
+		width: 300,
 	},
 	{
 		field: "district",
 		headerName: "Địa chỉ",
 		headerAlign: "center",
 		align: "center",
-		flex: 1,
+		width: 350,
 	},
 	{
 		field: "phone_number",
 		headerName: "Số điện thoại",
 		headerAlign: "center",
 		align: "center",
-		flex: 1,
+		width: 196,
 	},
 ];
 
@@ -52,33 +52,47 @@ export default function Facility() {
 		handleEditClick,
 		handleDeleteClick,
 		setFetchOk,
+		districts,
+		setDistricts,
 	} = React.useContext(FacilityContext);
 
-	React.useEffect(
-		() => async () => {
-			const response = await fetch("http://127.0.0.1:8000/facilities/", {
-				headers: { Authorization: `bearer ${auth.token}` },
+	React.useEffect(() => {
+		fetch("http://127.0.0.1:8000/managers/districts", {
+			headers: { Authorization: `bearer ${auth.token}` },
+		})
+			.then((response) => response.json())
+			.then((data) => {
+				setDistricts(data);
 			});
-			const data = await response.json();
-			console.log(data);
-			data.forEach((row) => {
-				row.type === 1
-					? (row.type = "Sản xuất thực phẩm")
-					: row.type === 2
-					? (row.type = "Kinh doanh thực phẩm")
-					: (row.type = "Sản xuất và kinh doanh thực phẩm");
-				row.district = row.in_district.name;
-			});
-			setRows(data);
+	}, []);
 
-			setFetchOk(true);
-		},
-		[]
-	);
+	React.useEffect(() => {
+		fetch("http://127.0.0.1:8000/facilities/", {
+			headers: { Authorization: `bearer ${auth.token}` },
+		})
+			.then((response) => response.json())
+			.then((data) => {
+				data.forEach((row) => {
+					row.type === 1
+						? (row.type = "Sản xuất thực phẩm")
+						: row.type === 2
+						? (row.type = "Kinh doanh thực phẩm")
+						: (row.type = "Sản xuất và kinh doanh thực phẩm");
+					districts?.forEach((address) => {
+						if (address.id === row.in_district.id) {
+							row.district = `${row.in_district.name}, ${address.province.name}`;
+						}
+					});
+				});
+
+				setRows(data);
+				setFetchOk(true);
+			});
+	}, [districts]);
 
 	return fetchOk ? (
-		<Box className="main" sx={{ height: 550 }}>
-			<Typography variant="h6" className="p-3">
+		<Box className="main" sx={{ height: "34.375rem" }}>
+			<Typography variant="h6" className="p-4 pt-3 pb-3">
 				Thông tin cơ sở
 			</Typography>
 			<DataTable
