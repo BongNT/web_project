@@ -11,6 +11,7 @@ import AccountMenu from "../components/AccountMenu";
 import MyAccount from "./MyAccount";
 import RequireAuth from "../components/RequireAuth";
 import Unauthorized from "../components/Unauthorized";
+import { alignProperty } from "@mui/material/styles/cssUtils";
 
 const drawerWidth = 240;
 function Home(props) {
@@ -97,7 +98,19 @@ function Home(props) {
 			>
 				<Toolbar />
 				<Outlet />
-				<footer className="border-top">Chả biết viết gì</footer>
+				<footer className="border-top" style={{textAlign:"center"}}>
+					<ul class="footer-nav">
+						<span> <a href="https://www.w3schools.com/REACT/default.asp">About Us</a> </span>
+                        <span> <a href="https://www.w3schools.com/REACT/default.asp">Contact Us</a> </span>
+                        <span> <a href="https://www.w3schools.com/REACT/default.asp">Privacy Policy</a> </span>
+                        <span> <a href="https://www.w3schools.com/REACT/default.asp">Terms</a> </span>
+                        <span> <a href="https://www.w3schools.com/REACT/default.asp">Report a Bug</a> </span>
+                        <span> <a href="https://www.w3schools.com/REACT/default.asp">FAQ</a> </span>
+                    </ul>
+					<p class="footer-copyright">
+						<small>©2022 DevTeamINT. All contents are copyright of authors.</small> 
+					</p>
+				</footer>
 			</Box>
 		</Box>
 	);
