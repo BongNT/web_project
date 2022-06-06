@@ -20,7 +20,7 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import InspectionContext from "../../contexts/InspectionProvider";
 
 function AddModal() {
-	const { auth, openAddModal, setRows, setOpenAddModal, dataFacility } =
+	const { auth, openAddModal, setRows, setOpenAddModal, facilities } =
 		React.useContext(InspectionContext);
 
 	const [valueFacility, setValueFacility] = React.useState(null);
@@ -92,7 +92,7 @@ function AddModal() {
 					onChange={(event, newValue) => {
 						setValueFacility(newValue);
 					}}
-					options={dataFacility}
+					options={facilities}
 					autoHighlight
 					getOptionLabel={(option) => option.name}
 					renderInput={(params) => (
