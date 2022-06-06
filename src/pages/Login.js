@@ -74,9 +74,11 @@ export default function Login() {
 		if (!v1 || !v2) {
 			return;
 		}
+
 		let data = new FormData();
 		data.append("username", userName);
 		data.append("password", values.password);
+
 		try {
 			const response = await fetch("http://127.0.0.1:8000/login", {
 				method: "POST",

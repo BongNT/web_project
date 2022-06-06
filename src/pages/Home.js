@@ -45,9 +45,6 @@ function Home(props) {
 					>
 						<MenuIcon />
 					</IconButton>
-					<Typography variant="h6" noWrap component="div">
-						Responsive drawer
-					</Typography>
 					<AccountMenu />
 				</Toolbar>
 			</AppBar>
@@ -98,17 +95,50 @@ function Home(props) {
 			>
 				<Toolbar />
 				<Outlet />
-				<footer className="border-top" style={{textAlign:"center"}}>
-					<ul class="footer-nav">
-						<span> <a href="https://www.w3schools.com/REACT/default.asp">About Us</a> </span>
-                        <span> <a href="https://www.w3schools.com/REACT/default.asp">Contact Us</a> </span>
-                        <span> <a href="https://www.w3schools.com/REACT/default.asp">Privacy Policy</a> </span>
-                        <span> <a href="https://www.w3schools.com/REACT/default.asp">Terms</a> </span>
-                        <span> <a href="https://www.w3schools.com/REACT/default.asp">Report a Bug</a> </span>
-                        <span> <a href="https://www.w3schools.com/REACT/default.asp">FAQ</a> </span>
-                    </ul>
-					<p class="footer-copyright">
-						<small>©2022 DevTeamINT. All contents are copyright of authors.</small> 
+				<footer className="border-top" style={{ textAlign: "center" }}>
+					<ul className="footer-nav">
+						<span>
+							{" "}
+							<a href="https://www.w3schools.com/REACT/default.asp">
+								About Us
+							</a>{" "}
+						</span>
+						<span>
+							{" "}
+							<a href="https://www.w3schools.com/REACT/default.asp">
+								Contact Us
+							</a>{" "}
+						</span>
+						<span>
+							{" "}
+							<a href="https://www.w3schools.com/REACT/default.asp">
+								Privacy Policy
+							</a>{" "}
+						</span>
+						<span>
+							{" "}
+							<a href="https://www.w3schools.com/REACT/default.asp">
+								Terms
+							</a>{" "}
+						</span>
+						<span>
+							{" "}
+							<a href="https://www.w3schools.com/REACT/default.asp">
+								Report a Bug
+							</a>{" "}
+						</span>
+						<span>
+							{" "}
+							<a href="https://www.w3schools.com/REACT/default.asp">
+								FAQ
+							</a>{" "}
+						</span>
+					</ul>
+					<p className="footer-copyright">
+						<small>
+							©2022 DevTeamINT. All contents are copyright of
+							authors.
+						</small>
 					</p>
 				</footer>
 			</Box>
