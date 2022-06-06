@@ -12,8 +12,6 @@ def get_all(db: Session):
     Return: list contains all users
     """
     users = db.query(models.User).options(joinedload(models.User.districts)).all()
-    if not users:
-        raise HTTPException(status_code=status.HTTP_204_NO_CONTENT, detail="No user in data")
     return users
 
 

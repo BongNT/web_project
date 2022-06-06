@@ -16,9 +16,6 @@ def get_all(db: Session, current_user):
             models.Facility.in_district).filter(models.District.id.in_(list_district)).all()
     else:
         samples = samples.options(joinedload(models.Sample.in_inspection, innerjoin=True)).all()
-
-    if not samples:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No sample in data")
     return samples
 
 

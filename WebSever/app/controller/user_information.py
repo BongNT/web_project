@@ -8,8 +8,6 @@ from app.util.special_value import UserType, Gender
 
 def get_info(db: Session, current_user: models.User):
     info = db.query(models.UserInformation).filter(models.UserInformation.user_id == current_user.id).first()
-    if info is None:
-        raise HTTPException(status_code=status.HTTP_204_NO_CONTENT, detail="Information not found")
     return info
 
 

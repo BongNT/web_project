@@ -20,8 +20,6 @@ def get_all(db: Session, current_user):
             models.District.id.in_(list_district)).all()
     else:
         inspection = inspection.options(joinedload(models.Inspection.facility_inspection)).all()
-    if not inspection:
-        raise HTTPException(status_code=status.HTTP_204_NO_CONTENT, detail="No inspection in data")
     return inspection
 
 
