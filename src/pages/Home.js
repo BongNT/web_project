@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route, Outlet } from "react-router-dom";
+import { Routes, Route, Outlet, Link } from "react-router-dom";
 import { Toolbar, IconButton, AppBar, Drawer, Box } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -12,6 +12,8 @@ import MyAccount from "./MyAccount";
 import RequireAuth from "../components/RequireAuth";
 import Unauthorized from "../components/Unauthorized";
 import { alignProperty } from "@mui/material/styles/cssUtils";
+import CertificateContext from "../contexts/CertificateProvider";
+import { height } from "@mui/system";
 
 const drawerWidth = 240;
 function Home(props) {
@@ -25,6 +27,61 @@ function Home(props) {
 
 	const container =
 		window !== undefined ? () => window().document.body : undefined;
+
+	const {
+		auth
+	} = React.useContext(CertificateContext);
+	
+	const dataRef = React.useRef();
+	React.useEffect(
+		() => async () => {
+			const response = await fetch(
+				"http://127.0.0.1:8000/certificates/statistic",
+				{
+					headers: { Authorization: `bearer ${auth.token}` },
+				}
+			).then((response) => response.json())
+			.then((data) => {
+				dataRef.current = data;
+			}
+			);
+	}, []);
+
+	// var React = require('react');
+	// var Component = React.Component;
+	// var CanvasJSReact = require('./canvasjs.react');
+	// var CanvasJS = CanvasJSReact.CanvasJS;
+	// var CanvasJSChart = CanvasJSReact.CanvasJSChart;
+	// class App extends Component {
+	// 	render() {
+	// 		const options = {
+	// 			exportEnabled: true,
+	// 			animationEnabled: true,
+	// 			title: {
+	// 				text: "Thống kê loại Giấy chứng nhận"
+	// 			},
+	// 			data: [{
+	// 				type: "pie",
+	// 				startAngle: 270,
+	// 				toolTipContent: "<b>{label}</b>: {y}%",
+	// 				showInLegend: "true",
+	// 				legendText: "{label}",
+	// 				indexLabelFontSize: 16,
+	// 				indexLabel: "{label} - {y}%",
+	// 				dataPoints: [
+	// 					{ y: dataRef.current.valid, label: "Còn hạn" },
+	// 					{ y: dataRef.current.expired, label: "Hết hạn" },
+	// 					{ y: dataRef.current.evoked, label: "Bị thu hồi" },
+	// 				]
+	// 			}]
+	// 		}
+	// 		return (
+	// 		<div>
+	// 			<CanvasJSChart options = {options}	/>
+	// 		</div>
+	// 		);
+	// 	}
+	// }  
 
 	return (
 		<Box className="h-100" sx={{ display: "flex" }}>
@@ -45,6 +102,9 @@ function Home(props) {
 					>
 						<MenuIcon />
 					</IconButton>
+					<Typography variant="h6" noWrap component="div"  > 
+						<Link to = "/"> Homepage </Link>
+					</Typography>
 					<AccountMenu />
 				</Toolbar>
 			</AppBar>
@@ -83,6 +143,7 @@ function Home(props) {
 					open
 				>
 					<Sidebar />
+					
 				</Drawer>
 			</Box>
 
@@ -93,6 +154,13 @@ function Home(props) {
 					width: { sm: `calc(100% - ${drawerWidth}px)` },
 				}}
 			>
+				<Box style={{height:500}}>
+						<div> Tổng giấy chứng nhận: {dataRef.current.total} </div>
+						<div> Giấy chứng nhận còn hạn: {dataRef.current.valid} </div>
+						<div> Giấy chứng nhận hết hạn: {dataRef.current.expired} </div>
+						<div> Giấy chứng nhận bị thu hồi: {dataRef.current.revoked} </div>
+				</Box>
+				
 				<Toolbar />
 				<Outlet />
 				<footer className="border-top" style={{ textAlign: "center" }}>

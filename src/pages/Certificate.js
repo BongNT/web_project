@@ -101,7 +101,6 @@ export default function Certificate() {
 		},
 		[]
 	);
-
 	return fetchOk ? (
 		<Box className="main" sx={{ height: "34.375rem" }}>
 			<Typography variant="h6" className="p-4 pt-3 pb-3">
