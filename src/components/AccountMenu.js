@@ -12,31 +12,38 @@ import { Link, useNavigate } from "react-router-dom";
 import AuthContext from "../contexts/AuthProvider";
 
 export default function AccountMenu() {
-	const { setAuth } = React.useContext(AuthContext);
+	const { auth, setAuth } = React.useContext(AuthContext);
+
 	const navigate = useNavigate();
-	const handleLogout = async () => {
+
+	const handleLogout = () => {
 		setAuth({});
 		navigate("/login");
 	};
 
-	const handleShowInfo = async () => {
+	const handleShowInfo = () => {
 		navigate("/my-account");
 	};
 
 	const [anchorEl, setAnchorEl] = React.useState(null);
+
 	const open = Boolean(anchorEl);
+
 	const handleClick = (event) => {
 		setAnchorEl(event.currentTarget);
 	};
+
 	const handleClose = () => {
 		setAnchorEl(null);
 	};
+
 	return (
 		<React.Fragment>
 			<Box
 				sx={{
 					display: "flex",
 					alignItems: "center",
+					marginLeft: "auto",
 					textAlign: "center",
 				}}
 			>
@@ -47,10 +54,9 @@ export default function AccountMenu() {
 					aria-controls={open ? "account-menu" : undefined}
 					aria-haspopup="true"
 					aria-expanded={open ? "true" : undefined}
-					variant="contained"
-					className="align-self-end"
+					variant="outline"
 				>
-					Nguyễn Trung Hiếu
+					{auth.user}
 					<ArrowDropDownIcon />
 				</Button>
 			</Box>

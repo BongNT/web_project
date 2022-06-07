@@ -246,7 +246,10 @@ function EditModal() {
 			body: JSON.stringify(editInfo),
 		})
 			.then((response) => response.json())
-			.then((response) => console.log(response))
+			.then((response) => {
+				console.log(response);
+				setEditInfo({ id: idDataRef.current });
+			})
 			.then(() => {
 				fetch("http://127.0.0.1:8000/samples/", {
 					headers: { Authorization: `bearer ${auth.token}` },

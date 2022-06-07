@@ -12,12 +12,15 @@ import MyAccount from "./MyAccount";
 import RequireAuth from "../components/RequireAuth";
 import Unauthorized from "../components/Unauthorized";
 import { alignProperty } from "@mui/material/styles/cssUtils";
+import AuthContext from "../contexts/AuthProvider";
 
 const drawerWidth = 240;
 function Home(props) {
 	//responsive
 	const { window } = props;
 	const [mobileOpen, setMobileOpen] = React.useState(false);
+
+	const { auth } = React.useContext(AuthContext);
 
 	const handleDrawerToggle = () => {
 		setMobileOpen(!mobileOpen);
@@ -95,7 +98,11 @@ function Home(props) {
 			>
 				<Toolbar />
 				<Outlet />
-				<footer className="border-top" style={{ textAlign: "center" }}>
+				<footer
+					id="footer"
+					className="border-top"
+					style={{ textAlign: "center" }}
+				>
 					<ul className="footer-nav">
 						<span>
 							{" "}

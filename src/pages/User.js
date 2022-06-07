@@ -6,8 +6,7 @@ import {
 	EditModal,
 	DeleteModal,
 } from "../components/Modal/UserModal";
-import AuthContext from "../contexts/AuthProvider";
-import UserContext, { UserProvider } from "../contexts/UserProvider";
+import UserContext from "../contexts/UserProvider";
 
 const columns = [
 	{

@@ -224,7 +224,7 @@ function EditModal() {
 		setEditInfo({ ...editInfo, type: editType });
 	}, [editType]);
 
-	const handleChange = async (event) => {
+	const handleChange = (event) => {
 		event.preventDefault();
 		const v1 = editPassword === "" || PWD_REGEX.test(editPassword);
 		setValidPassword(v1);
@@ -233,7 +233,7 @@ function EditModal() {
 		if (!v1 || !v2) {
 			return;
 		}
-		await fetch("http://127.0.0.1:8000/users/update", {
+		fetch("http://127.0.0.1:8000/users/update", {
 			method: "PUT",
 			headers: {
 				Authorization: `bearer ${auth.token}`,
@@ -242,7 +242,10 @@ function EditModal() {
 			body: JSON.stringify(editInfo),
 		})
 			.then((response) => response.json())
-			.then((response) => console.log(response))
+			.then((response) => {
+				console.log(response);
+				setEditInfo({ id: idDataRef.current });
+			})
 			.then(() => {
 				fetch("http://127.0.0.1:8000/users/", {
 					headers: { Authorization: `bearer ${auth.token}` },

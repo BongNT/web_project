@@ -22,19 +22,27 @@ export function UserProvider({ children }) {
 
 	//Actions
 	const handleEditClick = (id) => () => {
-		setOpenEditModal(true);
 		idDataRef.current = id;
 		const editRow = rows.find((row) => row.id === id);
+
+		if (editRow.type === "Quản trị viên cấp cao") {
+			return;
+		}
 		userNameRef.current = editRow.name;
 
 		emailRef.current = editRow.email;
 
 		typeRef.current = editRow.type === "Quản trị viên" ? 1 : 2;
+		setOpenEditModal(true);
 	};
 
 	const handleDeleteClick = (id) => () => {
-		setOpenDeleteModal(true);
 		idDataRef.current = id;
+		const deleteRow = rows.find((row) => row.id === id);
+		if (deleteRow.type === "Quản trị viên cấp cao") {
+			return;
+		}
+		setOpenDeleteModal(true);
 	};
 	return (
 		<UserContext.Provider
