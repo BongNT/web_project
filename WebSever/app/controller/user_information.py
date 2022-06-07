@@ -1,7 +1,7 @@
 from fastapi import status, HTTPException
 from sqlalchemy.orm import Session
 
-from app.model import models
+from app.model import models, hashing
 from app.util import request_data
 from app.util.special_value import UserType, Gender
 
@@ -56,3 +56,23 @@ def create_info(db: Session, user_id: int):
     db.commit()
     db.refresh(new_info)
     return {"detail": "Create user successfully"}
+
+
+def update_password(request: request_data.ChangePassword, db: Session, current_user: models.User):
+    # verify old password
+    if not hashing.verify(current_user.password, request.old_password):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid password")
+
+    if current_user.type == UserType.DEFAULT_ADMIN.value:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f"Can't update this user")
+    else:
+        # update user
+        user_query = db.query(models.User).filter(models.User.id == current_user.id)
+        msg = "update "
+        if request.new_password is not None:
+            user_query.update({models.User.password: hashing.hash_password(request.new_password)},
+                              synchronize_session="fetch")
+            db.commit()
+            msg += "password "
+        msg += "successfully."
+        return {"detail": msg}

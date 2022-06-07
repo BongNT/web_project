@@ -77,17 +77,11 @@ class UserCreate(BaseModel):
         return email
 
 
-class LoginData(BaseModel):
-    username: str
-    password: str
+class ChangePassword(BaseModel):
+    old_password: str
+    new_password: str
 
-    @validator('username')
-    def name_no_contain_space(cls, name):
-        if ' ' in name:
-            raise ValueError("mustn't contain a space")
-        return name
-
-    @validator('password')
+    @validator('old_password', 'new_password')
     def valid_password(cls, password):
         """
         At least 8 characters
