@@ -63,16 +63,13 @@ def update_password(request: request_data.ChangePassword, db: Session, current_u
     if not hashing.verify(current_user.password, request.old_password):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid password")
 
-    if current_user.type == UserType.DEFAULT_ADMIN.value:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f"Can't update this user")
-    else:
-        # update user
-        user_query = db.query(models.User).filter(models.User.id == current_user.id)
-        msg = "update "
-        if request.new_password is not None:
-            user_query.update({models.User.password: hashing.hash_password(request.new_password)},
-                              synchronize_session="fetch")
-            db.commit()
-            msg += "password "
-        msg += "successfully."
-        return {"detail": msg}
+    # update user
+    user_query = db.query(models.User).filter(models.User.id == current_user.id)
+    msg = "update "
+    if request.new_password is not None:
+        user_query.update({models.User.password: hashing.hash_password(request.new_password)},
+                          synchronize_session="fetch")
+        db.commit()
+        msg += "password "
+    msg += "successfully."
+    return {"detail": msg}
