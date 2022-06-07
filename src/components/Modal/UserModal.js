@@ -17,6 +17,7 @@ import SaveIcon from "@mui/icons-material/Save";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CancelIcon from "@mui/icons-material/Cancel";
 import UserContext from "../../contexts/UserProvider";
+import { AlertContext } from "../../contexts/AlertProvider";
 
 const USER_REGEX = /^[a-zA-Z0-9]+$/;
 const PWD_REGEX = /^([A-Za-z0-9@#$%^&+=]{8,})$/;
@@ -25,6 +26,8 @@ const EMAIL_REGEX = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
 function AddModal() {
 	const { auth, openAddModal, setRows, setOpenAddModal } =
 		React.useContext(UserContext);
+
+	const { setOpenAlert } = React.useContext(AlertContext);
 
 	const [validUserName, setValidUserName] = React.useState(true);
 	const [validPassword, setValidPassword] = React.useState(true);
@@ -69,6 +72,7 @@ function AddModal() {
 			.then((response) => response.json())
 			.then((response) => console.log(response))
 			.then(() => {
+				setOpenAlert(true);
 				fetch("http://127.0.0.1:8000/users/", {
 					headers: { Authorization: `bearer ${auth.token}` },
 				})
@@ -190,6 +194,8 @@ function EditModal() {
 		typeRef,
 	} = React.useContext(UserContext);
 
+	const { setOpenAlert } = React.useContext(AlertContext);
+
 	const [validEmail, setValidEmail] = React.useState(true);
 	const [validPassword, setValidPassword] = React.useState(true);
 
@@ -246,6 +252,7 @@ function EditModal() {
 				setEditInfo({ id: idDataRef.current });
 			})
 			.then(() => {
+				setOpenAlert(true);
 				fetch("http://127.0.0.1:8000/users/", {
 					headers: { Authorization: `bearer ${auth.token}` },
 				})
@@ -338,8 +345,10 @@ function DeleteModal() {
 		setOpenDeleteModal,
 	} = React.useContext(UserContext);
 
-	const handleDelete = async () => {
-		await fetch(`http://127.0.0.1:8000/users/${idDataRef.current}/delete`, {
+	const { setOpenAlert } = React.useContext(AlertContext);
+
+	const handleDelete = () => {
+		fetch(`http://127.0.0.1:8000/users/${idDataRef.current}/delete`, {
 			method: "DELETE",
 			headers: {
 				Authorization: `bearer ${auth.token}`,
@@ -348,9 +357,7 @@ function DeleteModal() {
 		})
 			.then((response) => response.json())
 			.then((response) => console.log(response))
-			.catch((error) => {
-				console.error("Error:", error);
-			});
+			.then(() => setOpenAlert(true));
 		setOpenDeleteModal(false);
 		setRows(rows.filter((row) => row.id !== idDataRef.current));
 	};

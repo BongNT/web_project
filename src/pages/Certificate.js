@@ -1,11 +1,13 @@
 import { Box, Typography, CircularProgress } from "@mui/material";
 import React from "react";
 import DataTable from "../components/DataTable";
+import AlertModal from "../components/Modal/AlertModal";
 import {
 	AddModal,
 	EditModal,
 	DeleteModal,
 } from "../components/Modal/CertificateModal";
+import { AlertContext } from "../contexts/AlertProvider";
 import CertificateContext from "../contexts/CertificateProvider";
 
 const columns = [
@@ -66,6 +68,8 @@ export default function Certificate() {
 		setFacilities,
 	} = React.useContext(CertificateContext);
 
+	const { openAlert } = React.useContext(AlertContext);
+
 	React.useEffect(() => {
 		fetch("http://127.0.0.1:8000/facilities/", {
 			headers: { Authorization: `bearer ${auth.token}` },
@@ -115,6 +119,7 @@ export default function Certificate() {
 			{openAddModal && <AddModal />}
 			{openEditModal && <EditModal />}
 			{openDeleteModal && <DeleteModal />}
+			{openAlert && <AlertModal type="success" message="Thành công" />}
 		</Box>
 	) : (
 		<Box

@@ -19,6 +19,7 @@ import SaveIcon from "@mui/icons-material/Save";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CancelIcon from "@mui/icons-material/Cancel";
 import InspectionContext from "../../contexts/InspectionProvider";
+import { AlertContext } from "../../contexts/AlertProvider";
 
 function AddModal() {
 	const {
@@ -29,6 +30,8 @@ function AddModal() {
 		facilities,
 		sgFacilities,
 	} = React.useContext(InspectionContext);
+
+	const { setOpenAlert } = React.useContext(AlertContext);
 
 	const [valueFacility, setValueFacility] = React.useState(null);
 
@@ -62,6 +65,7 @@ function AddModal() {
 			.then((response) => response.json())
 			.then((response) => console.log(response))
 			.then(() => {
+				setOpenAlert(true);
 				fetch("http://127.0.0.1:8000/inspections/", {
 					headers: { Authorization: `bearer ${auth.token}` },
 				})
@@ -167,6 +171,8 @@ function EditModal() {
 		resultRef,
 	} = React.useContext(InspectionContext);
 
+	const { setOpenAlert } = React.useContext(AlertContext);
+
 	const [editInfo, setEditInfo] = React.useState({ id: idDataRef.current });
 
 	const [editStartDate, setEditStartDate] = React.useState(
@@ -214,6 +220,7 @@ function EditModal() {
 				setEditInfo({ id: idDataRef.current });
 			})
 			.then(() => {
+				setOpenAlert(true);
 				fetch("http://127.0.0.1:8000/inspections/", {
 					headers: { Authorization: `bearer ${auth.token}` },
 				})
@@ -297,24 +304,21 @@ function DeleteModal() {
 		setOpenDeleteModal,
 	} = React.useContext(InspectionContext);
 
-	const handleDelete = async () => {
-		await fetch(
-			`http://127.0.0.1:8000/inspections/${idDataRef.current}/delete`,
-			{
-				method: "DELETE",
-				headers: {
-					Authorization: `bearer ${auth.token}`,
-					"Content-Type": "application/json",
-				},
-			}
-		)
+	const { setOpenAlert } = React.useContext(AlertContext);
+
+	const handleDelete = () => {
+		fetch(`http://127.0.0.1:8000/inspections/${idDataRef.current}/delete`, {
+			method: "DELETE",
+			headers: {
+				Authorization: `bearer ${auth.token}`,
+				"Content-Type": "application/json",
+			},
+		})
 			.then((response) => response.json())
 			.then((response) => {
 				console.log(response);
 			})
-			.catch((error) => {
-				console.error("Error:", error);
-			});
+			.then(() => setOpenAlert(true));
 		setOpenDeleteModal(false);
 		setRows(rows.filter((row) => row.id !== idDataRef.current));
 	};

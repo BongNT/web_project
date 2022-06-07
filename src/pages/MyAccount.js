@@ -14,6 +14,8 @@ import {
 	Typography,
 } from "@mui/material";
 import React from "react";
+import AlertModal from "../components/Modal/AlertModal";
+import { AlertContext } from "../contexts/AlertProvider";
 import AuthContext from "../contexts/AuthProvider";
 import "../css/MyAccount.css";
 
@@ -21,6 +23,8 @@ const PWD_REGEX = /^([A-Za-z0-9@#$%^&+=]{8,})$/;
 
 export default function MyAccount() {
 	const { auth } = React.useContext(AuthContext);
+
+	const { openAlert, setOpenAlert } = React.useContext(AlertContext);
 
 	const [fetchOk, setFetchOk] = React.useState(false);
 
@@ -90,6 +94,7 @@ export default function MyAccount() {
 			.then((response) => response.json())
 			.then((response) => console.log(response))
 			.then(() => {
+				setOpenAlert(true);
 				fetch("http://127.0.0.1:8000/me/info", {
 					headers: { Authorization: `bearer ${auth.token}` },
 				})
@@ -173,11 +178,19 @@ export default function MyAccount() {
 		});
 	};
 
+	const handleMouseDownOldPassword = (event) => {
+		event.preventDefault();
+	};
+
 	const handleMouseDownPassword = (event) => {
 		event.preventDefault();
 	};
 
-	function handleOpenConfirm(event) {
+	const handleMouseDownPassword2 = (event) => {
+		event.preventDefault();
+	};
+
+	function handleChangeConfirm(event) {
 		event.preventDefault();
 		const v1 = PWD_REGEX.test(valueOldPassword.password);
 		setValidOldPassword(v1);
@@ -221,7 +234,8 @@ export default function MyAccount() {
 			})
 			.then((response) => {
 				console.log(response);
-			});
+			})
+			.then(() => setOpenAlert(true));
 	}
 
 	return fetchOk ? (
@@ -370,7 +384,7 @@ export default function MyAccount() {
 								<InputAdornment position="end">
 									<IconButton
 										onClick={handleClickShowOldPassword}
-										onMouseDown={handleMouseDownPassword}
+										onMouseDown={handleMouseDownOldPassword}
 										edge="end"
 									>
 										{valueOldPassword.showPassword ? (
@@ -435,7 +449,7 @@ export default function MyAccount() {
 								<InputAdornment position="end">
 									<IconButton
 										onClick={handleClickShowPassword2}
-										onMouseDown={handleMouseDownPassword}
+										onMouseDown={handleMouseDownPassword2}
 										edge="end"
 									>
 										{valuePassword2.showPassword ? (
@@ -468,12 +482,13 @@ export default function MyAccount() {
 					<Button
 						variant="contained"
 						size="large"
-						onClick={handleOpenConfirm}
+						onClick={handleChangeConfirm}
 					>
 						Đổi mật khẩu
 					</Button>
 				</Box>
 			</Box>
+			{openAlert && <AlertModal type="success" message="Thành công" />}
 		</Box>
 	) : (
 		<Box

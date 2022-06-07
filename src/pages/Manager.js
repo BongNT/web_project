@@ -1,11 +1,13 @@
 import { Box, Typography, CircularProgress } from "@mui/material";
 import React from "react";
 import DataTable from "../components/DataTable";
+import AlertModal from "../components/Modal/AlertModal";
 import {
 	AddModal,
 	EditModal,
 	DeleteModal,
 } from "../components/Modal/ManagerModal";
+import { AlertContext } from "../contexts/AlertProvider";
 import ManagerContext from "../contexts/ManagerProvider";
 
 const columns = [
@@ -41,6 +43,8 @@ export default function Manager() {
 		setManagers,
 		setDistricts,
 	} = React.useContext(ManagerContext);
+
+	const { openAlert } = React.useContext(AlertContext);
 
 	React.useEffect(() => {
 		fetch("http://127.0.0.1:8000/managers/districts", {
@@ -90,6 +94,7 @@ export default function Manager() {
 			{openAddModal && <AddModal />}
 			{openEditModal && <EditModal />}
 			{openDeleteModal && <DeleteModal />}
+			{openAlert && <AlertModal type="success" message="Thành công" />}
 		</Box>
 	) : (
 		<Box

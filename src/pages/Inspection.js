@@ -1,11 +1,13 @@
 import { Box, Typography, CircularProgress } from "@mui/material";
 import React from "react";
 import DataTable from "../components/DataTable";
+import AlertModal from "../components/Modal/AlertModal";
 import {
 	AddModal,
 	EditModal,
 	DeleteModal,
 } from "../components/Modal/InspectionModal";
+import { AlertContext } from "../contexts/AlertProvider";
 import InspectionContext from "../contexts/InspectionProvider";
 
 const columns = [
@@ -67,6 +69,8 @@ export default function Inspection() {
 		setSgFacilities,
 	} = React.useContext(InspectionContext);
 
+	const { openAlert } = React.useContext(AlertContext);
+
 	React.useEffect(() => {
 		fetch("http://127.0.0.1:8000/facilities/", {
 			headers: { Authorization: `bearer ${auth.token}` },
@@ -125,6 +129,7 @@ export default function Inspection() {
 			{openAddModal && <AddModal />}
 			{openEditModal && <EditModal />}
 			{openDeleteModal && <DeleteModal />}
+			{openAlert && <AlertModal type="success" message="Thành công" />}
 		</Box>
 	) : (
 		<Box

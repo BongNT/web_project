@@ -11,6 +11,7 @@ import { ManagerProvider } from "./contexts/ManagerProvider";
 import { FacilityProvider } from "./contexts/FacilityProvider";
 import { InspectionProvider } from "./contexts/InspectionProvider";
 import { CertificateProvider } from "./contexts/CertificateProvider";
+import AlertProvider from "./contexts/AlertProvider";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -25,6 +26,7 @@ root.render(
 				FacilityProvider,
 				InspectionProvider,
 				CertificateProvider,
+				AlertProvider,
 			]}
 		>
 			<Routes>

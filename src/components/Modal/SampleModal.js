@@ -18,10 +18,13 @@ import SaveIcon from "@mui/icons-material/Save";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CancelIcon from "@mui/icons-material/Cancel";
 import SampleContext from "../../contexts/SampleProvider";
+import { AlertContext } from "../../contexts/AlertProvider";
 
 function AddModal() {
 	const { auth, openAddModal, setRows, setOpenAddModal, inspections } =
 		React.useContext(SampleContext);
+
+	const { setOpenAlert } = React.useContext(AlertContext);
 
 	const [id, setId] = React.useState("");
 	const handleChangeId = (event) => setId(event.target.value);
@@ -62,6 +65,7 @@ function AddModal() {
 			.then((response) => response.json())
 			.then((response) => console.log(response.detail))
 			.then(() => {
+				setOpenAlert(true);
 				fetch("http://127.0.0.1:8000/samples/", {
 					headers: { Authorization: `bearer ${auth.token}` },
 				})
@@ -192,6 +196,8 @@ function EditModal() {
 		resultRef,
 	} = React.useContext(SampleContext);
 
+	const { setOpenAlert } = React.useContext(AlertContext);
+
 	const [editInfo, setEditInfo] = React.useState({ id: idDataRef.current });
 
 	const [editInspectionAgency, setEditInspectionAgency] = React.useState(
@@ -250,6 +256,7 @@ function EditModal() {
 				setEditInfo({ id: idDataRef.current });
 			})
 			.then(() => {
+				setOpenAlert(true);
 				fetch("http://127.0.0.1:8000/samples/", {
 					headers: { Authorization: `bearer ${auth.token}` },
 				})
@@ -333,22 +340,19 @@ function DeleteModal() {
 		setOpenDeleteModal,
 	} = React.useContext(SampleContext);
 
-	const handleDelete = async () => {
-		await fetch(
-			`http://127.0.0.1:8000/samples/${idDataRef.current}/delete`,
-			{
-				method: "DELETE",
-				headers: {
-					Authorization: `bearer ${auth.token}`,
-					"Content-Type": "application/json",
-				},
-			}
-		)
+	const { setOpenAlert } = React.useContext(AlertContext);
+
+	const handleDelete = () => {
+		fetch(`http://127.0.0.1:8000/samples/${idDataRef.current}/delete`, {
+			method: "DELETE",
+			headers: {
+				Authorization: `bearer ${auth.token}`,
+				"Content-Type": "application/json",
+			},
+		})
 			.then((response) => response.json())
 			.then((response) => console.log(response.detail))
-			.catch((error) => {
-				console.error("Error:", error);
-			});
+			.then(() => setOpenAlert(true));
 		setOpenDeleteModal(false);
 		setRows(rows.filter((row) => row.id !== idDataRef.current));
 	};

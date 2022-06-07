@@ -13,6 +13,7 @@ import SaveIcon from "@mui/icons-material/Save";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CancelIcon from "@mui/icons-material/Cancel";
 import ManagerContext from "../../contexts/ManagerProvider";
+import { AlertContext } from "../../contexts/AlertProvider";
 
 function AddModal() {
 	const {
@@ -23,6 +24,8 @@ function AddModal() {
 		districts,
 		managers,
 	} = React.useContext(ManagerContext);
+
+	const { setOpenAlert } = React.useContext(AlertContext);
 
 	const [manager, setManager] = React.useState(null);
 
@@ -45,6 +48,7 @@ function AddModal() {
 			.then((response) => response.json())
 			.then((response) => console.log(response.detail))
 			.then(() => {
+				setOpenAlert(true);
 				fetch("http://127.0.0.1:8000/managers/", {
 					headers: { Authorization: `bearer ${auth.token}` },
 				})
@@ -143,6 +147,8 @@ function EditModal() {
 		districts,
 	} = React.useContext(ManagerContext);
 
+	const { setOpenAlert } = React.useContext(AlertContext);
+
 	const [editInfo, setEditInfo] = React.useState({
 		manager_id: idDataRef.current,
 	});
@@ -175,6 +181,7 @@ function EditModal() {
 				setEditInfo({ manager_id: idDataRef.current });
 			})
 			.then(() => {
+				setOpenAlert(true);
 				fetch("http://127.0.0.1:8000/managers/", {
 					headers: { Authorization: `bearer ${auth.token}` },
 				})
@@ -268,10 +275,12 @@ function DeleteModal() {
 		districtRef,
 	} = React.useContext(ManagerContext);
 
+	const { setOpenAlert } = React.useContext(AlertContext);
+
 	const [deleteDistrict, setDeleteDistrict] = React.useState(null);
 
-	const handleDelete = async () => {
-		await fetch(`http://127.0.0.1:8000/managers/delete_district`, {
+	const handleDelete = () => {
+		fetch(`http://127.0.0.1:8000/managers/delete_district`, {
 			method: "DELETE",
 			headers: {
 				Authorization: `bearer ${auth.token}`,
@@ -285,6 +294,7 @@ function DeleteModal() {
 			.then((response) => response.json())
 			.then((response) => console.log(response))
 			.then(() => {
+				setOpenAlert(true);
 				fetch("http://127.0.0.1:8000/managers/", {
 					headers: { Authorization: `bearer ${auth.token}` },
 				})

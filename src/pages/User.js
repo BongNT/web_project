@@ -7,6 +7,8 @@ import {
 	DeleteModal,
 } from "../components/Modal/UserModal";
 import UserContext from "../contexts/UserProvider";
+import { AlertContext } from "../contexts/AlertProvider";
+import AlertModal from "../components/Modal/AlertModal";
 
 const columns = [
 	{
@@ -47,6 +49,8 @@ export default function User() {
 		setFetchOk,
 	} = React.useContext(UserContext);
 
+	const { openAlert } = React.useContext(AlertContext);
+
 	React.useEffect(
 		() => async () => {
 			const response = await fetch("http://127.0.0.1:8000/users/", {
@@ -83,6 +87,7 @@ export default function User() {
 			{openAddModal && <AddModal />}
 			{openEditModal && <EditModal />}
 			{openDeleteModal && <DeleteModal />}
+			{openAlert && <AlertModal type="success" message="Thành công" />}
 		</Box>
 	) : (
 		<Box
