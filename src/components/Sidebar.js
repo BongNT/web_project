@@ -1,5 +1,5 @@
 import React from "react";
-import LinkList from "./List";
+import LinkList from "./LinkList";
 import { styled } from "@mui/material/styles";
 import { Toolbar, Divider } from "@mui/material";
 import MuiAccordion from "@mui/material/Accordion";
@@ -54,7 +54,7 @@ export default function Sidebar() {
 			id: 3,
 			title: "Phân quyền",
 			items: [
-				{ id: 1, name: "Cán bộ", link: "/user" },
+				{ id: 1, name: "Người dùng", link: "/user" },
 				{ id: 2, name: "Địa bàn", link: "/manager" },
 			],
 		},

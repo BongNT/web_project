@@ -1,5 +1,5 @@
 import React from "react";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, Navigate, useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
@@ -8,10 +8,15 @@ import ListItemText from "@mui/material/ListItemText";
 import PropTypes from "prop-types";
 import ListItem from "@mui/material/ListItem";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
+import { HomeContext } from "../pages/Home";
 
 function ListItemLink(props) {
 	const { icon, primary, to } = props;
+	const { setMobileOpen } = React.useContext(HomeContext);
 
+	function handleNavigate(url) {
+		setMobileOpen(false);
+	}
 	const renderLink = React.useMemo(
 		() =>
 			React.forwardRef(function Link(itemProps, ref) {
@@ -28,7 +33,7 @@ function ListItemLink(props) {
 	);
 
 	return (
-		<ListItem button component={renderLink}>
+		<ListItem button component={renderLink} onClick={handleNavigate}>
 			{icon ? <ListItemIcon>{icon}</ListItemIcon> : null}
 			<ListItemText primary={primary} />
 		</ListItem>
