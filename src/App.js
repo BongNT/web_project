@@ -13,6 +13,7 @@ import Sample from "./pages/Sample";
 import MyAccount from "./pages/MyAccount";
 import Unauthorized from "./components/Unauthorized";
 import Facility from "./pages/Facility";
+import HomeContent from "./pages/HomeContent";
 
 const ROLES = {
 	Default_admin: 0,
@@ -37,6 +38,8 @@ export default function App() {
 					}
 				>
 					<Route path="/" element={<Home />}>
+						<Route path="/" element={<HomeContent />} />
+
 						<Route path="facility" element={<Facility />} />
 						<Route path="certificate" element={<Certificate />} />
 
