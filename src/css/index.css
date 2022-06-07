@@ -25,3 +25,9 @@ header .btn-secondary:focus {
 .h-custom {
 	height: calc(100% - 50px);
 }
+
+@media (max-width: 600px) {
+	.main {
+		height: 36rem !important;
+	}
+}

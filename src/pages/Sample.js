@@ -28,7 +28,7 @@ const columns = [
 		headerName: "Đơn vị giám định",
 		headerAlign: "center",
 		align: "center",
-		width: 300,
+		width: 250,
 	},
 	{
 		field: "status",
@@ -42,7 +42,7 @@ const columns = [
 		headerName: "Ngày nhận kết quả",
 		headerAlign: "center",
 		align: "center",
-		width: 256,
+		width: 200,
 		type: "date",
 		valueGetter: ({ value }) => value && new Date(value),
 	},
@@ -51,7 +51,7 @@ const columns = [
 		headerName: "Kết quả",
 		headerAlign: "center",
 		align: "center",
-		width: 200,
+		width: 176,
 	},
 ];
 
@@ -121,6 +121,7 @@ export default function Sample() {
 		</Box>
 	) : (
 		<Box
+			className="main"
 			sx={{
 				display: "flex",
 				justifyContent: "center",

@@ -21,7 +21,7 @@ const columns = [
 		headerName: "Loại hình",
 		headerAlign: "center",
 		align: "center",
-		width: 300,
+		width: 306,
 	},
 	{
 		field: "district",
@@ -35,7 +35,7 @@ const columns = [
 		headerName: "Số điện thoại",
 		headerAlign: "center",
 		align: "center",
-		width: 196,
+		width: 230,
 	},
 ];
 
@@ -108,6 +108,7 @@ export default function Facility() {
 		</Box>
 	) : (
 		<Box
+			className="main"
 			sx={{
 				display: "flex",
 				justifyContent: "center",

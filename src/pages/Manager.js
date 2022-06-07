@@ -93,6 +93,7 @@ export default function Manager() {
 		</Box>
 	) : (
 		<Box
+			className="main"
 			sx={{
 				display: "flex",
 				justifyContent: "center",

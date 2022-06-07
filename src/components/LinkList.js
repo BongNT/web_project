@@ -14,9 +14,6 @@ function ListItemLink(props) {
 	const { icon, primary, to } = props;
 	const { setMobileOpen } = React.useContext(HomeContext);
 
-	function handleNavigate(url) {
-		setMobileOpen(false);
-	}
 	const renderLink = React.useMemo(
 		() =>
 			React.forwardRef(function Link(itemProps, ref) {
@@ -33,7 +30,11 @@ function ListItemLink(props) {
 	);
 
 	return (
-		<ListItem button component={renderLink} onClick={handleNavigate}>
+		<ListItem
+			button
+			component={renderLink}
+			onClick={() => setMobileOpen(false)}
+		>
 			{icon ? <ListItemIcon>{icon}</ListItemIcon> : null}
 			<ListItemText primary={primary} />
 		</ListItem>

@@ -477,6 +477,7 @@ export default function MyAccount() {
 		</Box>
 	) : (
 		<Box
+			className="main"
 			sx={{
 				display: "flex",
 				justifyContent: "center",

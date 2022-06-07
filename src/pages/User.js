@@ -86,6 +86,7 @@ export default function User() {
 		</Box>
 	) : (
 		<Box
+			className="main"
 			sx={{
 				display: "flex",
 				justifyContent: "center",
