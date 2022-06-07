@@ -7,12 +7,18 @@ import {
 	DeleteModal,
 } from "../components/Modal/SampleModal";
 import SampleContext from "../contexts/SampleProvider";
-import useAuth from "../hooks/useAuth";
 
 const columns = [
 	{
 		field: "id",
 		headerName: "Số",
+		headerAlign: "center",
+		align: "center",
+		width: 130,
+	},
+	{
+		field: "inspection_id",
+		headerName: "Số thanh tra",
 		headerAlign: "center",
 		align: "center",
 		width: 130,
@@ -81,13 +87,14 @@ export default function Sample() {
 				headers: { Authorization: `bearer ${auth.token}` },
 			});
 			const data = await response.json();
-			console.log(data);
+
 			data.forEach((row) => {
 				row.status === 1
 					? (row.status = "Đang gửi đi")
 					: row.status === 2
 					? (row.status = "Đang xử lý")
 					: (row.status = "Hoàn tất");
+				row.inspection_id = row.in_inspection.id;
 			});
 			setRows(data);
 

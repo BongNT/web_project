@@ -9,6 +9,7 @@ export function InspectionProvider({ children }) {
 	const [fetchOk, setFetchOk] = React.useState(false);
 
 	const [facilities, setFacilities] = useData("facilities");
+	const [sgFacilities, setSgFacilities] = useData("sg_facilities");
 
 	const [openAddModal, setOpenAddModal] = React.useState(false);
 
@@ -26,20 +27,26 @@ export function InspectionProvider({ children }) {
 	//Actions
 	const handleEditClick = (id) => () => {
 		setOpenEditModal(true);
+
 		idDataRef.current = id;
 		const editRow = rows.find((row) => row.id === id);
 		startDateRef.current = editRow.start_date;
 
 		endDateRef.current = editRow.end_date;
 
-		resultRef.current =
-			editRow.result === "Chưa kiểm tra"
-				? 0
-				: "Đang kiểm tra"
-				? 1
-				: "Đạt chuẩn"
-				? 2
-				: 3;
+		switch (editRow.result) {
+			case "Đang kiểm tra":
+				resultRef.current = 1;
+				break;
+			case "Đạt chuẩn":
+				resultRef.current = 2;
+				break;
+			case "Không đạt chuẩn":
+				resultRef.current = 3;
+				break;
+			default:
+				resultRef.current = 0;
+		}
 	};
 
 	const handleDeleteClick = (id) => () => {
@@ -68,6 +75,8 @@ export function InspectionProvider({ children }) {
 				resultRef,
 				facilities,
 				setFacilities,
+				sgFacilities,
+				setSgFacilities,
 			}}
 		>
 			{children}

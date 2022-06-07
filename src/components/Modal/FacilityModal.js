@@ -12,7 +12,6 @@ import {
 	MenuItem,
 	InputLabel,
 	Autocomplete,
-	Box,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import SaveIcon from "@mui/icons-material/Save";
@@ -36,9 +35,9 @@ function AddModal() {
 
 	const [valueAddress, setValueAddress] = React.useState(null);
 
-	const handleAdd = async (event) => {
+	const handleAdd = (event) => {
 		event.preventDefault();
-		await fetch("http://127.0.0.1:8000/facilities/register", {
+		fetch("http://127.0.0.1:8000/facilities/register", {
 			method: "POST",
 			headers: {
 				Authorization: `bearer ${auth.token}`,
@@ -52,7 +51,7 @@ function AddModal() {
 			}),
 		})
 			.then((response) => response.json())
-			.then((response) => console.log(response.detail))
+			.then((response) => console.log(response))
 			.then(() => {
 				fetch("http://127.0.0.1:8000/facilities/", {
 					headers: { Authorization: `bearer ${auth.token}` },
@@ -339,7 +338,7 @@ function DeleteModal() {
 		)
 			.then((response) => response.json())
 			.then((response) => {
-				console.log(response.detail);
+				console.log(response);
 			})
 			.catch((error) => {
 				console.error("Error:", error);

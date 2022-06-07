@@ -31,10 +31,23 @@ export function SampleProvider({ children }) {
 		const editRow = rows.find((row) => row.id === id);
 
 		inspectionAgencyRef.current = editRow.inspection_agency;
-		statusRef.current =
-			editRow.status === "Đang gửi đi" ? 1 : "Đang kiểm tra" ? 2 : 3;
+		switch (editRow.status) {
+			case "Đang gửi đi":
+				statusRef.current = 1;
+				break;
+			case "Đang kiểm tra":
+				statusRef.current = 2;
+				break;
+			default:
+				statusRef.current = 3;
+		}
 		resultDateRef.current = editRow.result_date;
-		resultRef.current = editRow.result;
+
+		if (editRow.result) {
+			resultRef.current = editRow.result;
+		} else {
+			resultRef.current = "";
+		}
 	};
 
 	const handleDeleteClick = (id) => () => {

@@ -1,7 +1,6 @@
 import { Box, Typography, CircularProgress } from "@mui/material";
 import React from "react";
 import DataTable from "../components/DataTable";
-import AuthContext from "../contexts/AuthProvider";
 import {
 	AddModal,
 	EditModal,

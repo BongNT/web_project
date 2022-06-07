@@ -1,19 +1,9 @@
 import React from "react";
-import { Routes, Route, Outlet, Link } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import { Toolbar, IconButton, AppBar, Drawer, Box } from "@mui/material";
-import Typography from "@mui/material/Typography";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MenuIcon from "@mui/icons-material/Menu";
-import User from "./User";
-import Certificate from "./Certificate";
 import Sidebar from "../components/Sidebar";
 import AccountMenu from "../components/AccountMenu";
-import MyAccount from "./MyAccount";
-import RequireAuth from "../components/RequireAuth";
-import Unauthorized from "../components/Unauthorized";
-import { alignProperty } from "@mui/material/styles/cssUtils";
-import AuthContext from "../contexts/AuthProvider";
-
 const drawerWidth = 240;
 
 const HomeContext = React.createContext();

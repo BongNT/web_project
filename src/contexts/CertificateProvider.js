@@ -29,8 +29,16 @@ export function CertificateProvider({ children }) {
 		const editRow = rows.find((row) => row.id === id);
 		expiryDateRef.current = editRow.expiry_date;
 
-		statusRef.current =
-			editRow.status === "Còn hiệu lực" ? 1 : "Hết hạn" ? 2 : 3;
+		switch (editRow.status) {
+			case "Còn hiệu lực":
+				statusRef.current = 1;
+				break;
+			case "Hết hạn":
+				statusRef.current = 2;
+				break;
+			default:
+				statusRef.current = 3;
+		}
 	};
 
 	const handleDeleteClick = (id) => () => {

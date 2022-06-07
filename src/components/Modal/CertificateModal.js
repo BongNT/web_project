@@ -46,7 +46,7 @@ function AddModal() {
 			}),
 		})
 			.then((response) => response.json())
-			.then((response) => console.log(response.detail))
+			.then((response) => console.log(response))
 			.then(() => {
 				fetch("http://127.0.0.1:8000/certificates/", {
 					headers: { Authorization: `bearer ${auth.token}` },
@@ -170,10 +170,10 @@ function EditModal() {
 		setEditInfo({ ...editInfo, status: editStatus });
 	}, [editStatus]);
 
-	const handleChange = async (event) => {
+	const handleChange = (event) => {
 		event.preventDefault();
-		console.log(editInfo);
-		await fetch("http://127.0.0.1:8000/certificates/update", {
+
+		fetch("http://127.0.0.1:8000/certificates/update", {
 			method: "PUT",
 			headers: {
 				Authorization: `bearer ${auth.token}`,
@@ -269,9 +269,7 @@ function DeleteModal() {
 			}
 		)
 			.then((response) => response.json())
-			.then((response) => {
-				console.log(response.detail);
-			})
+			.then((response) => console.log(response))
 			.catch((error) => {
 				console.error("Error:", error);
 			});

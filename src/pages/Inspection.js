@@ -10,18 +10,25 @@ import InspectionContext from "../contexts/InspectionProvider";
 
 const columns = [
 	{
+		field: "id",
+		headerName: "Số",
+		headerAlign: "center",
+		align: "center",
+		width: 110,
+	},
+	{
 		field: "name",
 		headerName: "Tên cơ sở",
 		headerAlign: "center",
 		align: "center",
-		width: 270,
+		width: 240,
 	},
 	{
 		field: "start_date",
 		headerName: "Ngày bắt đầu",
 		headerAlign: "center",
 		align: "center",
-		width: 270,
+		width: 240,
 		type: "date",
 		valueGetter: ({ value }) => value && new Date(value),
 	},
@@ -30,7 +37,7 @@ const columns = [
 		headerName: "Ngày kết thúc",
 		headerAlign: "center",
 		align: "center",
-		width: 270,
+		width: 240,
 		type: "date",
 		valueGetter: ({ value }) => value && new Date(value),
 	},
@@ -39,7 +46,7 @@ const columns = [
 		headerName: "Kết quả",
 		headerAlign: "center",
 		align: "center",
-		width: 276,
+		width: 256,
 	},
 ];
 
@@ -56,8 +63,8 @@ export default function Inspection() {
 		handleEditClick,
 		handleDeleteClick,
 		setFetchOk,
-		facilities,
 		setFacilities,
+		setSgFacilities,
 	} = React.useContext(InspectionContext);
 
 	React.useEffect(() => {
@@ -70,13 +77,23 @@ export default function Inspection() {
 			});
 	}, []);
 
+	React.useEffect(() => {
+		fetch("http://127.0.0.1:8000/inspections/suggest", {
+			headers: { Authorization: `bearer ${auth.token}` },
+		})
+			.then((response) => response.json())
+			.then((data) => {
+				setSgFacilities(data);
+			});
+	}, []);
+
 	React.useEffect(
 		() => async () => {
 			const response = await fetch("http://127.0.0.1:8000/inspections/", {
 				headers: { Authorization: `bearer ${auth.token}` },
 			});
 			const data = await response.json();
-			console.log(data);
+
 			data.forEach((row) => {
 				row.result === 1
 					? (row.result = "Đang kiểm tra")

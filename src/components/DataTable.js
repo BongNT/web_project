@@ -1,14 +1,10 @@
 import React from "react";
-import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
-import SaveIcon from "@mui/icons-material/Save";
-import CancelIcon from "@mui/icons-material/Close";
 import {
-	GridRowModes,
 	DataGrid,
 	GridToolbarContainer,
 	GridActionsCellItem,
@@ -17,8 +13,6 @@ import {
 	GridToolbarExport,
 } from "@mui/x-data-grid";
 import "../css/DataTable.css";
-import { AddModal, DeleteDialog, EditModal } from "./Modal/UserModal";
-import AuthContext from "../contexts/AuthProvider";
 
 function EditToolbar(props) {
 	const { setFilterButtonEl, setOpenAddModal } = props;

@@ -16,7 +16,6 @@ import AddIcon from "@mui/icons-material/Add";
 import SaveIcon from "@mui/icons-material/Save";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CancelIcon from "@mui/icons-material/Cancel";
-import AuthContext from "../../contexts/AuthProvider";
 import UserContext from "../../contexts/UserProvider";
 
 const USER_REGEX = /^[a-zA-Z0-9]+$/;
@@ -68,7 +67,7 @@ function AddModal() {
 			}),
 		})
 			.then((response) => response.json())
-			.then((response) => console.log(response.detail))
+			.then((response) => console.log(response))
 			.then(() => {
 				fetch("http://127.0.0.1:8000/users/", {
 					headers: { Authorization: `bearer ${auth.token}` },
@@ -348,9 +347,7 @@ function DeleteModal() {
 			},
 		})
 			.then((response) => response.json())
-			.then((response) => {
-				console.log(response.detail);
-			})
+			.then((response) => console.log(response))
 			.catch((error) => {
 				console.error("Error:", error);
 			});

@@ -234,10 +234,9 @@ function EditModal() {
 		setEditInfo({ ...editInfo, result: editResult });
 	}, [editResult]);
 
-	const handleChange = async (event) => {
+	const handleChange = (event) => {
 		event.preventDefault();
-		console.log(editInfo);
-		await fetch("http://127.0.0.1:8000/samples/update", {
+		fetch("http://127.0.0.1:8000/samples/update", {
 			method: "PUT",
 			headers: {
 				Authorization: `bearer ${auth.token}`,
@@ -290,7 +289,7 @@ function EditModal() {
 					<InputLabel>Trạng thái</InputLabel>
 					<Select value={editStatus} onChange={handleChangeStatus}>
 						<MenuItem value={1}>Đang gửi đi</MenuItem>
-						<MenuItem value={2}>Đang kiểm tra</MenuItem>
+						<MenuItem value={2}>Đang xử lý</MenuItem>
 						<MenuItem value={3}>Hoàn tất</MenuItem>
 					</Select>
 				</FormControl>
@@ -346,9 +345,7 @@ function DeleteModal() {
 			}
 		)
 			.then((response) => response.json())
-			.then((response) => {
-				console.log(response.detail);
-			})
+			.then((response) => console.log(response.detail))
 			.catch((error) => {
 				console.error("Error:", error);
 			});

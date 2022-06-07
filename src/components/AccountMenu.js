@@ -8,7 +8,7 @@ import Divider from "@mui/material/Divider";
 import Button from "@mui/material/Button";
 import Logout from "@mui/icons-material/Logout";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import AuthContext from "../contexts/AuthProvider";
 
 export default function AccountMenu() {

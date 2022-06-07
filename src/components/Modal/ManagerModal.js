@@ -3,14 +3,9 @@ import {
 	Dialog,
 	DialogTitle,
 	DialogContent,
-	DialogContentText,
 	DialogActions,
 	Button,
-	FormControl,
 	TextField,
-	Select,
-	MenuItem,
-	InputLabel,
 	Autocomplete,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
@@ -163,10 +158,10 @@ function EditModal() {
 		setEditInfo({ ...editInfo, old_district_id: oldDistrict?.id });
 	}, [oldDistrict]);
 
-	const handleChange = async (event) => {
+	const handleChange = (event) => {
 		event.preventDefault();
 
-		await fetch("http://127.0.0.1:8000/managers/update_district", {
+		fetch("http://127.0.0.1:8000/managers/update_district", {
 			method: "PUT",
 			headers: {
 				Authorization: `bearer ${auth.token}`,
@@ -274,7 +269,7 @@ function DeleteModal() {
 	} = React.useContext(ManagerContext);
 
 	const [deleteDistrict, setDeleteDistrict] = React.useState(null);
-	console.log(districtRef.current);
+
 	const handleDelete = async () => {
 		await fetch(`http://127.0.0.1:8000/managers/delete_district`, {
 			method: "DELETE",

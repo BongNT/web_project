@@ -33,13 +33,16 @@ export function FacilityProvider({ children }) {
 
 		districtRef.current = editRow.in_district;
 
-		typeRef.current =
-			editRow.type === "Sản xuất thực phẩm"
-				? 1
-				: "Kinh doanh thực phẩm"
-				? 2
-				: 3;
-
+		switch (editRow.type) {
+			case "Sản xuất thực phẩm":
+				typeRef.current = 1;
+				break;
+			case "Kinh doanh thực phẩm":
+				typeRef.current = 2;
+				break;
+			default:
+				typeRef.current = 3;
+		}
 		phoneNumberRef.current = editRow.phone_number;
 	};
 

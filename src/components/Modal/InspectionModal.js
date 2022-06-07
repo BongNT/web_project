@@ -12,6 +12,7 @@ import {
 	MenuItem,
 	InputLabel,
 	Autocomplete,
+	Switch,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import SaveIcon from "@mui/icons-material/Save";
@@ -20,8 +21,14 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import InspectionContext from "../../contexts/InspectionProvider";
 
 function AddModal() {
-	const { auth, openAddModal, setRows, setOpenAddModal, facilities } =
-		React.useContext(InspectionContext);
+	const {
+		auth,
+		openAddModal,
+		setRows,
+		setOpenAddModal,
+		facilities,
+		sgFacilities,
+	} = React.useContext(InspectionContext);
 
 	const [valueFacility, setValueFacility] = React.useState(null);
 
@@ -30,6 +37,13 @@ function AddModal() {
 
 	const [endDate, setEndDate] = React.useState("");
 	const handleChangeEndDate = (event) => setEndDate(event.target.value);
+
+	//suggest
+	const [checked, setChecked] = React.useState(false);
+
+	const handleChange = (event) => {
+		setChecked(event.target.checked);
+	};
 
 	const handleAdd = async (event) => {
 		event.preventDefault();
@@ -46,7 +60,7 @@ function AddModal() {
 			}),
 		})
 			.then((response) => response.json())
-			.then((response) => console.log(response.detail))
+			.then((response) => console.log(response))
 			.then(() => {
 				fetch("http://127.0.0.1:8000/inspections/", {
 					headers: { Authorization: `bearer ${auth.token}` },
@@ -92,7 +106,7 @@ function AddModal() {
 					onChange={(event, newValue) => {
 						setValueFacility(newValue);
 					}}
-					options={facilities}
+					options={checked ? sgFacilities : facilities}
 					autoHighlight
 					getOptionLabel={(option) => option.name}
 					renderInput={(params) => (
@@ -127,6 +141,7 @@ function AddModal() {
 					onChange={handleChangeEndDate}
 					InputLabelProps={{ shrink: true }}
 				/>
+				<Switch checked={checked} onChange={handleChange} /> Gợi ý cơ sở
 			</DialogContent>
 			<DialogActions>
 				<Button onClick={handleClose}>
@@ -183,9 +198,9 @@ function EditModal() {
 		setEditInfo({ ...editInfo, result: editResult });
 	}, [editResult]);
 
-	const handleChange = async (event) => {
+	const handleChange = (event) => {
 		event.preventDefault();
-		await fetch("http://127.0.0.1:8000/inspections/update", {
+		fetch("http://127.0.0.1:8000/inspections/update", {
 			method: "PUT",
 			headers: {
 				Authorization: `bearer ${auth.token}`,
@@ -295,7 +310,7 @@ function DeleteModal() {
 		)
 			.then((response) => response.json())
 			.then((response) => {
-				console.log(response.detail);
+				console.log(response);
 			})
 			.catch((error) => {
 				console.error("Error:", error);
